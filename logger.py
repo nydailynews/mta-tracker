@@ -5,11 +5,12 @@ import argparse
 import re
 import string
 import doctest
+from filewrapper import FileWrapper
 
 def main(args):
     """ 
         """
-    pass
+    url = 'http://web.mta.info/status/serviceStatus.txt'
   
 
 def build_parser(args):
