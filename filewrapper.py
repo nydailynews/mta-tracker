@@ -14,11 +14,11 @@ class FileWrapper:
         self.fn = None
  
     def request(self, url, action='GET', headers={}, request_body=''):
-    """ 
-        """
+        """ 
+            """
         if action == 'GET':
             action = None
-        req = urllib2.urlopen(url, action, headers=headers, body=request_body)
+        req = urllib2.urlopen(url, action)
         if req.getcode() > 299:
             print 'ERROR: HTTP response %s' % req.getcode()
             sys.exit(1)
@@ -31,8 +31,8 @@ class FileWrapper:
         self.fn.close
  
     def write(self, content):
-    """ 
-        """
+        """ 
+            """
         import string
         fn = open(self.filename, 'w')
         try:
@@ -52,8 +52,8 @@ class FileWrapper:
         fn.close
  
     def read(self, filename=''):
-    """ 
-        """
+        """ 
+            """
         if filename == '':
             fn = open(self.filename, 'r')
         else:

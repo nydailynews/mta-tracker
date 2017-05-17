@@ -6,6 +6,12 @@ import re
 import string
 import doctest
 
+
+class ParseMTA:
+
+    def __init__(self):
+        pass
+
 def main(args):
     """ 
         """

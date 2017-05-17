@@ -11,6 +11,10 @@ def main(args):
     """ 
         """
     url = 'http://web.mta.info/status/serviceStatus.txt'
+    fh = FileWrapper('mta.xml')
+    fh.open()
+    fh.write(fh.request(url))
+    fh.close()
   
 
 def build_parser(args):
