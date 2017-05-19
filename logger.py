@@ -1,20 +1,28 @@
 #!/usr/bin/env python
-# 
+# Download and log the MTA's status updates. We only log changes.
 import sys
 import argparse
 import re
 import string
 import doctest
 from filewrapper import FileWrapper
+import random
+import xml.etree.ElementTree as ET
+from parser import ParseMTA
 
 def main(args):
     """ 
         """
-    url = 'http://web.mta.info/status/serviceStatus.txt'
+    rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
     fh = FileWrapper('mta.xml')
     fh.open()
     fh.write(fh.request(url))
     fh.close()
+    e = ET.parse('mta.xml')
+    r = e.getroot()
+    # <Element 'subway' at 0x106c251d0>, <Element 'bus' at 0x106c321d0>, <Element 'BT' at 0x106c3e150>, <Element 'LIRR' at 0x106c3ef10>, <Element 'MetroNorth' at 0x106ca9050>
+    return e, r
   
 
 def build_parser(args):

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# 
+# Turn the MTA's XML feed items into something manageable
 import sys
 import argparse
 import re
