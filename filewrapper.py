@@ -9,7 +9,10 @@ import types
 class FileWrapper:
     """ class FileWrapper handles file write and download operations.
         """
+
     def __init__(self, filename):
+        """
+            """
         self.filename = filename
         self.fn = None
  

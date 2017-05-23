@@ -9,7 +9,22 @@ from filewrapper import FileWrapper
 import random
 import xml.etree.ElementTree as ET
 from parser import ParseMTA
+import json
 
+class Logger:
+    """ We're logging how long it has been since each line's previous
+        service alert, and to do that we need to keep track of which lines
+        have active service alerts.
+        """
+
+    def __init__(self):
+        """
+            >>>
+            """
+        fh = FileWrapper('previous.json')
+        previous_alerts = json.load(fh.read())
+
+    
 def main(args):
     """ 
         """
@@ -21,6 +36,7 @@ def main(args):
     fh.close()
     e = ET.parse('mta.xml')
     r = e.getroot()
+    items = []
     for l in r.find('subway'):
         item = {
             'status': l.find('status').text,
@@ -28,6 +44,8 @@ def main(args):
             'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
             'text': l.find('text').text
         }
+        if item['status'] and item['status'] == 'DELAYS':
+            items.append(item)
     return e, r
   
 
