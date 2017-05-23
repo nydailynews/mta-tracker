@@ -21,7 +21,13 @@ def main(args):
     fh.close()
     e = ET.parse('mta.xml')
     r = e.getroot()
-    # <Element 'subway' at 0x106c251d0>, <Element 'bus' at 0x106c321d0>, <Element 'BT' at 0x106c3e150>, <Element 'LIRR' at 0x106c3ef10>, <Element 'MetroNorth' at 0x106ca9050>
+    for l in r.find('subway'):
+        item = {
+            'status': l.find('status').text,
+            'lines': l.find('name').text,
+            'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
+            'text': l.find('text').text
+        }
     return e, r
   
 
