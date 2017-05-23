@@ -10,6 +10,20 @@ import doctest
 class ParseMTA:
 
     def __init__(self):
+        """
+            >>>
+            """
+        def lines = []
+
+    def make_datetime(self, value):
+        """ Turn a string such as '05/23/2017 12:08AM' into a datetime object.
+            """
+        pass
+
+    def extract_lines(self, value):
+        """ Given a line's status, parse the MTA lines mentioned in it.
+            Returns a list.
+            """
         pass
 
 def main(args):
