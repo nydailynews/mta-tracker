@@ -24,7 +24,13 @@ class Logger:
         fh = FileWrapper('previous.json')
         previous_alerts = json.load(fh.read())
 
-    
+    def compare(self):
+        """ Compare the previous json of alerts with the current. Store the
+            diffs in a new object.
+            >>>
+            """
+        pass
+
 def main(args):
     """ 
         """
@@ -36,6 +42,7 @@ def main(args):
     fh.close()
     e = ET.parse('mta.xml')
     r = e.getroot()
+    mta = ParseMTA()
     items = []
     for l in r.find('subway'):
         item = {
@@ -44,8 +51,8 @@ def main(args):
             'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
             'text': l.find('text').text
         }
-        if item['status'] and item['status'] == 'DELAYS':
-            items.append(item)
+        if item['status'] and item['status'] != 'GOOD SERVICE':
+            items.append(mta.extract(item))
     return e, r
   
 

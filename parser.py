@@ -20,11 +20,18 @@ class ParseMTA:
             """
         pass
 
+    def extract(self, value):
+        """ Given a line object, return the relevant parts.
+            """
+        lines = self.extract_lines(value)
+        has_delays = 0
+        has_planned_work = 0
+
     def extract_lines(self, value):
         """ Given a line's status, parse the MTA lines mentioned in it.
             Returns a list.
             """
-        pass
+        print value['text']
 
 def main(args):
     """ 
