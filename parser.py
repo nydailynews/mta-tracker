@@ -5,9 +5,10 @@ import argparse
 import re
 import string
 import doctest
+from bs4 import BeautifulSoup
 
 
-class ParseMTA:
+class ParseMTA(object):
 
     def __init__(self):
         """
@@ -26,12 +27,52 @@ class ParseMTA:
         lines = self.extract_lines(value)
         has_delays = 0
         has_planned_work = 0
-
+        return lines
+        
     def extract_lines(self, value):
         """ Given a line's status, parse the MTA lines mentioned in it.
             Returns a list.
             """
-        print value['text']
+        if value['text']:
+            self.soup = BeautifulSoup(value['text'], 'html.parser')
+        else:
+            return None
+        #return 
+        print
+        print
+        #print value['text']
+        #print soup.get_text()
+        #print dir(soup)
+        #print soup.prettify()
+        spans = self.soup.find_all('span')
+        delays = ['TitlePlannedWork', 'TitleDelay']
+        for item in spans:
+            d = {}
+            for delay in delays:
+                if delay in item:
+                    d = self.extract_line_delay(delay, value)
+            print d
+            print item
+        print dir(self.soup)
+
+    def extract_line_delay(self, delay, value):
+        """ Given a type of delay, extract the data from the markup that usually
+            runs with that delay. Returns a dict.
+            """
+        if delay == 'TitlePlannedWork':
+            return self._extract_planned_work(value)
+        elif delay == 'TitleDelay':
+            return self._extract_delay(value)
+
+    def _extract_planned_work(self, value):
+        """ Parse a planned work markup. Return a dict.
+            """
+        return None
+
+    def _extract_planned_work(self, value):
+        """ Parse delay markup. Return a dict.
+            """
+        return value['text']
 
 def main(args):
     """ 

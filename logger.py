@@ -43,7 +43,7 @@ def main(args):
     e = ET.parse('mta.xml')
     r = e.getroot()
     mta = ParseMTA()
-    items = []
+    items = {}
     for l in r.find('subway'):
         item = {
             'status': l.find('status').text,
@@ -51,8 +51,13 @@ def main(args):
             'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
             'text': l.find('text').text
         }
-        if item['status'] and item['status'] != 'GOOD SERVICE':
-            items.append(mta.extract(item))
+        print item['lines']
+        if item['status']:
+            if not hasattr(items, item['status']):
+                items[item['status']] = []
+            item['status_detail'] = mta.extract(item)
+            items[item['status']].append(item)
+    #print items
     return e, r
   
 
