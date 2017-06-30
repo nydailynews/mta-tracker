@@ -51,12 +51,13 @@ def main(args):
             'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
             'text': l.find('text').text
         }
-        print item['lines']
+        #print item['lines']
         if item['status']:
             if not hasattr(items, item['status']):
                 items[item['status']] = []
             item['status_detail'] = mta.extract(item)
             items[item['status']].append(item)
+        print '%(status)s: %(lines)s (%(datetime)s)' % item
     #print items
     return e, r
   

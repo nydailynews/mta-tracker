@@ -15,6 +15,7 @@ class ParseMTA(object):
             >>>
             """
         lines = []
+        subway_re = \[[0-9A-Z]+\]
 
     def make_datetime(self, value):
         """ Turn a string such as '05/23/2017 12:08AM' into a datetime object.
@@ -48,31 +49,41 @@ class ParseMTA(object):
         delays = ['TitlePlannedWork', 'TitleDelay']
         for item in spans:
             d = {}
+            #print value['text']
             for delay in delays:
-                if delay in item:
-                    d = self.extract_line_delay(delay, value)
+                if delay in unicode(item):
+                    d = self.extract_line_delay(delay, item)
             print d
-            print item
-        print dir(self.soup)
+            #print item
 
-    def extract_line_delay(self, delay, value):
+    def extract_line_delay(self, delay, span):
         """ Given a type of delay, extract the data from the markup that usually
             runs with that delay. Returns a dict.
             """
         if delay == 'TitlePlannedWork':
-            return self._extract_planned_work(value)
+            return self._extract_planned_work(span)
         elif delay == 'TitleDelay':
-            return self._extract_delay(value)
+            return self._extract_delay(span)
 
-    def _extract_planned_work(self, value):
+    def _extract_planned_work(self, span):
         """ Parse a planned work markup. Return a dict.
             """
         return None
 
-    def _extract_planned_work(self, value):
+    def _extract_delay(self, span):
         """ Parse delay markup. Return a dict.
             """
-        return value['text']
+        print 'asdfasdf'
+        print dir(span)
+        for item in span.next_siblings:
+            # The subway lines, if they're in this, will be
+            # enclosed in brackets, ala [M] and [F]
+            print dir(item)
+            print '8888888888'
+        try:
+            print ''.join(span.findNextSiblings())
+        except:
+            print span
 
 def main(args):
     """ 
