@@ -38,27 +38,22 @@ class ParseMTA(object):
             self.soup = BeautifulSoup(value['text'], 'html.parser')
         else:
             return None
-        #return 
-        print
-        print
         #print value['text']
         #print soup.get_text()
         #print dir(soup)
         #print soup.prettify()
         spans = self.soup.find_all('span')
         delays = ['TitlePlannedWork', 'TitleDelay']
+        d = {'TitlePlannedWork': [], 'TitleDelay': []}
         for item in spans:
-            d = {}
-            #print value['text']
             for delay in delays:
                 if delay in unicode(item):
-                    d = self.extract_subway_delay(delay, item)
-            print d
-            #print item
+                    d[delay].extend(self.extract_subway_delay(delay, item))
+        return d
 
     def extract_subway_delay(self, delay, span):
         """ Given a type of delay, extract the data from the markup that usually
-            runs with that delay. Returns a dict.
+            runs with that delay. Returns a list.
             """
         if delay == 'TitlePlannedWork':
             return self._extract_planned_work(span)
@@ -68,7 +63,7 @@ class ParseMTA(object):
     def _extract_planned_work(self, span):
         """ Parse a planned work markup. Return a dict.
             """
-        return None
+        return []
 
     def _extract_delay(self, span):
         """ Parse delay markup. Return a list of affected lines.
