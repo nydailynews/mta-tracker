@@ -70,7 +70,7 @@ def build_parser(args):
         """
     parser = argparse.ArgumentParser(usage='$ python logger.py',
                                      description='Get the latest MTA alerts and add any new ones.',
-                                     epilog='Examply use: python logger.py')
+                                     epilog='Example use: python logger.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     args = parser.parse_args(args)
     return args

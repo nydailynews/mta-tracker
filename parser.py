@@ -14,8 +14,8 @@ class ParseMTA(object):
         """
             >>>
             """
-        lines = []
-        subway_re = \[[0-9A-Z]+\]
+        self.lines = []
+        self.subway_re = '\[[0-9A-Z]+\]'
 
     def make_datetime(self, value):
         """ Turn a string such as '05/23/2017 12:08AM' into a datetime object.
@@ -52,11 +52,11 @@ class ParseMTA(object):
             #print value['text']
             for delay in delays:
                 if delay in unicode(item):
-                    d = self.extract_line_delay(delay, item)
+                    d = self.extract_subway_delay(delay, item)
             print d
             #print item
 
-    def extract_line_delay(self, delay, span):
+    def extract_subway_delay(self, delay, span):
         """ Given a type of delay, extract the data from the markup that usually
             runs with that delay. Returns a dict.
             """
@@ -71,19 +71,20 @@ class ParseMTA(object):
         return None
 
     def _extract_delay(self, span):
-        """ Parse delay markup. Return a dict.
+        """ Parse delay markup. Return a list of affected lines.
             """
-        print 'asdfasdf'
-        print dir(span)
-        for item in span.next_siblings:
+        lines_affected = []
+        for item in span.findAllNext():
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
-            print dir(item)
-            print '8888888888'
-        try:
-            print ''.join(span.findNextSiblings())
-        except:
-            print span
+            #print item.text
+            r = re.findall(self.subway_re, item.text)
+
+            if len(r) > 0:
+                for item in r:
+                    lines_affected.append(item.lstrip('[').rstrip(']'))
+
+        return list(set(lines_affected))
 
 def main(args):
     """ 
