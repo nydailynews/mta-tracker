@@ -50,7 +50,10 @@ class Line:
     def parse_dt(self, dt):
         """ Take a datetime such as 06/01/2017 10:31PM and turn it into
             a datetime object.
-            >>>
+            >>> l = Line('L')
+            >>> dt = '06/01/2017 10:31PM'
+            >>> print l.parse_dt(dt)
+            2017-06-01 22:31:00
             """
         return datetime.strptime(dt, '%m/%d/%Y %H:%M%p')
 
@@ -61,7 +64,13 @@ class Line:
         pass
 
 def main(args):
-    """ 
+    """ There are two situations we run this from the command line: 
+        1. When building archives from previous day's service alerts and
+        2. When keeping tabs on the current days's service alerts.
+
+        Most of what we do here for each is the same, but with #2 we only
+        process one file, and we have to look up stored information to ensure
+        the intervals values are current.
         """
     mta = ParseMTA()
     dir_ = ''
