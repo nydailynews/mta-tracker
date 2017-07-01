@@ -34,30 +34,34 @@ class Logger:
 def main(args):
     """ 
         """
-    rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-    url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
-    fh = FileWrapper('mta.xml')
-    fh.open()
-    fh.write(fh.request(url))
-    fh.close()
-    e = ET.parse('mta.xml')
-    r = e.getroot()
+    if args.files == []:
+        # If we didn't pass any arguments to logger, we download the current XML
+        rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
+        fh = FileWrapper('mta.xml')
+        fh.open()
+        fh.write(fh.request(url))
+        fh.close()
+        files = ['mta.xml']
     mta = ParseMTA()
-    items = {}
-    for l in r.find('subway'):
-        item = {
-            'status': l.find('status').text,
-            'lines': l.find('name').text,
-            'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
-            'text': l.find('text').text
-        }
-        #print item['lines']
-        if item['status']:
-            if not hasattr(items, item['status']):
-                items[item['status']] = []
-            item['status_detail'] = mta.extract(item)
-            items[item['status']].append(item)
-        print '%(status)s: %(lines)s (%(datetime)s)' % item
+    for fn in files:
+        items = {}
+        e = ET.parse(fn)
+        r = e.getroot()
+        for l in r.find('subway'):
+            item = {
+                'status': l.find('status').text,
+                'lines': l.find('name').text,
+                'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
+                'text': l.find('text').text
+            }
+            #print item['lines']
+            if item['status']:
+                if not hasattr(items, item['status']):
+                    items[item['status']] = []
+                item['status_detail'] = mta.extract(item)
+                items[item['status']].append(item)
+            print '%(status)s: %(lines)s (%(datetime)s)' % item
     #print items
     return e, r
   
@@ -72,6 +76,7 @@ def build_parser(args):
                                      description='Get the latest MTA alerts and add any new ones.',
                                      epilog='Example use: python logger.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
+    parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
     return args
 
