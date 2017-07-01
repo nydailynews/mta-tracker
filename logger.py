@@ -54,6 +54,12 @@ class Line:
             """
         return datetime.strptime(dt, '%m/%d/%Y %H:%M%p')
 
+    def build_intervals(self):
+        """ Populate the self.intervals list with the time between each service alert.
+            >>>
+            """
+        pass
+
 def main(args):
     """ 
         """
@@ -104,15 +110,21 @@ def main(args):
                     #print fn
                     print '%(status)s: %(lines)s (%(datetime)s)' % item
                     #print item['status_detail']
+                    pass
 
             # Assemble this file's delays into its individual lines
             if 'DELAYS' in items:
                 for item in items['DELAYS']:
                     for line in item['status_detail']['TitleDelay']:
-                        if not hasattr(lines, line):
+                        if line not in lines:
                             lines[line] = Line(line)
-                        lines[line].datetimes.append(lines[line].parse_dt(item['datetime']))
-    print lines
+                        dt = lines[line].parse_dt(item['datetime'])
+                        if dt not in lines[line].datetimes:
+                            lines[line].datetimes.append(dt)
+                            print line, dt, len(lines[line].datetimes)
+    for item in lines.iteritems():
+        line = item[1]
+        print item[0], line.datetimes
   
 
 def build_parser(args):
