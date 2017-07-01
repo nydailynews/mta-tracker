@@ -31,6 +31,17 @@ class Logger:
             """
         pass
 
+class Line:
+    """ A class for managing data specific to a particular line of transit service.
+        We log delays and planned work per-line. This class helps with that.
+        """
+
+    def __init__(self):
+        """
+            >>>
+            """
+        pass
+
 def main(args):
     """ 
         """
@@ -46,8 +57,12 @@ def main(args):
         files = ['mta.xml']
     else:
         files = args.files
+        if '*' in args.files[0]:
+            # Wildcard matching on filenames so we can process entire directories
+            pass
+
+    items = {}
     for fn in files:
-        items = {}
         e = ET.parse(fn)
         r = e.getroot()
         for l in r.find('subway'):
@@ -60,13 +75,18 @@ def main(args):
             }
             if item['status']:
                 # Add the entry to the items dict if it's not there.
+                # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE
                 if not hasattr(items, item['status']):
                     items[item['status']] = []
 
                 # Pull out the actual lines affected if we can
                 item['status_detail'] = mta.extract(item)
                 items[item['status']].append(item)
-                print '%(status)s: %(lines)s (%(datetime)s)' % item
+                #print '%(status)s: %(lines)s (%(datetime)s)' % item
+
+    for item in items['DELAYS']:
+        for line in item['status_detail']['TitleDelay']:
+            print line, item['datetime']
   
 
 def build_parser(args):
