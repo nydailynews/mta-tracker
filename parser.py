@@ -69,7 +69,7 @@ class ParseMTA(object):
         """ Parse delay markup. Return a list of affected lines.
             """
         lines_affected = []
-        for item in span.findAllNext():
+        for i, item in enumerate(span.findAllNext()):
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
             #print item.text

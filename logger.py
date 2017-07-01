@@ -10,6 +10,8 @@ import random
 import xml.etree.ElementTree as ET
 from parser import ParseMTA
 import json
+import os
+import fnmatch
 
 class Logger:
     """ We're logging how long it has been since each line's previous
@@ -36,16 +38,19 @@ class Line:
         We log delays and planned work per-line. This class helps with that.
         """
 
-    def __init__(self):
+    def __init__(self, line):
         """
             >>>
             """
-        pass
+        self.lines = {}
+        self.times = []
+        self.line = line
 
 def main(args):
     """ 
         """
     mta = ParseMTA()
+    dir_ = ''
     if args.files == []:
         # If we didn't pass any arguments to logger, we download the current XML
         rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -60,10 +65,15 @@ def main(args):
         if '*' in args.files[0]:
             # Wildcard matching on filenames so we can process entire directories
             pass
-
-    items = {}
+        if args.files[0][-1] == '/':
+            # If the arg ends with a forward slash that means it's a dir
+            files = os.listdir(args.files[0])
+            dir_ = '_input/'
+        
+    lines = {}
     for fn in files:
-        e = ET.parse(fn)
+        items = {}
+        e = ET.parse('%s%s' % (dir_, fn))
         r = e.getroot()
         for l in r.find('subway'):
             item = {
@@ -82,11 +92,18 @@ def main(args):
                 # Pull out the actual lines affected if we can
                 item['status_detail'] = mta.extract(item)
                 items[item['status']].append(item)
-                #print '%(status)s: %(lines)s (%(datetime)s)' % item
+                if item['status'] == 'DELAYS':
+                    print fn
+                    print '%(status)s: %(lines)s (%(datetime)s)' % item
+                    #print item['status_detail']
 
-    for item in items['DELAYS']:
-        for line in item['status_detail']['TitleDelay']:
-            print line, item['datetime']
+            # Assemble this file's delays into its individua lines
+            if 'DELAYS' in items:
+                for item in items['DELAYS']:
+                    for line in item['status_detail']['TitleDelay']:
+                        if not hasattr(lines, line):
+                            lines[line] = Line(line)
+                        lines[line].times.append(item['datetime'])
   
 
 def build_parser(args):
