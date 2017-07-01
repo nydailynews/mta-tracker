@@ -33,6 +33,9 @@ class Logger:
             """
         pass
 
+class Storage:
+    """ Manage object storage and retrieval."""
+
 class Line:
     """ A class for managing data specific to a particular line of transit service.
         We log delays and planned work per-line. This class helps with that.
@@ -46,6 +49,7 @@ class Line:
         self.datetimes = []
         self.intervals = []
         self.line = line
+        self.last_alert = ''
 
     def parse_dt(self, dt):
         """ Take a datetime such as 06/01/2017 10:31PM and turn it into
