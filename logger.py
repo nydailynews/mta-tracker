@@ -14,7 +14,7 @@ import json
 class Logger:
     """ We're logging how long it has been since each line's previous
         service alert, and to do that we need to keep track of which lines
-        have active service alerts.
+        have active service alerts and the timestamp on that alert.
         """
 
     def __init__(self):
@@ -34,6 +34,7 @@ class Logger:
 def main(args):
     """ 
         """
+    mta = ParseMTA()
     if args.files == []:
         # If we didn't pass any arguments to logger, we download the current XML
         rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
@@ -43,7 +44,8 @@ def main(args):
         fh.write(fh.request(url))
         fh.close()
         files = ['mta.xml']
-    mta = ParseMTA()
+    else:
+        files = args.files
     for fn in files:
         items = {}
         e = ET.parse(fn)
@@ -51,19 +53,20 @@ def main(args):
         for l in r.find('subway'):
             item = {
                 'status': l.find('status').text,
-                'lines': l.find('name').text,
+                'status_detail': {},
+                'lines': l.find('name').text, # This is generic, the actual lines affected may be some of these, or others.
                 'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
                 'text': l.find('text').text
             }
-            #print item['lines']
             if item['status']:
+                # Add the entry to the items dict if it's not there.
                 if not hasattr(items, item['status']):
                     items[item['status']] = []
+
+                # Pull out the actual lines affected if we can
                 item['status_detail'] = mta.extract(item)
                 items[item['status']].append(item)
-            print '%(status)s: %(lines)s (%(datetime)s)' % item
-    #print items
-    return e, r
+                print '%(status)s: %(lines)s (%(datetime)s)' % item
   
 
 def build_parser(args):
