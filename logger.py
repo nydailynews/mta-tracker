@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 from parser import ParseMTA
 import json
 import os
-import fnmatch
+from datetime import datetime
 
 class Logger:
     """ We're logging how long it has been since each line's previous
@@ -43,8 +43,16 @@ class Line:
             >>>
             """
         self.lines = {}
-        self.times = []
+        self.datetimes = []
+        self.intervals = []
         self.line = line
+
+    def parse_dt(self, dt):
+        """ Take a datetime such as 06/01/2017 10:31PM and turn it into
+            a datetime object.
+            >>>
+            """
+        return datetime.strptime(dt, '%m/%d/%Y %H:%M%p')
 
 def main(args):
     """ 
@@ -93,17 +101,18 @@ def main(args):
                 item['status_detail'] = mta.extract(item)
                 items[item['status']].append(item)
                 if item['status'] == 'DELAYS':
-                    print fn
+                    #print fn
                     print '%(status)s: %(lines)s (%(datetime)s)' % item
                     #print item['status_detail']
 
-            # Assemble this file's delays into its individua lines
+            # Assemble this file's delays into its individual lines
             if 'DELAYS' in items:
                 for item in items['DELAYS']:
                     for line in item['status_detail']['TitleDelay']:
                         if not hasattr(lines, line):
                             lines[line] = Line(line)
-                        lines[line].times.append(item['datetime'])
+                        lines[line].datetimes.append(lines[line].parse_dt(item['datetime']))
+    print lines
   
 
 def build_parser(args):
