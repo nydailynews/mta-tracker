@@ -36,6 +36,9 @@ class Logger:
 class Storage:
     """ Manage object storage and retrieval."""
 
+class Query:
+    """ Manage queries."""
+
 class Line:
     """ A class for managing data specific to a particular line of transit service.
         We log delays and planned work per-line. This class helps with that.
@@ -43,7 +46,9 @@ class Line:
 
     def __init__(self, line):
         """
-            >>>
+            >>> l = Line('A')
+            >>> print l.line
+            A
             """
         self.lines = {}
         self.datetimes = []
@@ -59,7 +64,7 @@ class Line:
             >>> print l.parse_dt(dt)
             2017-06-01 22:31:00
             """
-        return datetime.strptime(dt, '%m/%d/%Y %H:%M%p')
+        return datetime.strptime(dt, '%m/%d/%Y %I:%M%p')
 
     def build_intervals(self):
         """ Populate the self.intervals list with the time between each service alert.
@@ -75,6 +80,8 @@ def main(args):
         Most of what we do here for each is the same, but with #2 we only
         process one file, and we have to look up stored information to ensure
         the intervals values are current.
+        >>> args = build_parser(['--verbose'])
+        >>> main(args)
         """
     mta = ParseMTA()
     dir_ = ''
