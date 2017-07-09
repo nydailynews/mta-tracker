@@ -10,7 +10,18 @@ These are the database tables, that track:
 1. A "raw" table, with alerts and timestamps.
 1. An "averages" table, which stores aggregate information about the delays.
 
-## Look into
+## TODO's
+[] Workflow for scraping the current status
+[] Workflow for ingesting historic data
+[] Workflow for calculating timesince's
+[] Workflow for updating historic averages
+[] Workflow for publishing to prod
+
+## Usage
+
+## Resources
+
+### Look into
 https://github.com/jimjshields/mta_service_alerts
 https://github.com/craigcurtin/mta/blob/f580068bc5679a9d27d53cbfbd0998a1395f5118/mta.py
 https://github.com/nficano/nickficano.com/blob/d2189e092acd9357a23f1c13f3630199ffaa67f1/nickficano/api/mta.py

@@ -48,6 +48,8 @@ class Storage:
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, sincelast INT)''')
+        self._setup_current()
+
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
@@ -58,7 +60,7 @@ class Storage:
     def _setup_current(self):
         """ Populate the current table.
             """
-        lines = ['1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
+        lines = ['MTA','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
         items = []
         for item in lines:
             items.append((NULL, date('now'), item, 'MTA', 0))
