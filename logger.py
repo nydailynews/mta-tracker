@@ -46,14 +46,24 @@ class Storage:
     def setup(self):
         """ Create the tables.
             """
-        self.c.execute('''CREATE TABLE current 
+        self.c.execute('''CREATE TABLE IF NOT EXISTS current 
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, sincelast INT)''')
+        self.c.execute('''CREATE TABLE IF NOT EXISTS intervals 
              ()''')
-        self.c.execute('''CREATE TABLE intervals 
-             ()''')
-        self.c.execute('''CREATE TABLE averages 
+        self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
              ()''')
 
-    def insert(self):
+    def _setup_current(self):
+        """ Populate the current table.
+            """
+        lines = ['1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
+        items = []
+        for item in lines:
+            items.append((NULL, date('now'), item, 'MTA', 0))
+        sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?)'
+        self.c.executemany(sql, items)
+
+    def insert(self, table, **kwargs):
         """
             """
         pass
