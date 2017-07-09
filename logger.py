@@ -42,20 +42,21 @@ class Storage:
         import sqlite3
         self.conn = sqlite3.connect('%s.db' % dbname)
         self.c = self.conn.cursor()
+        self.q = Query(self.c)
 
     def setup(self):
         """ Create the tables.
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, sincelast INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, alert DATETIME)''')
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, sincelast INT, is_rush INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, sincelast INT, is_rush INT, is_weekend INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
     def _setup_current(self):
         """ Populate the current table.
@@ -63,7 +64,7 @@ class Storage:
         lines = ['MTA','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
         items = []
         for item in lines:
-            items.append((NULL, date('now'), item, 'MTA', 0))
+            items.append((None, "date('now')", item, 'MTA', 0))
         sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
 
@@ -72,13 +73,29 @@ class Storage:
             """
         pass
 
-    def update(self):
-        """
-            """
-        pass
-
 class Query:
     """ Manage queries."""
+
+    def __init__(self, c):
+        """
+            """
+        self.c = c
+
+    def convert_datetime(self, value):
+        """ Turn a datetime object into a string sqlite can handle.
+            """
+        return datetime.strftime(value, '%Y-%m-%d %H:%M:00')
+
+    def update_current(self, **kwargs):
+        """ Update the table of current sincelast's.
+            """
+        values = (self.convert_datetime(kwargs['alert']), kwargs['line'])
+        print values
+        sql = 'UPDATE current SET alert = ? WHERE line = ? and type = "MTA"'
+        print sql
+        self.c.execute(sql, values)
+        return True
+
 
 class Line:
     """ A class for managing data specific to a particular line of transit service.
@@ -125,6 +142,10 @@ def main(args):
         >>> main(args)
         """
     mta = ParseMTA()
+    db = Storage('mta')
+    if args.initial:
+        print "INITIAL"
+        db.setup()
     dir_ = ''
     if args.files == []:
         # If we didn't pass any arguments to logger, we download the current XML
@@ -183,9 +204,12 @@ def main(args):
                         if dt not in lines[line].datetimes:
                             lines[line].datetimes.append(dt)
                             print line, dt, len(lines[line].datetimes)
+
     for item in lines.iteritems():
         line = item[1]
-        print item[0], line.datetimes
+        # Update the current table in the database
+        params = { 'line': item[0], 'alert': line.datetimes[0] }
+        db.q.update_current(**params)
   
 
 def build_parser(args):
@@ -197,6 +221,7 @@ def build_parser(args):
     parser = argparse.ArgumentParser(usage='$ python logger.py',
                                      description='Get the latest MTA alerts and add any new ones.',
                                      epilog='Example use: python logger.py')
+    parser.add_argument("-i", "--initial", dest="initial", default=False, action="store_true")
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
