@@ -3,11 +3,12 @@ How long has it been since a service interruption [checks watch]
 
 ## Data structure
 
-There are three database tables, that track:
+These are the database tables, that track:
 
-1. A current table, with the latest on each of the lines.
-1. An archive table, with records of each of the time spans from one line's alert to another.
-1. A raw table, with alerts and timestamps.
+1. A "current" table, with the latest on each of the lines.
+1. An "archive" table, with records of each of the time spans from one line's alert to another. The word we use to describe that time span is a "sincelast."
+1. A "raw" table, with alerts and timestamps.
+1. An "averages" table, which stores aggregate information about the delays.
 
 ## Look into
 https://github.com/jimjshields/mta_service_alerts
