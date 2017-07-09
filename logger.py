@@ -48,10 +48,12 @@ class Storage:
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, sincelast INT)''')
+        self.c.execute('''CREATE TABLE IF NOT EXISTS alerts
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS intervals 
-             ()''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, sincelast INT, is_rush INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
-             ()''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT)''')
 
     def _setup_current(self):
         """ Populate the current table.
