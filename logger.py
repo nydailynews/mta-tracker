@@ -36,6 +36,33 @@ class Logger:
 class Storage:
     """ Manage object storage and retrieval."""
 
+    def __init__(self, dbname):
+        """
+            """
+        import sqlite3
+        self.conn = sqlite3.connect('%s.db' % dbname)
+        self.c = self.conn.cursor()
+
+    def setup(self):
+        """ Create the tables.
+            """
+        self.c.execute('''CREATE TABLE current 
+             ()''')
+        self.c.execute('''CREATE TABLE intervals 
+             ()''')
+        self.c.execute('''CREATE TABLE averages 
+             ()''')
+
+    def insert(self):
+        """
+            """
+        pass
+
+    def update(self):
+        """
+            """
+        pass
+
 class Query:
     """ Manage queries."""
 
