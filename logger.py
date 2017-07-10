@@ -65,9 +65,10 @@ class Storage:
         lines = ['MTA','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
         items = []
         for item in lines:
-            items.append((None, "date('now')", item, 'MTA', 0))
+            items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0))
         sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
+        self.conn.commit()
 
     def insert(self, table, **kwargs):
         """
@@ -214,6 +215,8 @@ def main(args):
         # Update the current table in the database
         params = { 'line': item[0], 'alert': line.datetimes[0] }
         db.q.update_current(**params)
+    db.conn.commit()
+    db.conn.close()
   
 
 def build_parser(args):
