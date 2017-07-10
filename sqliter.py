@@ -85,6 +85,27 @@ class Query:
         self.c.execute(sql)
         return True
 
+    def make_dict(self, fields, rows):
+        """ Return a list of dicts of query results.
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> fields = s.q.get_table_fields('current')
+            >>> rows = s.q.select_current()
+            >>> d = s.q.make_dict(fields, rows[:1])
+            >>> # d will look something like
+            >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'MTA', u'id': 1, u'alert': 0}]
+            >>> print d[0]['type'], d[0]['id']
+            MTA 1
+            """
+        items = []
+        try:
+            for row in rows:
+                items.append(dict(zip(fields, row)))
+        except:
+            # This fires when there's only one row
+            items.append(dict(zip(fields, rows)))
+        return items
+
     def get_table_fields(self, table):
         """ Get the fields in a table for more useful query results.
             >>> s = Storage('test')
