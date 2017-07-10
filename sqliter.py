@@ -85,8 +85,20 @@ class Query:
         self.c.execute(sql)
         return True
 
+    def get_table_fields(self, table):
+        """ Get the fields in a table for more useful query results.
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> print s.q.get_table_fields('current')
+            [u'id', u'datestamp', u'line', u'type', u'alert']
+            """
+        sql = 'PRAGMA TABLE_INFO(%s)' % table
+        self.c.execute(sql)
+        fields = [tup[1] for tup in self.c.fetchall()]
+        return fields
+
     def select_current(self):
-        """ Select the contents of the current table.
+        """ Select the contents of the current table, return a list.
             >>> s = Storage('test')
             >>> s.setup()
             >>> rows = s.q.select_current()

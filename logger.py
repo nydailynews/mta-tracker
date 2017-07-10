@@ -152,6 +152,7 @@ def main(args):
         params = { 'line': item[0], 'alert': line.datetimes[0] }
         db.q.update_current(**params)
     db.conn.commit()
+    # Write the current data to json.
     db.conn.close()
   
 
