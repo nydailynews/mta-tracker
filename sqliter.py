@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+import sys
+import argparse
 import doctest
 import sqlite3
 from datetime import datetime
 
 class Storage:
-    """ Manage object storage and retrieval."""
+    """ Manage data storage and retrieval."""
 
     def __init__(self, dbname):
         """
@@ -50,7 +52,7 @@ class Storage:
         pass
 
 class Query:
-    """ Manage queries."""
+    """ Manage database queries."""
 
     def __init__(self, c):
         """ This class is dependent on a database connection, which is handed
@@ -71,9 +73,40 @@ class Query:
 
     def update_current(self, **kwargs):
         """ Update the "current" table with the latest alert datetime.
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> d = { 'alert': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A' }
+            >>> print s.q.update_current(**d)
+            True
             """
         sql = 'UPDATE current SET alert = "%s" WHERE line = "%s" and type = "MTA"'\
              % (self.convert_datetime(kwargs['alert']), kwargs['line'])
         #print sql
         self.c.execute(sql)
         return True
+
+    def select_current(self):
+        """ Select the contents of the current table.
+            >>>
+            """
+        pass
+
+def build_parser(args):
+    """ This method allows us to test the args.
+        >>> args = build_parser(['--verbose'])
+        >>> print args.verbose
+        True
+        """
+    parser = argparse.ArgumentParser(usage='$ python sqliter.py',
+                                     description='Test the db classes.',
+                                     epilog='Example use: python sqliter.py')
+    parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
+    parser.add_argument("--test", dest="test", default=True, action="store_true")
+    args = parser.parse_args(args)
+    return args
+
+if __name__ == '__main__':
+    args = build_parser(sys.argv[1:])
+
+    if args.test== True:
+        doctest.testmod(verbose=args.verbose)

@@ -14,7 +14,6 @@ from filewrapper import FileWrapper
 from parser import ParseMTA
 from sqliter import Storage, Query
 
-
 class Logger:
     """ We're logging how long it has been since each line's previous
         service alert, and to do that we need to keep track of which lines
