@@ -53,13 +53,15 @@ class Storage:
         """ Create the tables.
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, line TEXT, type TEXT, alert DATETIME)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, alert DATETIME)''')
+        # INDEXNAME, TABLENAME, COLUMNNAME
+        #self.c.execute('CREATE INDEX ? ON ?(?)', value)
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, sincelast INT, is_rush INT, is_weekend INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
@@ -204,11 +206,9 @@ def main(args):
                 # Pull out the actual lines affected if we can
                 item['status_detail'] = mta.extract(item)
                 items[item['status']].append(item)
-                if item['status'] == 'DELAYS':
-                    #print fn
-                    print '%(status)s: %(lines)s (%(datetime)s)' % item
-                    #print item['status_detail']
-                    pass
+                if args.verbose:
+                    if item['status'] == 'DELAYS':
+                        print '%(status)s: %(lines)s (%(datetime)s)' % item
 
             # Assemble this file's delays into its individual lines
             if 'DELAYS' in items:
@@ -219,7 +219,8 @@ def main(args):
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
                             lines[line].datetimes.append(dt)
-                            print line, dt, len(lines[line].datetimes)
+                            if args.verbose:
+                                print line, dt, len(lines[line].datetimes)
 
     for item in lines.iteritems():
         line = item[1]
@@ -241,6 +242,7 @@ def build_parser(args):
                                      epilog='Example use: python logger.py')
     parser.add_argument("-i", "--initial", dest="initial", default=False, action="store_true")
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
+    parser.add_argument("--test", dest="test", default=False, action="store_true")
     parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
     return args
@@ -248,6 +250,6 @@ def build_parser(args):
 if __name__ == '__main__':
     args = build_parser(sys.argv[1:])
 
-    if args.verbose == True:
+    if args.test== True:
         doctest.testmod(verbose=args.verbose)
     main(args)
