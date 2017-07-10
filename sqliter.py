@@ -87,9 +87,16 @@ class Query:
 
     def select_current(self):
         """ Select the contents of the current table.
-            >>>
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> rows = s.q.select_current()
+            >>> print rows[0]
+            (1, u'2017-07-09 21:46:00', u'ALL', u'MTA', 0)
             """
-        pass
+        sql = 'SELECT * FROM current'
+        self.c.execute(sql)
+        rows = self.c.fetchall()
+        return rows
 
 def build_parser(args):
     """ This method allows us to test the args.
