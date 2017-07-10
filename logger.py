@@ -39,8 +39,12 @@ class Storage:
 
     def __init__(self, dbname):
         """
+            >>> s = Storage('test')
+            >>> print s.dbname
+            test
             """
         import sqlite3
+        self.dbname = dbname
         self.conn = sqlite3.connect('%s.db' % dbname)
         self.c = self.conn.cursor()
         self.q = Query(self.c)
@@ -62,7 +66,7 @@ class Storage:
     def _setup_current(self):
         """ Populate the current table.
             """
-        lines = ['MTA','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
+        lines = ['ALL','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
         items = []
         for item in lines:
             items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0))
@@ -79,12 +83,19 @@ class Query:
     """ Manage queries."""
 
     def __init__(self, c):
-        """
+        """ This class is dependent on a database connection, which is handed
+            to it when the Query object is created.
+            >>> s = Storage('test')
+            >>> print s.dbname
+            test
             """
         self.c = c
 
     def convert_datetime(self, value):
         """ Turn a datetime object into a string sqlite can handle.
+            >>> s = Storage('test')
+            >>> print s.q.convert_datetime(datetime(2017, 1, 1, 0, 0, 0))
+            2017-01-01 00:00:00
             """
         return datetime.strftime(value, '%Y-%m-%d %H:%M:00')
 

@@ -73,7 +73,6 @@ class ParseMTA(object):
         for i, item in enumerate(span.find_all_next('p')):
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
-            #print item.text
             r = re.findall(self.subway_re, item.text)
 
             if len(r) > 0:
