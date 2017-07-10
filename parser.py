@@ -94,7 +94,7 @@ class ParseMTA(object):
             # In those situations we need to make sure we're looking at Delays
             # and not at planned work.
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
-            # TODO: Make this less janky.
+            # TODO: Reduce the jank.
             if check == True:
                 if isinstance(item, NavigableString):
                     text = item
