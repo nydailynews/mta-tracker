@@ -103,7 +103,7 @@ class ParseMTA(object):
 
                 if text == 'Delays':
                     is_delay = True
-                elif text in ['Planned Work']:
+                elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
                     is_delay = False
 
                 if is_delay == False:
