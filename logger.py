@@ -81,9 +81,12 @@ def main(args):
     mta = ParseMTA()
 
     # Get the results from the last time we ran this.
-    fh = open('_output/current.json', 'rb')
-    previous = json.load(fh)
-    fh.close()
+    try:
+        fh = open('_output/current.json', 'rb')
+        previous = json.load(fh)
+        fh.close()
+    except:
+        pass
 
     if args.initial:
         print "INITIAL"
