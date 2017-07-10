@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # Download and log the MTA's status updates. We only log changes.
-import sys
 import argparse
-import re
-import string
 import doctest
-from filewrapper import FileWrapper
-import random
-import xml.etree.ElementTree as ET
-from parser import ParseMTA
 import json
 import os
+import random
+import string
+import sys
+import xml.etree.ElementTree as ET
 from datetime import datetime
+
+from filewrapper import FileWrapper
+from parser import ParseMTA
+
 
 class Logger:
     """ We're logging how long it has been since each line's previous
@@ -89,11 +90,9 @@ class Query:
     def update_current(self, **kwargs):
         """ Update the table of current sincelast's.
             """
-        values = (self.convert_datetime(kwargs['alert']), kwargs['line'])
-        print values
-        sql = 'UPDATE current SET alert = ? WHERE line = ? and type = "MTA"'
+        sql = 'UPDATE current SET alert = "%s" WHERE line = "%s" and type = "MTA"' % (self.convert_datetime(kwargs['alert']), kwargs['line'])
         print sql
-        self.c.execute(sql, values)
+        self.c.execute(sql)
         return True
 
 
@@ -142,10 +141,15 @@ def main(args):
         >>> main(args)
         """
     mta = ParseMTA()
-    db = Storage('mta')
+
     if args.initial:
         print "INITIAL"
+        os.remove('mta.db')
+        db = Storage('mta')
         db.setup()
+    else:
+        db = Storage('mta')
+    
     dir_ = ''
     if args.files == []:
         # If we didn't pass any arguments to logger, we download the current XML
