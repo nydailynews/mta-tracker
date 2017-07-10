@@ -153,6 +153,11 @@ def main(args):
         db.q.update_current(**params)
     db.conn.commit()
     # Write the current data to json.
+    fields = db.q.get_table_fields('current')
+    rows = db.q.select_current()
+    fh = open('current.json', 'wb')
+    json.dump(db.q.make_dict(fields, rows), fh)
+    fh.close()
     db.conn.close()
   
 
