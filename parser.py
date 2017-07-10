@@ -32,7 +32,7 @@ class ParseMTA(object):
         
     def extract_lines(self, value):
         """ Given a line's status, parse the MTA lines mentioned in it.
-            Returns a list.
+            Returns a list of ____
             """
         if value['text']:
             self.soup = BeautifulSoup(value['text'], 'html.parser')
@@ -43,12 +43,12 @@ class ParseMTA(object):
         #print dir(soup)
         #print soup.prettify()
         spans = self.soup.find_all('span')
-        delays = ['TitlePlannedWork', 'TitleDelay']
+        types = ['TitlePlannedWork', 'TitleDelay']
         d = {'TitlePlannedWork': [], 'TitleDelay': []}
         for item in spans:
-            for delay in delays:
-                if delay in unicode(item):
-                    d[delay].extend(self.extract_subway_delay(delay, item))
+            for type_ in types:
+                if type_ in unicode(item):
+                    d[type_].extend(self.extract_subway_delay(type_, item))
         return d
 
     def extract_subway_delay(self, delay, span):
@@ -66,10 +66,11 @@ class ParseMTA(object):
         return []
 
     def _extract_delay(self, span):
-        """ Parse delay markup. Return a list of affected lines.
+        """ Parse delay markup. Delays are embedded in <p> elements.
+            Return a list of affected lines.
             """
         lines_affected = []
-        for i, item in enumerate(span.findAllNext()):
+        for i, item in enumerate(span.find_all_next('p')):
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
             #print item.text
