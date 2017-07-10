@@ -83,7 +83,7 @@ class ParseMTA(object):
                   Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
                 <br/><br/>"""
             #print dir(span)
-            print span.find_parent().contents
+            #print span.find_parent().contents
             items = span.find_parent().contents
             check = True
             is_delay = False
