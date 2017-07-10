@@ -14,26 +14,6 @@ from filewrapper import FileWrapper
 from parser import ParseMTA
 from sqliter import Storage, Query
 
-class Logger:
-    """ We're logging how long it has been since each line's previous
-        service alert, and to do that we need to keep track of which lines
-        have active service alerts and the timestamp on that alert.
-        """
-
-    def __init__(self):
-        """
-            >>>
-            """
-        fh = FileWrapper('previous.json')
-        previous_alerts = json.load(fh.read())
-
-    def compare(self):
-        """ Compare the previous json of alerts with the current. Store the
-            diffs in a new object.
-            >>>
-            """
-        pass
-
 class Line:
     """ A class for managing data specific to a particular line of transit service.
         We log delays and planned work per-line. This class helps with that.
@@ -63,6 +43,26 @@ class Line:
 
     def build_intervals(self):
         """ Populate the self.intervals list with the time between each service alert.
+            >>>
+            """
+        pass
+
+class Logger:
+    """ We're logging how long it has been since each line's previous
+        service alert, and to do that we need to keep track of which lines
+        have active service alerts and the timestamp on that alert.
+        """
+
+    def __init__(self):
+        """
+            >>>
+            """
+        fh = FileWrapper('previous.json')
+        previous_alerts = json.load(fh.read())
+
+    def compare(self):
+        """ Compare the previous json of alerts with the current. Store the
+            diffs in a new object.
             >>>
             """
         pass
@@ -152,10 +152,11 @@ def main(args):
         params = { 'line': item[0], 'alert': line.datetimes[0] }
         db.q.update_current(**params)
     db.conn.commit()
+
     # Write the current data to json.
     fields = db.q.get_table_fields('current')
     rows = db.q.select_current()
-    fh = open('current.json', 'wb')
+    fh = open('_output/current.json', 'wb')
     json.dump(db.q.make_dict(fields, rows), fh)
     fh.close()
     db.conn.close()
