@@ -71,6 +71,14 @@ class Query:
             """
         return datetime.strftime(value, '%Y-%m-%d %H:%M:00')
 
+    def convert_to_datetime(self, value):
+        """ Turn a string into a datetime object.
+            >>> s = Storage('test')
+            >>> print s.q.convert_to_datetime('2017-01-01 00:00:00')
+            datetime(2017, 1, 1, 0, 0, 0)
+            """
+        return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+
     def update_current(self, **kwargs):
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
@@ -93,7 +101,7 @@ class Query:
             >>> rows = s.q.select_current()
             >>> d = s.q.make_dict(fields, rows[:1])
             >>> # d will look something like
-            >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'MTA', u'id': 1, u'alert': 0}]
+            >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'MTA', u'id': 1, u'alert': '2017-07-09 20:04:00'}]
             >>> print d[0]['type'], d[0]['id']
             MTA 1
             """

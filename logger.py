@@ -80,6 +80,11 @@ def main(args):
         """
     mta = ParseMTA()
 
+    # Get the results from the last time we ran this.
+    fh = open('_output/current.json', 'rb')
+    previous = json.load(fh)
+    fh.close()
+
     if args.initial:
         print "INITIAL"
         os.remove('mta.db')
@@ -147,6 +152,15 @@ def main(args):
                                 print line, dt, len(lines[line].datetimes)
 
     for item in lines.iteritems():
+        # Make sure this is a new record
+        for prev in previous:
+            if item[1] == prev['line']:
+                prev_record = prev
+        print prev['alert'], item[1].datetimes
+        if prev['alert'] != 0:
+            prev_dt = db.q.convert_to_datetime(prev['alert'])
+            print prev_dt, line.datetimes[0]
+
         line = item[1]
         # Update the current table in the database
         params = { 'line': item[0], 'alert': line.datetimes[0] }

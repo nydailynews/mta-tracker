@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # Turn the MTA's XML feed items into something manageable
 import sys
 import argparse
@@ -69,7 +70,22 @@ class ParseMTA(object):
             Return a list of affected lines.
             """
         lines_affected = []
-        for i, item in enumerate(span.find_all_next('p')):
+        p = span.find_all_next('p')
+        if len(p) > 0:
+            items = p
+        else:
+            # Sometimes the delay isn't in a p element (blergh):
+            """<span class="TitleDelay">Delays</span>
+<span class="DateStyle">
+                     Posted: 07/09/2017 10:26PM
+                    </span><br/><br/>
+                  Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
+                <br/><br/>"""
+            print dir(span)
+            print span.find_parent().prettify()
+            #print span.find_all_next()
+            #print span.find_all_previous()
+        for i, item in enumerate(p):
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
             r = re.findall(self.subway_re, item.text)
