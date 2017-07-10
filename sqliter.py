@@ -90,8 +90,8 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             >>> rows = s.q.select_current()
-            >>> print rows[0]
-            (1, u'2017-07-09 21:46:00', u'ALL', u'MTA', 0)
+            >>> print rows[0][2:]
+            (u'ALL', u'MTA', 0)
             """
         sql = 'SELECT * FROM current'
         self.c.execute(sql)
