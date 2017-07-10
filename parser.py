@@ -6,7 +6,7 @@ import argparse
 import re
 import string
 import doctest
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 
 class ParseMTA(object):
 
@@ -73,6 +73,7 @@ class ParseMTA(object):
         p = span.find_all_next('p')
         if len(p) > 0:
             items = p
+            check = False
         else:
             # Sometimes the delay isn't in a p element (blergh):
             """<span class="TitleDelay">Delays</span>
@@ -82,13 +83,37 @@ class ParseMTA(object):
                   Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
                 <br/><br/>"""
             #print dir(span)
-            #print span.find_parent().prettify()
+            print span.find_parent().contents
+            items = span.find_parent().contents
+            check = True
+            is_delay = False
             #print span.find_all_next()
             #print span.find_all_previous()
-        for i, item in enumerate(p):
+        for i, item in enumerate(items):
+            # In some situations we're looking through all the item's markup.
+            # In those situations we need to make sure we're looking at Delays
+            # and not at planned work.
+            # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
+            # TODO: Make this less janky.
+            if check == True:
+                if isinstance(item, NavigableString):
+                    text = item
+                else:
+                    text = item.text
+
+                if text == 'Delays':
+                    is_delay = True
+                elif text in ['Planned Work']:
+                    is_delay = False
+
+                if is_delay == False:
+                    continue
+            else:
+                text = item.text
+
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
-            r = re.findall(self.subway_re, item.text)
+            r = re.findall(self.subway_re, text)
 
             if len(r) > 0:
                 for item in r:
