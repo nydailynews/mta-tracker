@@ -7,7 +7,6 @@ import string
 import doctest
 from bs4 import BeautifulSoup
 
-
 class ParseMTA(object):
 
     def __init__(self):
