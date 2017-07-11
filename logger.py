@@ -154,19 +154,20 @@ def main(args):
                             if args.verbose:
                                 print line, dt, len(lines[line].datetimes)
 
-    for item in lines.iteritems():
+    print lines
+    for line, item in lines.iteritems():
+        print line, item
         # Make sure this is a new record
         for prev in previous:
-            if item[1] == prev['line']:
+            if line == prev['line']:
                 prev_record = prev
-        print prev['alert'], item[1].datetimes
+        print prev['alert'], item.datetimes
         if prev['alert'] != 0:
             prev_dt = db.q.convert_to_datetime(prev['alert'])
-            print prev_dt, line.datetimes[0]
+            print prev_dt, line
 
-        line = item[1]
         # Update the current table in the database
-        params = { 'line': item[0], 'alert': line.datetimes[0] }
+        params = { 'line': line, 'alert': item.datetimes[0] }
         db.q.update_current(**params)
     db.conn.commit()
 
