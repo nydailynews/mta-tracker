@@ -29,11 +29,11 @@ class Storage:
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
     def _setup_current(self):
         """ Populate the current table.
