@@ -58,8 +58,25 @@ class Logger:
         """
             >>>
             """
-        fh = FileWrapper('previous.json')
-        previous_alerts = json.load(fh.read())
+        # Get the results from the last time we ran this.
+        try:
+            fh = open('_output/current.json', 'rb')
+            self.previous = json.load(fh)
+            fh.close()
+        except:
+            pass
+
+        self.db = Storage('mta')
+
+    def initialize_db(self):
+        """
+            >>>
+            """
+        print "INITIAL"
+        os.remove('mta.db')
+        self.db = Storage('mta')
+        self.db.setup()
+        return True
 
     def compare(self):
         """ Compare the previous json of alerts with the current. Store the
@@ -80,23 +97,10 @@ def main(args):
         >>> main(args)
         """
     mta = ParseMTA()
-
-    # Get the results from the last time we ran this.
-    try:
-        fh = open('_output/current.json', 'rb')
-        previous = json.load(fh)
-        fh.close()
-    except:
-        pass
-
+    log = Logger()
     if args.initial:
-        print "INITIAL"
-        os.remove('mta.db')
-        db = Storage('mta')
-        db.setup()
-    else:
-        db = Storage('mta')
-    
+        log.initialize_db()
+
     dir_ = ''
     if args.files == []:
         # If we didn't pass any arguments to logger, we download the current XML
@@ -160,15 +164,15 @@ def main(args):
         print line, item
         # Make sure this is a new record
         # We only want to update the database on new records.
-        for prev in previous:
+        for prev in log.previous:
             if line == prev['line']:
                 prev_record = prev
         if prev['start'] != 0:
-            prev_dt = db.q.convert_to_datetime(prev['start'])
+            prev_dt = log.db.q.convert_to_datetime(prev['start'])
 
         # Update the current table in the database
         params = { 'line': line, 'start': item.datetimes[0] }
-        db.q.update_current(**params)
+        log.db.q.update_current(**params)
 
         # Remove the line from the list of lines we check to see if there's a finished alert.
         if line in stop_check['MTA']:
@@ -178,19 +182,19 @@ def main(args):
     # matching a line in our stop_check file. If there are, we need to update
     # the stop value of that line's record in the database, because that means
     # an alert has ended.
-    for prev in previous:
+    for prev in log.previous:
         if prev['line'] in stop_check['MTA']:
             params = { 'line': prev['line'], 'stop': datetime.now() }
-            db.q.update_current(**params)
-    db.conn.commit()
+            log.db.q.update_current(**params)
+    log.db.conn.commit()
 
     # Write the current data to json.
-    fields = db.q.get_table_fields('current')
-    rows = db.q.select_current()
+    fields = log.db.q.get_table_fields('current')
+    rows = log.db.q.select_current()
     fh = open('_output/current.json', 'wb')
-    json.dump(db.q.make_dict(fields, rows), fh)
+    json.dump(log.db.q.make_dict(fields, rows), fh)
     fh.close()
-    db.conn.close()
+    log.db.conn.close()
   
 
 def build_parser(args):
