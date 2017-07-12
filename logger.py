@@ -120,10 +120,10 @@ def main(args):
         >>> main(args)
         """
     mta = ParseMTA()
+
     log = Logger()
     if args.initial:
         log.initialize_db()
-
     files = log.get_files(args.files)
         
     lines = {}

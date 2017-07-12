@@ -89,7 +89,7 @@ class Query:
             True
             """
         if 'start' in kwargs:
-            sql = 'UPDATE current SET start = "%s" WHERE line = "%s" and type = "MTA"'\
+            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "MTA"'\
                  % (self.convert_datetime(kwargs['start']), kwargs['line'])
         if 'stop' in kwargs:
             sql = 'UPDATE current SET stop = "%s" WHERE line = "%s" and type = "MTA"'\
