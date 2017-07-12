@@ -157,6 +157,7 @@ def main(args):
     for line, item in lines.iteritems():
         print line, item
         # Make sure this is a new record
+        # We only want to update the database on new records.
         for prev in previous:
             if line == prev['line']:
                 prev_record = prev

@@ -23,15 +23,15 @@ class Storage:
         """ Create the tables.
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, alert DATETIME)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME)''')
         # INDEXNAME, TABLENAME, COLUMNNAME
         #self.c.execute('CREATE INDEX ? ON ?(?)', value)
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datetime DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
@@ -41,7 +41,7 @@ class Storage:
         lines = ['ALL','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
         items = []
         for item in lines:
-            items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0))
+            items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0, 0))
         sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
         self.conn.commit()
