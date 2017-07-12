@@ -13,6 +13,7 @@ from datetime import datetime
 from filewrapper import FileWrapper
 from parser import ParseMTA
 from sqliter import Storage, Query
+import dicts
 
 class Line:
     """ A class for managing data specific to a particular line of transit service.
@@ -118,6 +119,7 @@ def main(args):
         
     lines = {}
     for fn in files:
+        stop_check = dicts.lines
         items = {}
         e = ET.parse('%s%s' % (dir_, fn))
         r = e.getroot()
@@ -161,12 +163,25 @@ def main(args):
         for prev in previous:
             if line == prev['line']:
                 prev_record = prev
-        if prev['alert'] != 0:
-            prev_dt = db.q.convert_to_datetime(prev['alert'])
+        if prev['start'] != 0:
+            prev_dt = db.q.convert_to_datetime(prev['start'])
 
         # Update the current table in the database
-        params = { 'line': line, 'alert': item.datetimes[0] }
+        params = { 'line': line, 'start': item.datetimes[0] }
         db.q.update_current(**params)
+
+        # Remove the line from the list of lines we check to see if there's a finished alert.
+        if line in stop_check['MTA']:
+            stop_check['MTA'].remove(line)
+
+    # Check the previous file to see if there are active alerts with lines
+    # matching a line in our stop_check file. If there are, we need to update
+    # the stop value of that line's record in the database, because that means
+    # an alert has ended.
+    for prev in previous:
+        if prev['line'] in stop_check['MTA']:
+            params = { 'line': prev['line'], 'stop': datetime.now() }
+            db.q.update_current(**params)
     db.conn.commit()
 
     # Write the current data to json.

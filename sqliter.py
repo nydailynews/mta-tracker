@@ -4,6 +4,7 @@ import argparse
 import doctest
 import sqlite3
 from datetime import datetime
+import dicts
 
 class Storage:
     """ Manage data storage and retrieval."""
@@ -38,11 +39,11 @@ class Storage:
     def _setup_current(self):
         """ Populate the current table.
             """
-        lines = ['ALL','1','2','3','4','5','6','7','A','C','E','B','D','F','M','N','Q','R','J','Z','G','L','W']
+        lines = dicts.lines['MTA']
         items = []
         for item in lines:
             items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0, 0))
-        sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?)'
+        sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
         self.conn.commit()
 
@@ -83,12 +84,16 @@ class Query:
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
             >>> s.setup()
-            >>> d = { 'alert': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A' }
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A' }
             >>> print s.q.update_current(**d)
             True
             """
-        sql = 'UPDATE current SET alert = "%s" WHERE line = "%s" and type = "MTA"'\
-             % (self.convert_datetime(kwargs['alert']), kwargs['line'])
+        if 'start' in kwargs:
+            sql = 'UPDATE current SET start = "%s" WHERE line = "%s" and type = "MTA"'\
+                 % (self.convert_datetime(kwargs['start']), kwargs['line'])
+        if 'stop' in kwargs:
+            sql = 'UPDATE current SET stop = "%s" WHERE line = "%s" and type = "MTA"'\
+                 % (self.convert_datetime(kwargs['stop']), kwargs['line'])
         #print sql
         self.c.execute(sql)
         return True
