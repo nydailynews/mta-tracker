@@ -78,6 +78,29 @@ class Logger:
         self.db.setup()
         return True
 
+    def get_files(self, files_from_args):
+        """
+            >>>
+            """
+        if files_from_args == []:
+            # If we didn't pass any arguments to logger, we download the current XML
+            rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+            url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
+            fh = FileWrapper('_input/mta.xml')
+            fh.open()
+            fh.write(fh.request(url))
+            fh.close()
+            files = ['mta.xml']
+        else:
+            files = files_from_args
+            if '*' in args.files[0]:
+                # Wildcard matching on filenames so we can process entire directories
+                pass
+            if files_from_args[0][-1] == '/':
+                # If the arg ends with a forward slash that means it's a dir
+                files = os.listdir(files_from_args[0])
+        return files
+
     def compare(self):
         """ Compare the previous json of alerts with the current. Store the
             diffs in a new object.
@@ -101,31 +124,13 @@ def main(args):
     if args.initial:
         log.initialize_db()
 
-    dir_ = ''
-    if args.files == []:
-        # If we didn't pass any arguments to logger, we download the current XML
-        rando = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
-        fh = FileWrapper('mta.xml')
-        fh.open()
-        fh.write(fh.request(url))
-        fh.close()
-        files = ['mta.xml']
-    else:
-        files = args.files
-        if '*' in args.files[0]:
-            # Wildcard matching on filenames so we can process entire directories
-            pass
-        if args.files[0][-1] == '/':
-            # If the arg ends with a forward slash that means it's a dir
-            files = os.listdir(args.files[0])
-            dir_ = '_input/'
+    files = log.get_files(args.files)
         
     lines = {}
     for fn in files:
         stop_check = dicts.lines
         items = {}
-        e = ET.parse('%s%s' % (dir_, fn))
+        e = ET.parse('_input/%s' % fn)
         r = e.getroot()
         for l in r.find('subway'):
             item = {
