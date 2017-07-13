@@ -54,7 +54,7 @@ class Logger:
         have active service alerts and the timestamp on that alert.
         """
 
-    def __init__(self):
+    def __init__(self, *args):
         """
             >>>
             """
@@ -66,7 +66,9 @@ class Logger:
         except:
             pass
 
+        self.args = args
         self.db = Storage('mta')
+        self.mta = ParseMTA()
 
     def initialize_db(self):
         """
@@ -108,6 +110,58 @@ class Logger:
             """
         pass
 
+    def parse_file(self, fn, *args):
+        """ Pull out the data we need from the MTA's XML.
+            You'd think XML would be well structured. You'd be about half right.
+            >>>
+            """
+        type_ = 'subway'
+        if hasattr(args, 'type_'):
+            type_ = args.type_
+
+        self.stop_check = dicts.lines
+        items = {}
+        e = ET.parse('_input/%s' % fn)
+        r = e.getroot()
+        # Options beside subway:
+        # bus, BT, LIRR, MetroNorth
+        lines = {}
+        for l in r.find(type_):
+            item = {
+                'status': l.find('status').text,
+                'status_detail': {},
+                'lines': l.find('name').text, # This is generic, the actual lines affected may be some of these, or others.
+                'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
+                'text': l.find('text').text
+            }
+            if item['status']:
+                # Add the entry to the items dict if it's not there.
+                # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE
+                if not hasattr(items, item['status']):
+                    items[item['status']] = []
+
+                # Pull out the actual lines affected if we can
+                item['status_detail'] = self.mta.extract(item)
+                items[item['status']].append(item)
+                if hasattr(self.args, 'verbose'):
+                    if item['status'] == 'DELAYS':
+                        print '%(status)s: %(lines)s (%(datetime)s)' % item
+
+            # Assemble this file's delays into its individual lines
+            if 'DELAYS' in items:
+                for item in items['DELAYS']:
+                    for line in item['status_detail']['TitleDelay']:
+                        if line not in lines:
+                            lines[line] = Line(line)
+                        dt = lines[line].parse_dt(item['datetime'])
+                        if dt not in lines[line].datetimes:
+                            lines[line].datetimes.append(dt)
+                            if hasattr(self.args, 'verbose'):
+                                print line, dt, len(lines[line].datetimes)
+
+        return lines
+        
+
 def main(args):
     """ There are two situations we run this from the command line: 
         1. When building archives from previous day's service alerts and
@@ -126,44 +180,8 @@ def main(args):
         log.initialize_db()
     files = log.get_files(args.files)
         
-    lines = {}
     for fn in files:
-        stop_check = dicts.lines
-        items = {}
-        e = ET.parse('_input/%s' % fn)
-        r = e.getroot()
-        for l in r.find('subway'):
-            item = {
-                'status': l.find('status').text,
-                'status_detail': {},
-                'lines': l.find('name').text, # This is generic, the actual lines affected may be some of these, or others.
-                'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
-                'text': l.find('text').text
-            }
-            if item['status']:
-                # Add the entry to the items dict if it's not there.
-                # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE
-                if not hasattr(items, item['status']):
-                    items[item['status']] = []
-
-                # Pull out the actual lines affected if we can
-                item['status_detail'] = mta.extract(item)
-                items[item['status']].append(item)
-                if args.verbose:
-                    if item['status'] == 'DELAYS':
-                        print '%(status)s: %(lines)s (%(datetime)s)' % item
-
-            # Assemble this file's delays into its individual lines
-            if 'DELAYS' in items:
-                for item in items['DELAYS']:
-                    for line in item['status_detail']['TitleDelay']:
-                        if line not in lines:
-                            lines[line] = Line(line)
-                        dt = lines[line].parse_dt(item['datetime'])
-                        if dt not in lines[line].datetimes:
-                            lines[line].datetimes.append(dt)
-                            if args.verbose:
-                                print line, dt, len(lines[line].datetimes)
+        lines = log.parse_file(fn)
 
     for line, item in lines.iteritems():
         print line, item
@@ -180,15 +198,15 @@ def main(args):
         log.db.q.update_current(**params)
 
         # Remove the line from the list of lines we check to see if there's a finished alert.
-        if line in stop_check['MTA']:
-            stop_check['MTA'].remove(line)
+        if line in log.stop_check['MTA']:
+            log.stop_check['MTA'].remove(line)
 
     # Check the previous file to see if there are active alerts with lines
     # matching a line in our stop_check file. If there are, we need to update
     # the stop value of that line's record in the database, because that means
     # an alert has ended.
     for prev in log.previous:
-        if prev['line'] in stop_check['MTA']:
+        if prev['line'] in log.stop_check['MTA']:
             params = { 'line': prev['line'], 'stop': datetime.now() }
             log.db.q.update_current(**params)
     log.db.conn.commit()
