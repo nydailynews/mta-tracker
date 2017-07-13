@@ -123,13 +123,14 @@ class Logger:
         if hasattr(args, 'type_'):
             type_ = args.type_
 
+        # TODO: Make this flexible to handle the other modes of transit
         self.stop_check = dicts.lines
         items = {}
+        lines = {}
         e = ET.parse('_input/%s' % fn)
         r = e.getroot()
         # Options beside subway:
         # bus, BT, LIRR, MetroNorth
-        lines = {}
         for l in r.find(type_):
             item = {
                 'status': l.find('status').text,
@@ -165,6 +166,30 @@ class Logger:
 
         return lines
         
+    def log_updates(self, lines):
+        """ If there are alerts in the XML that we don't have in the database,
+            add the alert to the database.
+            >>>
+            """
+        for line, item in lines.iteritems():
+            print line, item
+            # Make sure this is a new record
+            # We only want to update the database on new records.
+            for prev in self.previous:
+                if line == prev['line']:
+                    prev_record = prev
+            if prev['start'] != 0:
+                prev_dt = self.db.q.convert_to_datetime(prev['start'])
+
+            # Update the current table in the database
+            params = { 'line': line, 'start': item.datetimes[0] }
+            self.db.q.update_current(**params)
+
+            # Remove the line from the list of lines we check to see if there's a finished alert.
+            if line in self.stop_check['subway']:
+            self.stop_check['subway'].remove(line)
+
+        return True
 
 def main(args):
     """ There are two situations we run this from the command line: 
@@ -187,30 +212,14 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    for line, item in lines.iteritems():
-        print line, item
-        # Make sure this is a new record
-        # We only want to update the database on new records.
-        for prev in log.previous:
-            if line == prev['line']:
-                prev_record = prev
-        if prev['start'] != 0:
-            prev_dt = log.db.q.convert_to_datetime(prev['start'])
-
-        # Update the current table in the database
-        params = { 'line': line, 'start': item.datetimes[0] }
-        log.db.q.update_current(**params)
-
-        # Remove the line from the list of lines we check to see if there's a finished alert.
-        if line in log.stop_check['MTA']:
-            log.stop_check['MTA'].remove(line)
+    log.log_updates(lines)
 
     # Check the previous file to see if there are active alerts with lines
     # matching a line in our stop_check file. If there are, we need to update
     # the stop value of that line's record in the database, because that means
     # an alert has ended.
     for prev in log.previous:
-        if prev['line'] in log.stop_check['MTA']:
+        if prev['line'] in log.stop_check['subway']:
             params = { 'line': prev['line'], 'stop': datetime.now() }
             log.db.q.update_current(**params)
     log.db.conn.commit()

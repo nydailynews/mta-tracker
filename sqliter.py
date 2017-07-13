@@ -39,10 +39,10 @@ class Storage:
     def _setup_current(self):
         """ Populate the current table.
             """
-        lines = dicts.lines['MTA']
+        lines = dicts.lines['subway']
         items = []
         for item in lines:
-            items.append((None, self.q.convert_datetime(datetime.now()), item, 'MTA', 0, 0))
+            items.append((None, self.q.convert_datetime(datetime.now()), item, 'subway', 0, 0))
         sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
         self.conn.commit()
@@ -89,10 +89,10 @@ class Query:
             True
             """
         if 'start' in kwargs:
-            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "MTA"'\
+            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "subway"'\
                  % (self.convert_datetime(kwargs['start']), kwargs['line'])
         if 'stop' in kwargs:
-            sql = 'UPDATE current SET stop = "%s" WHERE line = "%s" and type = "MTA"'\
+            sql = 'UPDATE current SET stop = "%s" WHERE line = "%s" and type = "subway"'\
                  % (self.convert_datetime(kwargs['stop']), kwargs['line'])
         #print sql
         self.c.execute(sql)
@@ -106,7 +106,7 @@ class Query:
             >>> rows = s.q.select_current()
             >>> d = s.q.make_dict(fields, rows[:1])
             >>> # d will look something like
-            >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'MTA', u'id': 1, u'alert': '2017-07-09 20:04:00'}]
+            >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'subway', u'id': 1, u'alert': '2017-07-09 20:04:00'}]
             >>> print d[0]['type'], d[0]['id']
             MTA 1
             """
@@ -137,7 +137,7 @@ class Query:
             >>> s.setup()
             >>> rows = s.q.select_current()
             >>> print rows[0][2:]
-            (u'ALL', u'MTA', 0)
+            (u'ALL', u'subway', 0)
             """
         sql = 'SELECT * FROM current'
         self.c.execute(sql)
