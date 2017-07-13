@@ -205,6 +205,17 @@ class Logger:
 
         return True
 
+    def write_json(self, table, *args):
+        """ Write the contents of a table to a json file.
+            >>>
+            """
+        fields = self.db.q.get_table_fields(table)
+        rows = self.db.q.select_current()
+        fh = open('_output/%s.json' % table, 'wb')
+        json.dump(self.db.q.make_dict(fields, rows), fh)
+        fh.close()
+        return True
+
 def main(args):
     """ There are two situations we run this from the command line: 
         1. When building archives from previous day's service alerts and
@@ -230,12 +241,9 @@ def main(args):
     log.commit_stops()
     log.db.conn.commit()
 
-    # Write the current data to json.
-    fields = log.db.q.get_table_fields('current')
-    rows = log.db.q.select_current()
-    fh = open('_output/current.json', 'wb')
-    json.dump(log.db.q.make_dict(fields, rows), fh)
-    fh.close()
+    # Write the current-table data to json.
+    log.write_json('current')
+
     log.db.conn.close()
   
 
