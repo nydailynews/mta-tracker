@@ -166,7 +166,7 @@ class Logger:
 
         return lines
         
-    def log_updates(self, lines):
+    def commit_starts(self, lines):
         """ If there are alerts in the XML that we don't have in the database,
             add the alert to the database.
             >>>
@@ -191,6 +191,20 @@ class Logger:
 
         return True
 
+    def commit_stops(self):
+        """ Check the previous file to see if there are active alerts with lines
+            matching a line in our stop_check file. If there are, we need to update
+            the stop value of that line's record in the database, because that means
+            an alert has ended.
+            >>>
+            """
+        for prev in self.previous:
+            if prev['line'] in self.stop_check['subway']:
+                params = { 'line': prev['line'], 'stop': datetime.now() }
+                self.db.q.update_current(**params)
+
+        return True
+
 def main(args):
     """ There are two situations we run this from the command line: 
         1. When building archives from previous day's service alerts and
@@ -212,16 +226,8 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    log.log_updates(lines)
-
-    # Check the previous file to see if there are active alerts with lines
-    # matching a line in our stop_check file. If there are, we need to update
-    # the stop value of that line's record in the database, because that means
-    # an alert has ended.
-    for prev in log.previous:
-        if prev['line'] in log.stop_check['subway']:
-            params = { 'line': prev['line'], 'stop': datetime.now() }
-            log.db.q.update_current(**params)
+    log.commit_starts(lines)
+    log.commit_stops()
     log.db.conn.commit()
 
     # Write the current data to json.
