@@ -56,7 +56,7 @@ class Logger:
 
     def __init__(self, *args):
         """
-            >>>
+            >>> log = Logger()
             """
         # Get the results from the last time we ran this.
         try:
@@ -72,9 +72,10 @@ class Logger:
 
     def initialize_db(self):
         """
-            >>>
+            >>> log = Logger()
+            >>> log.initialize_db()
+            True
             """
-        print "INITIAL"
         os.remove('mta.db')
         self.db = Storage('mta')
         self.db.setup()
@@ -82,7 +83,9 @@ class Logger:
 
     def get_files(self, files_from_args):
         """
-            >>>
+            >>> log = Logger()
+            >>> log.get_files([])
+            ['mta.xml']
             """
         if files_from_args == []:
             # If we didn't pass any arguments to logger, we download the current XML
@@ -106,14 +109,15 @@ class Logger:
     def compare(self):
         """ Compare the previous json of alerts with the current. Store the
             diffs in a new object.
-            >>>
+            >>> log = Logger()
             """
         pass
 
     def parse_file(self, fn, *args):
         """ Pull out the data we need from the MTA's XML.
             You'd think XML would be well structured. You'd be about half right.
-            >>>
+            >>> log = Logger()
+            >>> log.get_files(['test.xml'])
             """
         type_ = 'subway'
         if hasattr(args, 'type_'):
