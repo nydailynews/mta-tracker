@@ -187,7 +187,7 @@ class Logger:
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
             if line in self.stop_check['subway']:
-            self.stop_check['subway'].remove(line)
+                self.stop_check['subway'].remove(line)
 
         return True
 
