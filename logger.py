@@ -70,14 +70,14 @@ class Logger:
         self.db = Storage('mta')
         self.mta = ParseMTA()
 
-    def initialize_db(self):
+    def initialize_db(self, dbname='mta'):
         """
             >>> log = Logger()
-            >>> log.initialize_db()
+            >>> log.initialize_db('test')
             True
             """
-        os.remove('mta.db')
-        self.db = Storage('mta')
+        os.remove('%s.db' % dbname)
+        self.db = Storage(dbname)
         self.db.setup()
         return True
 
@@ -105,13 +105,6 @@ class Logger:
                 # If the arg ends with a forward slash that means it's a dir
                 files = os.listdir(files_from_args[0])
         return files
-
-    def compare(self):
-        """ Compare the previous json of alerts with the current. Store the
-            diffs in a new object.
-            >>> log = Logger()
-            """
-        pass
 
     def parse_file(self, fn, *args):
         """ Pull out the data we need from the MTA's XML.
@@ -216,6 +209,7 @@ class Logger:
         fh.close()
         return True
 
+
 def main(args):
     """ There are two situations we run this from the command line: 
         1. When building archives from previous day's service alerts and
@@ -245,7 +239,6 @@ def main(args):
     log.write_json('current')
 
     log.db.conn.close()
-  
 
 def build_parser(args):
     """ This method allows us to test the args.
