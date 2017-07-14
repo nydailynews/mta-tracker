@@ -71,7 +71,7 @@ class Logger:
         self.mta = ParseMTA()
 
     def initialize_db(self, dbname='mta'):
-        """
+        """ Resets database. Also sets the self.db value to the name of the db.
             >>> log = Logger()
             >>> log.initialize_db('test')
             True
@@ -84,8 +84,8 @@ class Logger:
     def get_files(self, files_from_args):
         """
             >>> log = Logger()
-            >>> log.get_files([])
-            ['mta.xml']
+            >>> log.get_files(['test.xml'])
+            ['test.xml']
             """
         if files_from_args == []:
             # If we didn't pass any arguments to logger, we download the current XML
@@ -98,12 +98,12 @@ class Logger:
             files = ['mta.xml']
         else:
             files = files_from_args
-            if '*' in args.files[0]:
+            if '*' in files[0]:
                 # Wildcard matching on filenames so we can process entire directories
                 pass
-            if files_from_args[0][-1] == '/':
+            if files[0][-1] == '/':
                 # If the arg ends with a forward slash that means it's a dir
-                files = os.listdir(files_from_args[0])
+                files = os.listdir(files[0])
         return files
 
     def parse_file(self, fn, *args):
@@ -111,6 +111,7 @@ class Logger:
             You'd think XML would be well structured. You'd be about half right.
             >>> log = Logger()
             >>> log.get_files(['test.xml'])
+            ['test.xml']
             """
         type_ = 'subway'
         if hasattr(args, 'type_'):
@@ -162,10 +163,17 @@ class Logger:
     def commit_starts(self, lines):
         """ If there are alerts in the XML that we don't have in the database,
             add the alert to the database.
-            >>>
+            >>> log = Logger()
+            >>> log.initialize_db('test')
+            True
+            >>> files = log.get_files(['test.xml'])
+            >>> for fn in files:
+            ...     lines = log.parse_file(fn)
+            >>> log.commit_starts(lines)
+            True
             """
         for line, item in lines.iteritems():
-            print line, item
+            #print line, item
             # Make sure this is a new record
             # We only want to update the database on new records.
             for prev in self.previous:
@@ -189,7 +197,16 @@ class Logger:
             matching a line in our stop_check file. If there are, we need to update
             the stop value of that line's record in the database, because that means
             an alert has ended.
-            >>>
+            >>> log = Logger()
+            >>> log.initialize_db('test')
+            True
+            >>> files = log.get_files(['test.xml'])
+            >>> for fn in files:
+            ...     lines = log.parse_file(fn)
+            >>> log.commit_starts(lines)
+            True
+            >>> log.commit_stops()
+            True
             """
         for prev in self.previous:
             if prev['line'] in self.stop_check['subway']:
