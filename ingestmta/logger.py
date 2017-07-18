@@ -66,7 +66,7 @@ class Logger:
         except:
             pass
 
-        self.args = args
+        self.args = args[0]
         self.db = Storage('mta')
         self.mta = ParseMTA()
 
@@ -240,7 +240,7 @@ def main(args):
         """
     mta = ParseMTA()
 
-    log = Logger()
+    log = Logger(args)
     if args.initial:
         log.initialize_db()
     files = log.get_files(args.files)
