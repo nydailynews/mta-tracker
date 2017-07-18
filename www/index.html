@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MTA Tracker</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script>
+function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('timer-text').innerHTML =
+    h + ":" + m + ":" + s;
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+</script>
+</head>
+<body onload="startTime()">
+    <div>
+        <h3>MTA tracker</h3>
+        <h1 id="timer-text"></h1>
+        <p>Time since the last service alert</p>
+    </div>
+<hr>
+    <div class="recent">
+    <h3 style="text-decoration: underline;">Recently</h3>
+    <div>
+        <dl>
+        <dt><img src="img/R.png"></dt>
+        <dd>28:03 since last alert</dd>
+    </dl>
+    </div>
+    </div>
+</body>
+</html>
