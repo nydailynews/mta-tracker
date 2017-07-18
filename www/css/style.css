@@ -32,3 +32,40 @@ p {
     max-width: 800px;
     text-transform: uppercase;
 }
+
+.circle-yellow {
+    width: 36px;
+    height: 36px;
+    background: #fccc0a;
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
+    border-radius: 18px;
+    font: bold 25px 'Open Sans Condensed', sans-serif;
+}
+
+hr {
+    height: 12px;
+    margin: 70px;
+    border: 0;
+    box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+}
+
+.recent {
+    width: 275px;
+}
+
+dl {
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+dt {
+  float: left;
+}
+
+dd {
+  font: normal 20px 'Open Sans', sans-serif;
+    padding: 5px;
+}
