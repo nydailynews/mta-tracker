@@ -209,7 +209,8 @@ class Logger:
             True
             """
         for prev in self.previous:
-            if prev['line'] in self.stop_check['subway']:
+            # We only want existing alerts
+            if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
                 params = { 'line': prev['line'], 'stop': datetime.now() }
                 self.db.q.update_current(**params)
 
