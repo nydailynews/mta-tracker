@@ -154,6 +154,10 @@ function checkTime(i) {
               </script>
             </div>
         </div>
+
+        <section id="news" class="recent">
+            <h2>Recent MTA news</h2>
+        </section>
     </article>
 </main>
 
@@ -165,8 +169,31 @@ function checkTime(i) {
       </script>
     </div>
 </div>
+
 <script>
-startTime();
+var tracker = {
+    init: function() {
+        startTime();
+        var request = new XMLHttpRequest();
+        request.open('GET', 'data/current.json', true);
+
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            tracker.data = JSON.parse(request.responseText);
+          } else {
+            // Error with the JSON format
+          }
+        };
+
+        request.onerror = function() {
+            console.error('nope');
+        };
+
+        request.send();
+    }
+};
+tracker.init();
+
 </script>
 <!-- CONTENT-END -->
 
