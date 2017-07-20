@@ -172,8 +172,19 @@ function checkTime(i) {
 
 <script>
 var tracker = {
-    init: function() {
-        startTime();
+    now: Date.now(),
+    tz_offset: -6,
+    calc_time_zone: function(offset) {
+        // Get the current time in a different timezone. Must know the tz offset,
+        // i.e. the number of hours ahead or behind GMT.
+        var d = new Date();
+        var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
+        return new Date(utc + (3600000*offset));
+    },
+    calc_time_since: function() {
+        return Math.floor((Date.parse(this.calc_time_zone(this.tz_offset)) - Date.parse(this.time_from))/1000);
+    },
+    get_json: function() {
         var request = new XMLHttpRequest();
         request.open('GET', 'data/current.json', true);
 
@@ -190,6 +201,10 @@ var tracker = {
         };
 
         request.send();
+    },
+    init: function() {
+        this.get_json();
+        startTime();
     }
 };
 tracker.init();
