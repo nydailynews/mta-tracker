@@ -184,31 +184,51 @@ var tracker = {
     calc_time_since: function() {
         return Math.floor((Date.parse(this.calc_time_zone(this.tz_offset)) - Date.parse(this.time_from))/1000);
     },
-    get_json: function() {
-        var request = new XMLHttpRequest();
-        request.open('GET', 'data/current.json', true);
-
-        request.onload = function() {
-          if (request.status >= 200 && request.status < 400) {
-            tracker.data = JSON.parse(request.responseText);
-          } else {
-            // Error with the JSON format
-          }
-        };
-
-        request.onerror = function() {
-            console.error('nope');
-        };
-
-        request.send();
+    lines: {
+        subway: {
+            worsts: []
+        }
     },
     init: function() {
-        this.get_json();
         startTime();
+        console.log(this.data);
+        // Loop through the data.
+        // Figure out the last alert, also, add some helper attributes to the data.
+        //
+        // If a line has a value of -1 in its stop field, that means it's a current alert
+        // and the timer should be zero and stay at zero.
+        is_zero = 0;
+        worst = { stop: '' };
+        worsts = [];
+        Array.prototype.forEach.call(this.data, function(item, i) {
+            if ( item['stop'] === -1 ) {
+                worsts.push(item['line']);
+                is_zero = 1;
+            }
+
+            // Log the current worst, in the case there are no active alerts.
+            // We use this to populate the lead time when there are no active alerts.
+            if ( is_zero == 0 ) {
+                console.log(item['stop'] > worst['stop'],item['stop'], worst['stop'])
+                if ( item['stop'] > worst['stop'] ) {
+                    worst = item;
+                    worsts = [item['line']];
+                }
+                // In case we have multiple alerts that ended at the same time
+                if ( item['stop'] == worst['stop'] ) worsts.push(item['line']);
+            }
+            //console.log(i, item);
+        });
+        // Take the final worsts array and assign that to the object for later.
+        this.lines.subway.worsts = worsts;
+        
     }
 };
-tracker.init();
 
+$.getJSON('data/current.json', function(data) {
+    tracker.data = data;
+    tracker.init();
+});
 </script>
 <!-- CONTENT-END -->
 

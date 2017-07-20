@@ -79,3 +79,13 @@ article dd {
     font: normal 20px 'Open Sans', sans-serif;
     padding: 5px;
 }
+
+.center {
+    margin: auto;
+    text-align: center;
+}
+div.center > span {
+    font-size:10px;
+    color:#999;
+    font-family:sans-serif;
+}
