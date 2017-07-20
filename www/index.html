@@ -195,6 +195,19 @@ var tracker = {
             worsts: []
         }
     },
+    update_recent: function() {
+        // Write the list of recent alerts
+    },
+    update_lead_nonzero: function() {
+    },
+    update_lead_zero: function() {
+        // Write the lead text and timer.
+        this.update_timer('timer-text', '0:00:00');
+        // Update the p text
+        var s = '';
+        if ( this.lines.subway.worsts.length > 1 ) s = 's';
+        $('#lead p').append('<span>. Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</span>');
+    },
     init: function() {
         //startTime();
         console.log(this.data);
@@ -230,13 +243,8 @@ var tracker = {
         });
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
-        if ( is_zero == 1 ) {
-            this.update_timer('timer-text', '0:00:00');
-            // Update the p text
-            var s = '';
-            if ( this.lines.subway.worsts.length > 1 ) s = 's';
-            $('#lead p').append('. Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.');
-        }
+        if ( is_zero == 1 ) this.update_lead_zero();
+        else this.update_lead_nonzero();
         
     }
 };
