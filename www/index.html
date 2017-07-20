@@ -106,21 +106,6 @@
     <script src="http://interactive.nydailynews.com/library/vendor-nav/vendor-include.js" defer></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script>
-function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var s = today.getSeconds();
-    m = checkTime(m);
-    s = checkTime(s);
-    document.getElementById('timer-text').innerHTML =
-    h + ":" + m + ":" + s;
-    var t = setTimeout(startTime, 500);
-}
-function checkTime(i) {
-    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
-}
 </script>
 </head>
 <body id="nydailynews" data-section="nydailynews" data-subsection="NY Daily News">
@@ -132,9 +117,11 @@ function checkTime(i) {
 <!-- CONTENT-START -->
 <main>
     <article>
-        <h1>MTA tracker</h1>
-        <h2 id="timer-text"></h2>
-        <p>since the last MTA subway service alert</p>
+        <section id="lead">
+            <h1>MTA tracker</h1>
+            <h2 id="timer-text"></h2>
+            <p>since the last MTA subway service alert</p>
+        </section>
         <hr>
         <section class="recent">
             <h2>Recent MTA alerts</h2>
@@ -171,6 +158,22 @@ function checkTime(i) {
 </div>
 
 <script>
+function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById('timer-text').innerHTML =
+    h + ":" + m + ":" + s;
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+
 var tracker = {
     now: Date.now(),
     tz_offset: -6,
@@ -184,13 +187,16 @@ var tracker = {
     calc_time_since: function() {
         return Math.floor((Date.parse(this.calc_time_zone(this.tz_offset)) - Date.parse(this.time_from))/1000);
     },
+    update_timer: function(id, value) {
+        document.getElementById(id).innerHTML = value;
+    },
     lines: {
         subway: {
             worsts: []
         }
     },
     init: function() {
-        startTime();
+        //startTime();
         console.log(this.data);
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
@@ -202,14 +208,17 @@ var tracker = {
         worsts = [];
         Array.prototype.forEach.call(this.data, function(item, i) {
             if ( item['stop'] === -1 ) {
-                worsts.push(item['line']);
+                // If this is our first current alert, we reset the worsts array,
+                // just in case there's some older alert already in it.
+                if ( is_zero === 0 ) worsts = [item['line']];
+                else worsts.push(item['line']);
                 is_zero = 1;
             }
 
             // Log the current worst, in the case there are no active alerts.
             // We use this to populate the lead time when there are no active alerts.
             if ( is_zero == 0 ) {
-                console.log(item['stop'] > worst['stop'],item['stop'], worst['stop'])
+                //console.log(item['stop'] > worst['stop'],item['stop'], worst['stop'])
                 if ( item['stop'] > worst['stop'] ) {
                     worst = item;
                     worsts = [item['line']];
@@ -217,10 +226,17 @@ var tracker = {
                 // In case we have multiple alerts that ended at the same time
                 if ( item['stop'] == worst['stop'] ) worsts.push(item['line']);
             }
-            //console.log(i, item);
+            //console.log(i, item['line'], item['stop']);
         });
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
+        if ( is_zero == 1 ) {
+            this.update_timer('timer-text', '0:00:00');
+            // Update the p text
+            var s = '';
+            if ( this.lines.subway.worsts.length > 1 ) s = 's';
+            $('#lead p').append('. Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.');
+        }
         
     }
 };
