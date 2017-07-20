@@ -92,7 +92,7 @@ class Query:
             sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "subway"'\
                  % (self.convert_datetime(kwargs['start']), kwargs['line'])
         if 'stop' in kwargs:
-            sql = 'UPDATE current SET stop = "%s" WHERE line = "%s" and type = "subway"'\
+            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "subway"'\
                  % (self.convert_datetime(kwargs['stop']), kwargs['line'])
         #print sql
         self.c.execute(sql)

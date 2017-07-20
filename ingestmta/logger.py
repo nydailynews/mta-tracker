@@ -175,7 +175,7 @@ class Logger:
         for line, item in lines.iteritems():
             #print line, item
             # Make sure this is a new record
-            # We only want to update the database on new records.
+            # We only want to update the database with alerts we don't already have in there.
             for prev in self.previous:
                 if line == prev['line']:
                     prev_record = prev
@@ -209,7 +209,7 @@ class Logger:
             True
             """
         for prev in self.previous:
-            # We only want existing alerts
+            # We only want to check for the stoppage of current alerts
             if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
                 params = { 'line': prev['line'], 'stop': datetime.now() }
                 self.db.q.update_current(**params)
