@@ -123,13 +123,11 @@
             <p>since the last MTA subway service alert</p>
         </section>
         <hr>
-        <section class="recent">
+        <section class="recent" id="recent">
             <h2>Recent MTA alerts</h2>
             <div>
                 <dl>
-                <dt><img src="img/R.png"></dt>
-                <dd>28:03 since last alert</dd>
-            </dl>
+                </dl>
             </div>
         </section>
     
@@ -184,8 +182,18 @@ var tracker = {
         var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
         return new Date(utc + (3600000*offset));
     },
-    calc_time_since: function() {
-        return Math.floor((Date.parse(this.calc_time_zone(this.tz_offset)) - Date.parse(this.time_from))/1000);
+    calc_time_since: function(time) {
+        return Math.floor((Date.now() - Date.parse(time))/1000);
+    },
+    convert_seconds: function(sec) {
+        // Turns an integer into the representative number of minutes and hours.
+        var hours = Math.floor(sec/3600);
+        var minutes = Math.floor((sec-hours*3600)/60);
+        var secs = sec%60;
+        if ( minutes < 10 ) minutes = "0" + minutes;
+        if ( secs < 10 ) secs = "0" + secs;
+        if ( hours > 0 ) return hours + ':' + minutes + ':' + secs;
+        return minutes + ':' + secs;
     },
     update_timer: function(id, value) {
         document.getElementById(id).innerHTML = value;
@@ -197,8 +205,16 @@ var tracker = {
     },
     update_recent: function() {
         // Write the list of recent alerts
+        Array.prototype.forEach.call(this.sorted, function(item, i) {
+            var l = item['line'];
+            if ( tracker.lines.subway.worsts.indexOf(l) > -1 ) return false;
+
+            var markup = '<dt><img src="img/' + l + '.png" alt="MTA ' + l + ' line icon"></dt><dd>' + tracker.convert_seconds(item['ago']) + ' since last alert</dd>';
+            $('#recent dl').append(markup);
+        });
     },
     update_lead_nonzero: function() {
+        // Write the lead and start the timer.
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
@@ -220,6 +236,10 @@ var tracker = {
         worst = { stop: '' };
         worsts = [];
         Array.prototype.forEach.call(this.data, function(item, i) {
+
+            // Add the time since to each item
+            tracker.data[i]['ago'] = tracker.calc_time_since(item['stop']);
+
             if ( item['stop'] === -1 ) {
                 // If this is our first current alert, we reset the worsts array,
                 // just in case there's some older alert already in it.
@@ -241,11 +261,15 @@ var tracker = {
             }
             //console.log(i, item['line'], item['stop']);
         });
+
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
         if ( is_zero == 1 ) this.update_lead_zero();
         else this.update_lead_nonzero();
         
+        // Sort the data
+        this.sorted = this.data.sort(function(a, b) { return a.ago - b.ago });
+        this.update_recent();
     }
 };
 
