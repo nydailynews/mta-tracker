@@ -8,29 +8,38 @@ body {
     display: none;
 }
 
-div {
+article div {
     text-align: center;
 }
 
-h1 {
-    font: bold 250px 'Open Sans Condensed', sans-serif;
-    color: #C70039;
-    margin: -50px auto;
+h1, h2, h3, h4 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: bold;
 }
 
-h3 {
-    font: bold 40px 'Open Sans Condensed', sans-serif;
+h1 {
+    font-size: 40px;
     text-transform: uppercase;
     color: #333;
+    text-align: center;
 }
 
-p {
+h2#timer-text {
+    font-size: 250px;
+    letter-spacing: -15px;
+    color: #C70039;
+    margin: -50px auto;
+    text-align: center;
+}
+
+article p {
     font: bold 31px 'Open Sans Condensed', sans-serif;
     letter-spacing: 1px;
     color: #333;
     margin: auto;
     max-width: 800px;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .circle-yellow {
@@ -55,18 +64,18 @@ hr {
     margin: auto;
 }
 
-dl {
-  width: 100%;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
+article dl {
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 
-dt {
-  float: left;
+article dt {
+    float: left;
 }
 
-dd {
-  font: normal 20px 'Open Sans', sans-serif;
+article dd {
+    font: normal 20px 'Open Sans', sans-serif;
     padding: 5px;
 }
