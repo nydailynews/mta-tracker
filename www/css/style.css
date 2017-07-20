@@ -72,12 +72,19 @@ article dl {
 }
 
 article dt {
+    clear: both;
     float: left;
+    height: 50px;
+}
+article dt img {
+    width: 40px;
+    height: 40px;
 }
 
 article dd {
     font: normal 20px 'Open Sans', sans-serif;
     padding: 5px;
+    height: 50px;
 }
 
 .center {
@@ -88,4 +95,4 @@ div.center > span {
     font-size:10px;
     color:#999;
     font-family:sans-serif;
-}
+}d

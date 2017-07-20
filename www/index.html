@@ -209,12 +209,18 @@ var tracker = {
             var l = item['line'];
             if ( tracker.lines.subway.worsts.indexOf(l) > -1 ) return false;
 
-            var markup = '<dt><img src="img/' + l + '.png" alt="MTA ' + l + ' line icon"></dt><dd>' + tracker.convert_seconds(item['ago']) + ' since last alert</dd>';
+            var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt><dd>' + tracker.convert_seconds(item['ago']) + ' since last alert</dd>';
             $('#recent dl').append(markup);
         });
     },
     update_lead_nonzero: function() {
         // Write the lead and start the timer.
+        // The worst time will be the first item in the sorted array
+        this.update_timer('timer-text', this.convert_seconds(this.sorted[0]['ago']));
+        // Update the p text
+        var s = '';
+        if ( this.lines.subway.worsts.length > 1 ) s = 's';
+        $('#lead p').append('<span>. Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</span>');
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
@@ -257,18 +263,18 @@ var tracker = {
                     worsts = [item['line']];
                 }
                 // In case we have multiple alerts that ended at the same time
-                if ( item['stop'] == worst['stop'] ) worsts.push(item['line']);
+                if ( item['stop'] == worst['stop'] && worsts.indexOf(item['line']) === -1 ) worsts.push(item['line']);
             }
-            //console.log(i, item['line'], item['stop']);
+            console.log(i, item['line'], item['stop']);
         });
+        // Sort the data
+        this.sorted = this.data.sort(function(a, b) { return a.ago - b.ago });
 
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
         if ( is_zero == 1 ) this.update_lead_zero();
         else this.update_lead_nonzero();
         
-        // Sort the data
-        this.sorted = this.data.sort(function(a, b) { return a.ago - b.ago });
         this.update_recent();
     }
 };
