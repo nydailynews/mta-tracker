@@ -107,6 +107,7 @@ article dd {
     font: normal 20px 'Open Sans', sans-serif;
     padding: 5px;
     height: 50px;
+    float: left;
 }
 
 .center {
@@ -117,4 +118,32 @@ div.center > span {
     font-size:10px;
     color:#999;
     font-family:sans-serif;
+}
+
+/* HANDHELD-SPECIFIC */
+@media only screen and ( min-width: 220px ) and ( max-width:727px ) {
+#news {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 30px;
+}
+/* TABLET-SPECIFIC */
+@media only screen and ( min-width: 728px ) and (max-width:1023px) {
+}
+/* HANDHELD & TABLET */
+@media only screen and ( min-width: 220px ) and (max-width:1023px) {
+h1 {
+    font-size: 30px;
+    line-height: 25px;
+}
+h2#timer-text {
+    margin: -60px auto;
+}
+#lead p {
+    margin: auto 10px;
+}
+}
+
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 }
