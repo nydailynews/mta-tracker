@@ -142,6 +142,9 @@
 
         <section id="news" class="recent">
             <h2>Recent MTA news</h2>
+			<ul>
+			<?php echo file_get_contents('tag-mta-10.html'); ?>
+			</ul>
         </section>
     </article>
 </main>
@@ -156,7 +159,6 @@
 </div>
 
 <div class="ad center">
-    <span>ADVERTISEMENT</span>
     <div id='div-gpt-ad-x105'>
       <script>
         googletag.cmd.push(function() { googletag.display('div-gpt-ad-x105'); });

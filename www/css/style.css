@@ -53,6 +53,13 @@ article p {
     line-height: 30px;
 }
 
+article li {
+    font-size: 18px;
+    line-height: 18px;
+    margin-bottom: 5px;
+    font-family: "PT Serif", serif;
+}
+
 .circle-yellow {
     width: 36px;
     height: 36px;
@@ -71,8 +78,12 @@ hr {
 }
 
 .recent {
-    width: 275px;
+    width: 300px;
     margin: auto;
+}
+#news {
+    width: 500px;
+    max-width: 500px;
 }
 
 article dl {
