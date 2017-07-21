@@ -155,6 +155,15 @@
     </div>
 </div>
 
+<div class="ad center">
+    <span>ADVERTISEMENT</span>
+    <div id='div-gpt-ad-x105'>
+      <script>
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-x105'); });
+      </script>
+    </div>
+</div>
+
 <script>
 function startTime() {
     var today = new Date();
@@ -244,21 +253,23 @@ var tracker = {
     update_lead_nonzero: function() {
         // Write the lead and start the timer.
         // The worst time will be the first item in the sorted array
+        $('#lead h1').text('MTA Tracker');
         this.update_timer('timer-text', '<time>' + this.convert_seconds(this.sorted[0]['ago']) + '</time>');
         // Update the p text
         var s = '';
         if ( this.lines.subway.worsts.length > 1 ) s = 's';
-        $('#lead p').append('.');
-        $('#lead p').after('<p>Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</p>');
+        $('#lead p').text('since the last MTA subway service alert.');
+        $('#lead p').after('<p>Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
-        this.update_timer('timer-text', '0:00:00');
+        $('#lead h1').text('Is there a current MTA service alert?');
+        this.update_timer('timer-text', 'YES');
         // Update the p text
         var s = '';
         if ( this.lines.subway.worsts.length > 1 ) s = 's';
-        $('#lead p').append('.');
-        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</p>');
+        $('#lead p').text('');
+        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     init: function() {
         //startTime();
