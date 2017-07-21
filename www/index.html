@@ -178,23 +178,35 @@ var tracker = {
         var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
         return new Date(utc + (3600000*offset));
     },
-    add_zeros: function(i) {
+    add_zero: function(i) {
         // For values less than 10, return a zero-prefixed version of that value.
         if ( i < 10 ) return "0" + i;
         return i;
     },
     count_up: function() {
-        // Handle the passage of time.
-        this.secs--;
-        if ( this.secs == -1 ) 
-        {
-            this.secs = 59;
-            this.mins--;
-        }
-        document.time_count.timer.value = this.display_time(this.mins,this.secs);
-    },
-    start_time: function(id) {
-        // Given an element id, parse out the time string and start it counting up.
+        // Handle the parsing and passage of time.
+        // Loop through each of the <time> elements on the page and update them.
+        var times = document.querySelector('time');
+        $('time').each( function(i) {
+            var time = $(this).text();
+            var time_parts = time.split(':');
+            if ( time_parts.length == 3 ) var secs = +time_parts[2], mins = +time_parts[1], hours = +time_parts[0];
+            if ( time_parts.length == 2 ) var secs = +time_parts[1], mins = +time_parts[0], hours = 0;
+            secs += 1;
+            if ( secs > 59 )
+            {
+                secs = 0;
+                mins += 1;
+                if ( mins > 59 )
+                {
+                    mins = 0;
+                    hours += 1;
+                }
+            }
+            if ( hours > 0 ) time = hours + ':' + tracker.add_zero(mins) + ':' + tracker.add_zero(secs);
+            else time = tracker.add_zero(mins) + ':' + tracker.add_zero(secs);
+            $(this).text(time);
+        });
     },
     calc_time_since: function(time) {
         return Math.floor((Date.now() - Date.parse(time))/1000);
@@ -227,11 +239,12 @@ var tracker = {
                 <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since last alert</dd>';
             $('#recent dl').append(markup);
         });
+        window.setInterval("tracker.count_up()", 1000);
     },
     update_lead_nonzero: function() {
         // Write the lead and start the timer.
         // The worst time will be the first item in the sorted array
-        this.update_timer('timer-text', this.convert_seconds(this.sorted[0]['ago']));
+        this.update_timer('timer-text', '<time>' + this.convert_seconds(this.sorted[0]['ago']) + '</time>');
         // Update the p text
         var s = '';
         if ( this.lines.subway.worsts.length > 1 ) s = 's';
