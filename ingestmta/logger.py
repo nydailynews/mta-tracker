@@ -12,8 +12,9 @@ from datetime import datetime
 
 from filewrapper import FileWrapper
 from parser import ParseMTA
-from sqliter import Storage, Query
+from sqliter import Storage
 import dicts
+
 
 class Line:
     """ A class for managing data specific to a particular line of transit service.
@@ -32,7 +33,8 @@ class Line:
         self.line = line
         self.last_alert = ''
 
-    def parse_dt(self, dt):
+    @staticmethod
+    def parse_dt(dt):
         """ Take a datetime such as 06/01/2017 10:31PM and turn it into
             a datetime object.
             >>> l = Line('L')
@@ -47,6 +49,7 @@ class Line:
             >>>
             """
         pass
+
 
 class Logger:
     """ We're logging how long it has been since each line's previous
@@ -129,7 +132,7 @@ class Logger:
             item = {
                 'status': l.find('status').text,
                 'status_detail': {},
-                'lines': l.find('name').text, # This is generic, the actual lines affected may be some of these, or others.
+                'lines': l.find('name').text,  # This is generic, the actual lines affected may be some of these, or others.
                 'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
                 'text': l.find('text').text
             }
@@ -159,7 +162,7 @@ class Logger:
                                 print line, dt, len(lines[line].datetimes)
 
         return lines
-        
+
     def commit_starts(self, lines):
         """ If there are alerts in the XML that we don't have in the database,
             add the alert to the database.
@@ -173,7 +176,7 @@ class Logger:
             True
             """
         for line, item in lines.iteritems():
-            #print line, item
+            # print line, item
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             for prev in self.previous:
@@ -183,7 +186,7 @@ class Logger:
                 prev_dt = self.db.q.convert_to_datetime(prev['start'])
 
             # Update the current table in the database
-            params = { 'line': line, 'start': item.datetimes[0] }
+            params = {'line': line, 'start': item.datetimes[0]}
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
@@ -211,7 +214,7 @@ class Logger:
         for prev in self.previous:
             # We only want to check for the stoppage of current alerts
             if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
-                params = { 'line': prev['line'], 'stop': datetime.now() }
+                params = {'line': prev['line'], 'stop': datetime.now()}
                 self.db.q.update_current(**params)
 
         return True
@@ -239,13 +242,11 @@ def main(args):
         >>> args = build_parser(['--verbose'])
         >>> main(args)
         """
-    mta = ParseMTA()
-
     log = Logger(args)
     if args.initial:
         log.initialize_db()
     files = log.get_files(args.files)
-        
+
     for fn in files:
         lines = log.parse_file(fn)
 
@@ -257,6 +258,7 @@ def main(args):
     log.write_json('current')
 
     log.db.conn.close()
+
 
 def build_parser(args):
     """ This method allows us to test the args.
@@ -274,9 +276,10 @@ def build_parser(args):
     args = parser.parse_args(args)
     return args
 
+
 if __name__ == '__main__':
     args = build_parser(sys.argv[1:])
 
-    if args.test== True:
+    if args.test:
         doctest.testmod(verbose=args.verbose)
     main(args)

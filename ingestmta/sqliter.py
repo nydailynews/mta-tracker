@@ -6,6 +6,7 @@ import sqlite3
 from datetime import datetime
 import dicts
 
+
 class Storage:
     """ Manage data storage and retrieval."""
 
@@ -26,7 +27,7 @@ class Storage:
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME)''')
         # INDEXNAME, TABLENAME, COLUMNNAME
-        #self.c.execute('CREATE INDEX ? ON ?(?)', value)
+        # self.c.execute('CREATE INDEX ? ON ?(?)', value)
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
@@ -52,6 +53,7 @@ class Storage:
             """
         pass
 
+
 class Query:
     """ Manage database queries."""
 
@@ -72,7 +74,8 @@ class Query:
             """
         return datetime.strftime(value, '%Y-%m-%d %H:%M:00')
 
-    def convert_to_datetime(self, value):
+    @staticmethod
+    def convert_to_datetime(value):
         """ Turn a string into a datetime object.
             >>> s = Storage('test')
             >>> print s.q.convert_to_datetime('2017-01-01 00:00:00')
@@ -89,12 +92,12 @@ class Query:
             True
             """
         if 'start' in kwargs:
-            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "subway"'\
-                 % (self.convert_datetime(kwargs['start']), kwargs['line'])
+            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "subway"' \
+                  % (self.convert_datetime(kwargs['start']), kwargs['line'])
         if 'stop' in kwargs:
-            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "subway"'\
-                 % (self.convert_datetime(kwargs['stop']), kwargs['line'])
-        #print sql
+            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "subway"' \
+                  % (self.convert_datetime(kwargs['stop']), kwargs['line'])
+        # print sql
         self.c.execute(sql)
         return True
 
@@ -144,6 +147,7 @@ class Query:
         rows = self.c.fetchall()
         return rows
 
+
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
@@ -158,8 +162,9 @@ def build_parser(args):
     args = parser.parse_args(args)
     return args
 
+
 if __name__ == '__main__':
     args = build_parser(sys.argv[1:])
 
-    if args.test== True:
+    if args.test:
         doctest.testmod(verbose=args.verbose)

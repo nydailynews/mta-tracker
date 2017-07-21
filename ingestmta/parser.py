@@ -4,12 +4,11 @@
 import sys
 import argparse
 import re
-import string
 import doctest
 from bs4 import BeautifulSoup, NavigableString
 
-class ParseMTA(object):
 
+class ParseMTA(object):
     def __init__(self):
         """
             >>>
@@ -29,7 +28,7 @@ class ParseMTA(object):
         has_delays = 0
         has_planned_work = 0
         return lines
-        
+
     def extract_lines(self, value):
         """ Given a line's status, parse the MTA lines mentioned in it.
             Returns a list of ____
@@ -38,10 +37,10 @@ class ParseMTA(object):
             self.soup = BeautifulSoup(value['text'], 'html.parser')
         else:
             return None
-        #print value['text']
-        #print soup.get_text()
-        #print dir(soup)
-        #print soup.prettify()
+        # print value['text']
+        # print soup.get_text()
+        # print dir(soup)
+        # print soup.prettify()
         spans = self.soup.find_all('span')
         types = ['TitlePlannedWork', 'TitleDelay']
         d = {'TitlePlannedWork': [], 'TitleDelay': []}
@@ -82,20 +81,20 @@ class ParseMTA(object):
                     </span><br/><br/>
                   Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
                 <br/><br/>"""
-            #print dir(span)
-            #print span.find_parent().contents
+            # print dir(span)
+            # print span.find_parent().contents
             items = span.find_parent().contents
             check = True
             is_delay = False
-            #print span.find_all_next()
-            #print span.find_all_previous()
+            # print span.find_all_next()
+            # print span.find_all_previous()
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
             # In those situations we need to make sure we're looking at Delays
             # and not at planned work.
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
             # TODO: Reduce the jank.
-            if check == True:
+            if check:
                 if isinstance(item, NavigableString):
                     text = item
                 else:
@@ -106,7 +105,7 @@ class ParseMTA(object):
                 elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
                     is_delay = False
 
-                if is_delay == False:
+                if not is_delay:
                     continue
             else:
                 text = item.text
@@ -121,11 +120,12 @@ class ParseMTA(object):
 
         return list(set(lines_affected))
 
+
 def main(args):
     """ 
         """
     pass
-  
+
 
 def build_parser(args):
     """ This method allows us to test the args.
@@ -140,9 +140,10 @@ def build_parser(args):
     args = parser.parse_args(args)
     return args
 
+
 if __name__ == '__main__':
     args = build_parser(sys.argv[1:])
 
-    if args.verbose == True:
+    if args.verbose:
         doctest.testmod(verbose=args.verbose)
     main(args)
