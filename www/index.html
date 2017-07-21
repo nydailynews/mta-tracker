@@ -167,10 +167,6 @@ function startTime() {
     h + ":" + m + ":" + s;
     var t = setTimeout(startTime, 500);
 }
-function checkTime(i) {
-    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
-}
 
 var tracker = {
     now: Date.now(),
@@ -181,6 +177,24 @@ var tracker = {
         var d = new Date();
         var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
         return new Date(utc + (3600000*offset));
+    },
+    add_zeros: function(i) {
+        // For values less than 10, return a zero-prefixed version of that value.
+        if ( i < 10 ) return "0" + i;
+        return i;
+    },
+    count_up: function() {
+        // Handle the passage of time.
+        this.secs--;
+        if ( this.secs == -1 ) 
+        {
+            this.secs = 59;
+            this.mins--;
+        }
+        document.time_count.timer.value = this.display_time(this.mins,this.secs);
+    },
+    start_time: function(id) {
+        // Given an element id, parse out the time string and start it counting up.
     },
     calc_time_since: function(time) {
         return Math.floor((Date.now() - Date.parse(time))/1000);
@@ -209,7 +223,8 @@ var tracker = {
             var l = item['line'];
             if ( tracker.lines.subway.worsts.indexOf(l) > -1 ) return false;
 
-            var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt><dd>' + tracker.convert_seconds(item['ago']) + ' since last alert</dd>';
+            var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+                <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since last alert</dd>';
             $('#recent dl').append(markup);
         });
     },
