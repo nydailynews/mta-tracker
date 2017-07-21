@@ -32,14 +32,25 @@ h2#timer-text {
     text-align: center;
 }
 
-article p {
-    font: bold 31px 'Open Sans Condensed', sans-serif;
+h2#timer-text + p, h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: bold;
+    font-size: 31px;
     letter-spacing: 1px;
     color: #333;
     margin: auto;
     max-width: 800px;
     text-transform: uppercase;
     text-align: center;
+}
+
+article p {
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    font-family: 'PT Serif', serif;
+    font-size: 24px;
+    line-height: 30px;
 }
 
 .circle-yellow {

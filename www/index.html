@@ -248,7 +248,8 @@ var tracker = {
         // Update the p text
         var s = '';
         if ( this.lines.subway.worsts.length > 1 ) s = 's';
-        $('#lead p').append('<span>. Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</span>');
+        $('#lead p').append('.');
+        $('#lead p').after('<p>Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</p>');
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
@@ -256,7 +257,8 @@ var tracker = {
         // Update the p text
         var s = '';
         if ( this.lines.subway.worsts.length > 1 ) s = 's';
-        $('#lead p').append('<span>. Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</span>');
+        $('#lead p').append('.');
+        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + ' line' + s + '.</p>');
     },
     init: function() {
         //startTime();
