@@ -60,7 +60,7 @@ class Logger:
 
     def __init__(self, *args):
         """
-            >>> log = Logger()
+            >>> log = Logger([])
             """
         # Get the results from the last time we ran this.
         try:
@@ -70,7 +70,9 @@ class Logger:
         except:
             pass
 
-        self.args = args[0]
+        self.args = []
+        if len(args) > 0:
+            self.args = args[0]
         self.db = Storage('mta')
         self.mta = ParseMTA()
 
@@ -113,7 +115,7 @@ class Logger:
     def parse_file(self, fn, *args):
         """ Pull out the data we need from the MTA's XML.
             You'd think XML would be well structured. You'd be about half right.
-            >>> log = Logger()
+            >>> log = Logger([])
             >>> log.get_files(['test.xml'])
             ['test.xml']
             """
@@ -146,7 +148,7 @@ class Logger:
                 # Pull out the actual lines affected if we can
                 item['status_detail'] = self.mta.extract(item)
                 items[item['status']].append(item)
-                if hasattr(self.args, 'verbose'):
+                if hasattr(self.args, 'verbose') and self.args.verbose:
                     if item['status'] == 'DELAYS':
                         print '%(status)s: %(lines)s (%(datetime)s)' % item
 
@@ -159,7 +161,7 @@ class Logger:
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
                             lines[line].datetimes.append(dt)
-                            if hasattr(self.args, 'verbose'):
+                            if hasattr(self.args, 'verbose') and self.args.verbose:
                                 print line, dt, len(lines[line].datetimes)
 
         return lines
@@ -240,7 +242,7 @@ def main(args):
         Most of what we do here for each is the same, but with #2 we only
         process one file, and we have to look up stored information to ensure
         the intervals values are current.
-        >>> args = build_parser(['--verbose'])
+        >>> args = build_parser([])
         >>> main(args)
         """
     log = Logger(args)
