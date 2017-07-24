@@ -160,9 +160,10 @@ class Logger:
                         # dict_ looks like {u'1': u'Due to signal pr...'}
                         line = dict_
                         cause = item['status_detail']['TitleDelay'][dict_]
+
                         if line not in lines:
                             lines[line] = Line(line)
-                        lines[line].cause = cause
+                            lines[line].cause = cause
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
                             lines[line].datetimes.append(dt)

@@ -90,17 +90,36 @@ class ParseMTA(object):
             is_delay = False
             # print (span.find_all_next())
             # print (span.find_all_previous())
+        prev_text = ''
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
             # In those situations we need to make sure we're looking at Delays
             # and not at planned work.
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
             # TODO: Reduce the jank.
+            # Some delays, item by item, look like this:
+            """
+0
+1 Delays
+2
+3 Posted: 07/24/2017  5:44PM
+4
+5
+6 Following an earlier signal problems at
+7 Van Cortlandt Park-242 St
+8 , [1] train service has resumed with delays.
+9
+10
+11
+            """
             if check:
                 if isinstance(item, NavigableString):
-                    text = item
+                    # Triggered when the text is not in a <p> element.
+                    print (i, item.strip())
+                    text = item.strip()
                 else:
-                    text = item.text
+                    print (i, item.text.strip())
+                    text = item.text.strip()
 
                 if text == 'Delays':
                     is_delay = True
