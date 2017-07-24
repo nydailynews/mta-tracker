@@ -182,6 +182,17 @@ function startTime() {
 var tracker = {
     now: Date.now(),
     tz_offset: -6,
+    rando: function()
+    {
+		// Generate a random ascii string, useful for busting caches.
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 20; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    },
     calc_time_zone: function(offset) {
         // Get the current time in a different timezone. Must know the tz offset,
         // i.e. the number of hours ahead or behind GMT.
@@ -322,7 +333,7 @@ var tracker = {
     }
 };
 
-$.getJSON('data/current.json', function(data) {
+$.getJSON('data/current.json?' + tracker.rando(), function(data) {
     tracker.data = data;
     tracker.init();
 });
