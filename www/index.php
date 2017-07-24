@@ -121,13 +121,13 @@
             <h1>MTA tracker</h1>
             <h2 id="timer-text"></h2>
             <p>since the last MTA subway service alert</p>
+            <dl></dl>
         </section>
         <hr>
         <section class="recent" id="recent">
             <h2>Recent MTA alerts</h2>
             <div>
-                <dl>
-                </dl>
+                <dl></dl>
             </div>
         </section>
     
@@ -294,10 +294,19 @@ var tracker = {
         if ( len > 1 ) {
             end_of_graf = ':';
             s = 's';
+            for ( i = 0; i < len; i ++ ) {
+                var l = this.lines.subway.worsts[i];
+                var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+                 <dd>' + this.get_line_data("line", l).cause + '</dd>';
+                $('#lead dl').append(markup);
+            }
+        }
+        else {
+            $('#lead dl').html('');
         }
         $('#lead p').text('');
         $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
-        // If there
+        // If there are multiple delays we list them in a dl
     },
     init: function() {
         //startTime();
