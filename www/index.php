@@ -251,6 +251,13 @@ var tracker = {
             worsts: []
         }
     },
+    get_line_data: function(key, value) {
+        // loop through the data object until an item's key matches its value.
+        var l = this.data.length;
+        for ( i = 0; i < l; i ++ ) {
+            if ( this.data[i][key] == value ) return this.data[i];
+        }
+    },
     update_recent: function() {
         // Write the list of recent alerts
         Array.prototype.forEach.call(this.sorted, function(item, i) {
@@ -280,15 +287,21 @@ var tracker = {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
         this.update_timer('timer-text', 'YES');
-        // Update the p text
+        // Update the paragraph
         var s = '';
-        if ( this.lines.subway.worsts.length > 1 ) s = 's';
+        var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;
+        var len = this.lines.subway.worsts.length;
+        if ( len > 1 ) {
+            end_of_graf = ':';
+            s = 's';
+        }
         $('#lead p').text('');
-        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
+        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
+        // If there
     },
     init: function() {
         //startTime();
-        console.log(this.data);
+        //console.log(this.data);
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
         //
@@ -300,6 +313,7 @@ var tracker = {
         Array.prototype.forEach.call(this.data, function(item, i) {
 
             // Add the time since to each item
+            //console.log(item, item['stop'], tracker.calc_time_since(item['stop']));
             tracker.data[i]['ago'] = tracker.calc_time_since(item['stop']);
 
             if ( item['stop'] === -1 ) {
@@ -321,7 +335,7 @@ var tracker = {
                 // In case we have multiple alerts that ended at the same time
                 if ( item['stop'] == worst['stop'] && worsts.indexOf(item['line']) === -1 ) worsts.push(item['line']);
             }
-            console.log(i, item['line'], item['stop']);
+            //console.log(i, item['line'], item['stop']);
         });
         // Sort the data
         this.sorted = this.data.sort(function(a, b) { return a.ago - b.ago });
