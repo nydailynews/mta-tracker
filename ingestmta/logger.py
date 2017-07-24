@@ -33,6 +33,7 @@ class Line:
         self.intervals = []
         self.line = line
         self.last_alert = ''
+        self.cause = ''
 
     @staticmethod
     def parse_dt(dt):
@@ -155,9 +156,14 @@ class Logger:
             # Assemble this file's delays into its individual lines
             if 'DELAYS' in items:
                 for item in items['DELAYS']:
-                    for line in item['status_detail']['TitleDelay']:
+                    print item['status_detail']['TitleDelay']
+                    for dict_ in item['status_detail']['TitleDelay']:
+                        # dict_ looks like {u'1': u'Due to signal pr...'}
+                        line = dict_
+                        cause = item['status_detail']['TitleDelay'][dict_]
                         if line not in lines:
                             lines[line] = Line(line)
+                        lines[line].cause = cause
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
                             lines[line].datetimes.append(dt)
@@ -179,7 +185,7 @@ class Logger:
             True
             """
         for line, item in lines.iteritems():
-            # print line, item
+            print line, item
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             for prev in self.previous:
@@ -189,7 +195,7 @@ class Logger:
                 prev_dt = self.db.q.convert_to_datetime(prev['start'])
 
             # Update the current table in the database
-            params = {'line': line, 'start': item.datetimes[0]}
+            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0]}
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.

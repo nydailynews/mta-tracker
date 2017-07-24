@@ -26,15 +26,15 @@ class Storage:
         """ Create the tables.
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
         # INDEXNAME, TABLENAME, COLUMNNAME
         # self.c.execute('CREATE INDEX ? ON ?(?)', value)
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
@@ -44,8 +44,8 @@ class Storage:
         lines = dicts.lines['subway']
         items = []
         for item in lines:
-            items.append((None, self.q.convert_datetime(datetime.now()), item, 'subway', 0, 0))
-        sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?, ?)'
+            items.append((None, self.q.convert_datetime(datetime.now()), item, 'subway', 0, 0, ''))
+        sql = 'INSERT INTO current VALUES (?, ?, ?, ?, ?, ?, ?)'
         self.c.executemany(sql, items)
         self.conn.commit()
 
@@ -93,12 +93,11 @@ class Query:
             True
             """
         if 'start' in kwargs:
-            sql = 'UPDATE current SET start = "%s", stop = "-1" WHERE line = "%s" and type = "subway"' \
-                  % (self.convert_datetime(kwargs['start']), kwargs['line'])
+            sql = 'UPDATE current SET start = "%s", stop = "-1", cause = "%s" WHERE line = "%s" and type = "subway"' \
+                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'])
         if 'stop' in kwargs:
             sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "subway"' \
                   % (self.convert_datetime(kwargs['stop']), kwargs['line'])
-        # print sql
         self.c.execute(sql)
         return True
 
