@@ -142,9 +142,9 @@
 
         <section id="news" class="recent">
             <h2>Recent MTA news</h2>
-			<ul>
-			<?php echo file_get_contents('tag-mta-10.html'); ?>
-			</ul>
+            <ul>
+            <?php echo file_get_contents('tag-mta-10.html'); ?>
+            </ul>
         </section>
     </article>
 </main>
@@ -184,7 +184,7 @@ var tracker = {
     tz_offset: -6,
     rando: function()
     {
-		// Generate a random ascii string, useful for busting caches.
+        // Generate a random ascii string, useful for busting caches.
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -255,7 +255,9 @@ var tracker = {
         // Write the list of recent alerts
         Array.prototype.forEach.call(this.sorted, function(item, i) {
             var l = item['line'];
+            if ( l == 'ALL' ) return false;
             if ( tracker.lines.subway.worsts.indexOf(l) > -1 ) return false;
+            if ( item['ago'] > 100332086 ) return false;
 
             var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
                 <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since last alert</dd>';
