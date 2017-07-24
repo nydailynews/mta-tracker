@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Turn the MTA's XML feed items into something manageable
+from __future__ import print_function
 import sys
 import argparse
 import re
 import doctest
 from bs4 import BeautifulSoup, NavigableString
+from collections import defaultdict
 
 
 class ParseMTA(object):
@@ -37,22 +39,22 @@ class ParseMTA(object):
             self.soup = BeautifulSoup(value['text'], 'html.parser')
         else:
             return None
-        # print value['text']
-        # print soup.get_text()
-        # print dir(soup)
-        # print soup.prettify()
+        # print (value['text'])
+        # print (soup.get_text())
+        # print (dir(soup))
+        # print (soup.prettify())
         spans = self.soup.find_all('span')
         types = ['TitlePlannedWork', 'TitleDelay']
-        d = {'TitlePlannedWork': [], 'TitleDelay': []}
+        d = {'TitlePlannedWork': {}, 'TitleDelay': {}}
         for item in spans:
             for type_ in types:
                 if type_ in unicode(item):
-                    d[type_].extend(self.extract_subway_delay(type_, item))
+                    d[type_].update(self.extract_subway_delay(type_, item))
         return d
 
     def extract_subway_delay(self, delay, span):
         """ Given a type of delay, extract the data from the markup that usually
-            runs with that delay. Returns a list.
+            runs with that delay. Returns a dict.
             """
         if delay == 'TitlePlannedWork':
             return self._extract_planned_work(span)
@@ -62,13 +64,13 @@ class ParseMTA(object):
     def _extract_planned_work(self, span):
         """ Parse a planned work markup. Return a dict.
             """
-        return []
+        return {}
 
     def _extract_delay(self, span):
         """ Parse delay markup. Delays are embedded in <p> elements.
-            Return a list of affected lines.
+            Return a dict of affected lines / reasons for the delay
             """
-        lines_affected = []
+        lines_affected = {}
         p = span.find_all_next('p')
         if len(p) > 0:
             items = p
@@ -81,13 +83,13 @@ class ParseMTA(object):
                     </span><br/><br/>
                   Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
                 <br/><br/>"""
-            # print dir(span)
-            # print span.find_parent().contents
+            # print (dir(span))
+            # print (span.find_parent().contents)
             items = span.find_parent().contents
             check = True
             is_delay = False
-            # print span.find_all_next()
-            # print span.find_all_previous()
+            # print (span.find_all_next())
+            # print (span.find_all_previous())
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
             # In those situations we need to make sure we're looking at Delays
@@ -116,9 +118,11 @@ class ParseMTA(object):
 
             if len(r) > 0:
                 for item in r:
-                    lines_affected.append(item.lstrip('[').rstrip(']'))
+                    line = item.lstrip('[').rstrip(']')
+                    reason = text.strip()
+                    lines_affected[line] = reason
 
-        return list(set(lines_affected))
+        return lines_affected
 
 
 def main(args):
@@ -130,7 +134,7 @@ def main(args):
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
-        >>> print args.verbose
+        >>> print (args.verbose)
         True
         """
     parser = argparse.ArgumentParser(usage='$ python parser.py',

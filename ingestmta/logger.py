@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Download and log the MTA's status updates. We only log changes.
+#from __future__ import print_function
 import argparse
 import doctest
 import json
