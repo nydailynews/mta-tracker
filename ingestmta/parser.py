@@ -119,17 +119,11 @@ class ParseMTA(object):
             if len(r) > 0:
                 for item in r:
                     line = item.lstrip('[').rstrip(']')
-                    reason = text.strip()
-                    lines_affected[line] = reason
+                    cause = text.strip()
+                    if line not in lines_affected:
+                        lines_affected[line] = cause
 
         return lines_affected
-
-
-def main(args):
-    """ 
-        """
-    pass
-
 
 def build_parser(args):
     """ This method allows us to test the args.
@@ -150,4 +144,3 @@ if __name__ == '__main__':
 
     if args.verbose:
         doctest.testmod(verbose=args.verbose)
-    main(args)

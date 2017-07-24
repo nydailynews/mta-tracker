@@ -156,7 +156,6 @@ class Logger:
             # Assemble this file's delays into its individual lines
             if 'DELAYS' in items:
                 for item in items['DELAYS']:
-                    print item['status_detail']['TitleDelay']
                     for dict_ in item['status_detail']['TitleDelay']:
                         # dict_ looks like {u'1': u'Due to signal pr...'}
                         line = dict_
