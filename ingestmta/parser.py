@@ -15,7 +15,7 @@ class ParseMTA(object):
         """
             >>>
             """
-        self.args = args
+        self.args = args[0]
         self.lines = []
         self.subway_re = '\[[0-9A-Z]+\]'
 
