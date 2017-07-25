@@ -67,29 +67,24 @@ class ParseMTA(object):
         return {}
 
     def _extract_delay(self, span):
-        """ Parse delay markup. Delays are embedded in <p> elements.
+        """ Parse delay markup. Delays are sometimes embedded in <p> elements.
             Return a dict of affected lines / reasons for the delay
             """
         lines_affected = {}
-        p = span.find_all_next('p')
-        if len(p) > 0:
-            items = p
-            check = False
-        else:
-            # Sometimes the delay isn't in a p element (blergh):
-            """<span class="TitleDelay">Delays</span>
+        #p = span.find_all_next('p')
+        # We can't trust that the delay is always in a p element (blergh):
+        """<span class="TitleDelay">Delays</span>
 <span class="DateStyle">
-                     Posted: 07/09/2017 10:26PM
-                    </span><br/><br/>
-                  Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
-                <br/><br/>"""
-            # print (dir(span))
-            # print (span.find_parent().contents)
-            items = span.find_parent().contents
-            check = True
-            is_delay = False
-            # print (span.find_all_next())
-            # print (span.find_all_previous())
+                 Posted: 07/09/2017 10:26PM
+                </span><br/><br/>
+              Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
+            <br/><br/>"""
+        # print (dir(span))
+        items = span.find_parent().contents
+        check = True
+        is_delay = False
+        # print (span.find_all_next())
+        # print (span.find_all_previous())
         prev_text = ''
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
@@ -115,10 +110,10 @@ class ParseMTA(object):
             if check:
                 if isinstance(item, NavigableString):
                     # Triggered when the text is not in a <p> element.
-                    print (i, item.strip())
+                    #print (i, item.strip())
                     text = item.strip()
                 else:
-                    print (i, item.text.strip())
+                    #print (i, item.text.strip())
                     text = item.text.strip()
 
                 if text == 'Delays':

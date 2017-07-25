@@ -17,7 +17,7 @@ from sqliter import Storage
 import dicts
 
 
-class Line:
+class Line(object):
     """ A class for managing data specific to a particular line of transit service.
         We log delays and planned work per-line. This class helps with that.
         """
@@ -185,7 +185,6 @@ class Logger:
             True
             """
         for line, item in lines.iteritems():
-            print line, item
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             for prev in self.previous:
