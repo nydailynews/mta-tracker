@@ -71,11 +71,12 @@ class Logger:
         except:
             pass
 
+        print args
         self.args = []
         if len(args) > 0:
             self.args = args[0]
         self.db = Storage('mta')
-        self.mta = ParseMTA()
+        self.mta = ParseMTA(args[0])
 
     def initialize_db(self, dbname='mta'):
         """ Resets database. Also sets the self.db value to the name of the db.

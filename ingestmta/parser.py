@@ -11,10 +11,12 @@ from collections import defaultdict
 
 
 class ParseMTA(object):
-    def __init__(self):
+    def __init__(self, *args):
         """
             >>>
             """
+        print(args)
+        self.args = args
         self.lines = []
         self.subway_re = '\[[0-9A-Z]+\]'
 
@@ -85,7 +87,7 @@ class ParseMTA(object):
         is_delay = False
         # print (span.find_all_next())
         # print (span.find_all_previous())
-        prev_text = ''
+        prev = { 'text': '', 'type_': '' }
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
             # In those situations we need to make sure we're looking at Delays
@@ -94,26 +96,24 @@ class ParseMTA(object):
             # TODO: Reduce the jank.
             # Some delays, item by item, look like this:
             """
-0
-1 Delays
-2
-3 Posted: 07/24/2017  5:44PM
-4
-5
-6 Following an earlier signal problems at
+6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
-8 , [1] train service has resumed with delays.
-9
-10
-11
+8* , [1] train service has resumed with delays.
+
+or this:
+6* Due to an earlier incident involving a train with mechanical problems at
+7 Rockaway Blvd
+8* , [A] train service has resumed with delays.
             """
             if check:
                 if isinstance(item, NavigableString):
                     # Triggered when the text is not in a <p> element.
-                    #print (i, item.strip())
+                    if is_delay:
+                        print ("%d*" % i, item.strip())
                     text = item.strip()
                 else:
-                    #print (i, item.text.strip())
+                    if is_delay:
+                        print (i, item.text.strip())
                     text = item.text.strip()
 
                 if text == 'Delays':
