@@ -107,11 +107,11 @@ or this:
             if check:
                 if isinstance(item, NavigableString):
                     # Triggered when the text is not in a <p> element.
-                    if is_delay and args.verbose:
+                    if is_delay and self.args.verbose:
                         print ("%d*" % i, item.strip())
                     text = item.strip()
                 else:
-                    if is_delay and args.verbose:
+                    if is_delay and self.args.verbose:
                         print (i, item.text.strip())
                     text = item.text.strip()
 
