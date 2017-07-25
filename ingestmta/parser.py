@@ -82,19 +82,13 @@ class ParseMTA(object):
             <br/><br/>"""
         # print (dir(span))
         items = span.find_parent().contents
-        check = True
         is_delay = False
         # print (span.find_all_next())
         # print (span.find_all_previous())
         prev = { 'text': '', 'type_': '' }
-        for i, item in enumerate(items):
-            # In some situations we're looking through all the item's markup.
-            # In those situations we need to make sure we're looking at Delays
-            # and not at planned work.
-            # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
-            # TODO: Reduce the jank.
-            # Some delays, item by item, look like this:
-            """
+        # So, we've got this situation with the subway.
+        # In some situations we get the delays split up into three strings like this:
+        """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
 8* , [1] train service has resumed with delays.
@@ -103,27 +97,51 @@ or this:
 6* Due to an earlier incident involving a train with mechanical problems at
 7 Rockaway Blvd
 8* , [A] train service has resumed with delays.
-            """
-            if check:
-                if isinstance(item, NavigableString):
-                    # Triggered when the text is not in a <p> element.
-                    if is_delay and self.args.verbose:
-                        print ("%d*" % i, item.strip())
-                    text = item.strip()
-                else:
-                    if is_delay and self.args.verbose:
-                        print (i, item.text.strip())
-                    text = item.text.strip()
 
-                if text == 'Delays':
-                    is_delay = True
-                elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
-                    is_delay = False
+or this:
+3 Posted: 07/25/2017 12:13PM
+4
+5
+6* Following an earlier incident at
+7 Canal St
+8* , [A], [C] and [F] train service has resumed with delays.
 
-                if not is_delay:
-                    continue
+or this:
+4
+5
+6* Following an earlier incident involving a train with mechanical problems at
+7 Canal St
+8* , [4], [5] and [6] train service has resumed with delays.
+        """
+        # So, we look for the telltale sign of that.
+        if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and item[8].text.strip()[0] == ',':
+            items[6] = ''.join(items[6:9])
+            items[7] = ''
+            items[8] = ''
+        for i, item in enumerate(items):
+            # In some situations we're looking through all the item's markup.
+            # In those situations we need to make sure we're looking at Delays
+            # and not at planned work.
+            # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
+            # TODO: Reduce the jank.
+            # Some delays, item by item, look like this:
+            if isinstance(item, NavigableString):
+                # Triggered when the text is not directly in a <p> / <strong> / <span> element.
+                if is_delay and self.args.verbose:
+                    print ("%d*" % i, item.strip())
+                text = item.strip()
             else:
-                text = item.text
+                if is_delay and self.args.verbose:
+                    print (i, item.text.strip())
+                text = item.text.strip()
+
+            if text == 'Delays':
+                is_delay = True
+            elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
+                is_delay = False
+
+            if not is_delay:
+                continue
 
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
