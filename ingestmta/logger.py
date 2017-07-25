@@ -71,7 +71,6 @@ class Logger:
         except:
             pass
 
-        print args
         self.args = []
         if len(args) > 0:
             self.args = args[0]
