@@ -13,7 +13,7 @@ from collections import defaultdict
 class ParseMTA(object):
     def __init__(self, *args):
         """
-            >>>
+            >>> p = ParseMTA([])
             """
         self.args = args[0]
         self.lines = []
@@ -26,6 +26,7 @@ class ParseMTA(object):
 
     def extract(self, value):
         """ Given a line object, return the relevant parts.
+            >>> p = ParseMTA([])
             """
         lines = self.extract_lines(value)
         has_delays = 0
@@ -40,7 +41,6 @@ class ParseMTA(object):
             self.soup = BeautifulSoup(value['text'], 'html.parser')
         else:
             return None
-        # print (value['text'])
         # print (soup.get_text())
         # print (dir(soup))
         # print (soup.prettify())
@@ -72,7 +72,6 @@ class ParseMTA(object):
             Return a dict of affected lines / reasons for the delay
             """
         lines_affected = {}
-        #p = span.find_all_next('p')
         # We can't trust that the delay is always in a p element (blergh):
         """<span class="TitleDelay">Delays</span>
 <span class="DateStyle">
@@ -83,8 +82,6 @@ class ParseMTA(object):
         items = span.find_parent().contents
         is_delay = False
         # print (dir(span))
-        # print (span.find_all_next())
-        # print (span.find_all_previous())
 
         # So, we've got this situation with the subway.
         # In some situations we get the delays split up into three strings like this:
@@ -114,10 +111,12 @@ or this:
 8* , [4], [5] and [6] train service has resumed with delays.
         """
         # So, we look for the telltale sign of that.
-        if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and items[8].strip()[0] == ',':
-            items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
-            items[7] = ''
-            items[8] = ''
+        if len(items) >= 9:
+            if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and items[8].strip()[0] == ',':
+                items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
+                items[7] = ''
+                items[8] = ''
+
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
             # In those situations we need to make sure we're looking at Delays
