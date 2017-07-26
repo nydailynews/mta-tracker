@@ -118,9 +118,9 @@
 <main>
     <article>
         <section id="lead">
-            <h1>MTA delay tracker</h1>
-            <h2 id="timer-text"></h2>
-            <p>since the last MTA subway service alert</p>
+            <h1>Is there a current MTA service alert?</h1>
+            <h2 id="yes-no"></h2>
+            <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
             <dl></dl>
         </section>
         <hr>
@@ -265,21 +265,22 @@ var tracker = {
     update_lead_nonzero: function() {
         // Write the lead and start the timer.
         // The worst time will be the first item in the sorted array
-        $('#lead h1').text('MTA Tracker');
-        this.update_timer('timer-text', '<time>' + this.convert_seconds(this.sorted[0]['ago']) + '</time>');
+        //$('#lead h1').text('MTA Tracker');
+        this.update_timer('yes-no', 'NO');
+        this.update_timer('timer-text', this.convert_seconds(this.sorted[0]['ago']));
         // Update the p text
         var s = '', were = 'was';
         if ( this.lines.subway.worsts.length > 1 ) {
 			s = 's';
 			were = 'were';
 		}
-        $('#lead p').text('since the last MTA subway service alert.');
+        //$('#lead p').text('since the last MTA subway service alert.');
         $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
-        this.update_timer('timer-text', 'YES');
+        this.update_timer('yes-no', 'YES');
         // Update the paragraph
         var s = '';
         var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;

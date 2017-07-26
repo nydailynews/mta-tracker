@@ -24,7 +24,7 @@ h1 {
     text-align: center;
 }
 
-h2#timer-text {
+h2#timer-text, h2#yes-no {
     font-size: 250px;
     letter-spacing: -15px;
     color: #C70039;
@@ -32,7 +32,7 @@ h2#timer-text {
     text-align: center;
 }
 
-h2#timer-text + p, h2 {
+h2#timer-text + p, h2#yes-no + p, h2 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: bold;
     font-size: 31px;
@@ -148,7 +148,7 @@ h1 {
     font-size: 30px;
     line-height: 25px;
 }
-h2#timer-text {
+h2#timer-text, h2#yes-no {
     margin: -60px auto;
 }
 #lead p {
