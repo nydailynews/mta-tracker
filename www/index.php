@@ -244,7 +244,7 @@ var tracker = {
     get_line_data: function(key, value) {
         // loop through the data object until an item's key matches its value.
         var l = this.data.length;
-        for ( i = 0; i < l; i ++ ) {
+        for ( var i = 0; i < l; i ++ ) {
             if ( this.data[i][key] == value ) return this.data[i];
         }
     },
@@ -288,7 +288,7 @@ var tracker = {
         if ( len > 1 ) {
             end_of_graf = ':';
             s = 's';
-            for ( i = 0; i < len; i ++ ) {
+            for ( var i = 0; i <= len; i ++ ) {
                 var l = this.lines.subway.worsts[i];
                 var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
                  <dd>' + this.get_line_data("line", l).cause + '</dd>';
