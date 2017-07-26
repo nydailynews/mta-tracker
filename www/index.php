@@ -123,7 +123,15 @@
             <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
             <dl></dl>
         </section>
-        <hr>
+
+<div class="ad center">
+    <div id='div-gpt-ad-x105'>
+      <script>
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-x105'); });
+      </script>
+    </div>
+</div>
+
         <section class="recent" id="recent">
             <h2>Recent MTA alerts</h2>
             <div>
@@ -150,18 +158,9 @@
 </main>
 
 <div class="ad center">
-    <span>ADVERTISEMENT</span>
     <div id='div-gpt-ad-1423507761396-3'>
       <script>
         googletag.cmd.push(function() { googletag.display('div-gpt-ad-1423507761396-3'); });
-      </script>
-    </div>
-</div>
-
-<div class="ad center">
-    <div id='div-gpt-ad-x105'>
-      <script>
-        googletag.cmd.push(function() { googletag.display('div-gpt-ad-x105'); });
       </script>
     </div>
 </div>
