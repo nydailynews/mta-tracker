@@ -94,7 +94,7 @@
     </script>
     
     <!-- ADS-START -->
-    <script onload="nydn_ads('one');" src="http://interactive.nydailynews.com/includes/ads/ads.js"></script>
+    <script onload="nydn_ads('mta-delays');" src="http://interactive.nydailynews.com/includes/ads/ads.js"></script>
     <!-- ADS-END -->
 
     <script src="http://interactive.nydailynews.com/js/jquery.min.js"></script>
@@ -118,7 +118,7 @@
 <main>
     <article>
         <section id="lead">
-            <h1>MTA tracker</h1>
+            <h1>MTA delay tracker</h1>
             <h2 id="timer-text"></h2>
             <p>since the last MTA subway service alert</p>
             <dl></dl>
@@ -167,18 +167,7 @@
 </div>
 
 <script>
-function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var s = today.getSeconds();
-    m = checkTime(m);
-    s = checkTime(s);
-    document.getElementById('timer-text').innerHTML =
-    h + ":" + m + ":" + s;
-    var t = setTimeout(startTime, 500);
-}
-
+/** https://github.com/csnover/js-iso8601 */(function(n,f){var u=n.parse,c=[1,4,5,6,7,10,11];n.parse=function(t){var i,o,a=0;if(o=/^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(t)){for(var v=0,r;r=c[v];++v)o[r]=+o[r]||0;o[2]=(+o[2]||1)-1,o[3]=+o[3]||1,o[8]!=="Z"&&o[9]!==f&&(a=o[10]*60+o[11],o[9]==="+"&&(a=0-a)),i=n.UTC(o[1],o[2],o[3],o[4],o[5]+a,o[6],o[7])}else i=u?u(t):NaN;return i}})(Date)
 var tracker = {
     now: Date.now(),
     tz_offset: -6,
@@ -231,6 +220,7 @@ var tracker = {
         });
     },
     calc_time_since: function(time) {
+        console.log(time);
         return Math.floor((Date.now() - Date.parse(time))/1000);
     },
     convert_seconds: function(sec) {
@@ -270,7 +260,7 @@ var tracker = {
                 <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since last alert</dd>';
             $('#recent dl').append(markup);
         });
-        window.setInterval("tracker.count_up()", 1000);
+        w = window.setInterval("tracker.count_up()", 1000);
     },
     update_lead_nonzero: function() {
         // Write the lead and start the timer.
@@ -278,10 +268,13 @@ var tracker = {
         $('#lead h1').text('MTA Tracker');
         this.update_timer('timer-text', '<time>' + this.convert_seconds(this.sorted[0]['ago']) + '</time>');
         // Update the p text
-        var s = '';
-        if ( this.lines.subway.worsts.length > 1 ) s = 's';
+        var s = '', were = 'was';
+        if ( this.lines.subway.worsts.length > 1 ) {
+			s = 's';
+			were = 'were';
+		}
         $('#lead p').text('since the last MTA subway service alert.');
-        $('#lead p').after('<p>Latest service alert' + s + ' were for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
+        $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     update_lead_zero: function() {
         // Write the lead text and timer.
@@ -357,6 +350,7 @@ var tracker = {
         this.update_recent();
     }
 };
+
 
 $.getJSON('data/current.json?' + tracker.rando(), function(data) {
     tracker.data = data;

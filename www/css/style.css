@@ -110,6 +110,18 @@ article dd {
     float: left;
 }
 
+#lead dl {
+    margin: auto;
+    max-width: 800px;
+    overflow: visible;
+}
+#lead dl dd {
+    float: none;
+}
+
+.ad {
+    margin-bottom: 5px;
+}
 .center {
     margin: auto;
     text-align: center;
