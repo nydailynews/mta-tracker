@@ -80,12 +80,12 @@ class ParseMTA(object):
                 </span><br/><br/>
               Following earlier track maintenance between <strong>Mets-Willets Point</strong> and <strong>33 St-Rawson St</strong>, [7] train service has resumed with delays.
             <br/><br/>"""
-        # print (dir(span))
         items = span.find_parent().contents
         is_delay = False
+        # print (dir(span))
         # print (span.find_all_next())
         # print (span.find_all_previous())
-        prev = { 'text': '', 'type_': '' }
+
         # So, we've got this situation with the subway.
         # In some situations we get the delays split up into three strings like this:
         """
@@ -114,8 +114,8 @@ or this:
 8* , [4], [5] and [6] train service has resumed with delays.
         """
         # So, we look for the telltale sign of that.
-        if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and item[8].text.strip()[0] == ',':
-            items[6] = ''.join(items[6:9])
+        if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and items[8].strip()[0] == ',':
+            items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
             items[7] = ''
             items[8] = ''
         for i, item in enumerate(items):
@@ -129,6 +129,10 @@ or this:
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
                 if is_delay and self.args.verbose:
                     print ("%d*" % i, item.strip())
+                text = item.strip()
+            elif isinstance(item, unicode) or isinstance(item, str):
+                if is_delay and self.args.verbose:
+                    print (i, item.strip())
                 text = item.strip()
             else:
                 if is_delay and self.args.verbose:
