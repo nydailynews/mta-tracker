@@ -19,6 +19,14 @@ These are the database tables, that track:
 
 ## Usage
 
+### Dev Setup
+
+#### How to reset the database
+
+```bash
+python logger.py --initial
+```
+
 ## Resources
 
 ### Look into
