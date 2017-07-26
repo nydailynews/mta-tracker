@@ -288,17 +288,18 @@ var tracker = {
         if ( len > 1 ) {
             end_of_graf = ':';
             s = 's';
-            for ( var i = 0; i <= len; i ++ ) {
+            for ( var i = 0; i < len; i ++ ) {
                 var l = this.lines.subway.worsts[i];
+				var record = this.get_line_data("line", l);
                 var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
-                 <dd>' + this.get_line_data("line", l).cause + '</dd>';
+                 <dd>' + record.cause + '</dd>';
                 $('#lead dl').append(markup);
             }
         }
         else {
             $('#lead dl').html('');
         }
-        $('#lead p').text('');
+        $('#lead p').html('');
         $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
         // If there are multiple delays we list them in a dl
     },
