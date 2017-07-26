@@ -109,13 +109,20 @@ or this:
 6* Following an earlier incident involving a train with mechanical problems at
 7 Canal St
 8* , [4], [5] and [6] train service has resumed with delays.
+
+or this:
+6*
+7 Due to signal problems at 52 St, 34 St-bound [7] trains are running with delays.
+8*
+9 Allow additional travel time.
         """
         # So, we look for the telltale sign of that.
         if len(items) >= 9:
-            if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString) and items[8].strip()[0] == ',':
-                items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
-                items[7] = ''
-                items[8] = ''
+            if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString):
+                if len(items[8].strip()) > 0 and items[8].strip()[0] == ',':
+                    items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
+                    items[7] = ''
+                    items[8] = ''
 
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
