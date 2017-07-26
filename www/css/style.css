@@ -55,8 +55,8 @@ article p {
 
 article li {
     font-size: 18px;
-    line-height: 18px;
-    margin-bottom: 5px;
+    line-height: 22px;
+    margin-bottom: 10px;
     font-family: "PT Serif", serif;
 }
 
@@ -82,8 +82,8 @@ hr {
     margin: auto;
 }
 #news {
-    width: 500px;
-    max-width: 500px;
+    width: 600px;
+    max-width: 600px;
 }
 
 article dl {
