@@ -47,7 +47,7 @@
             "thumbnailUrl": "static/img/share.png",
             "dateCreated": "2017-07-12T06:00:00Z",
             "articleSection": "Interactive",
-            "creator": ["Reporter Name", "Interactive Project"],
+            "creator": ["Joe Murphy", "Kelli R. Parker", "Interactive Project"],
             "keywords": ["interactive project","interactive"]
         }
     </script>
@@ -261,7 +261,7 @@ var tracker = {
         });
         w = window.setInterval("tracker.count_up()", 1000);
     },
-    update_lead_nonzero: function() {
+    update_lead_no_alert: function() {
         // Write the lead and start the timer.
         // The worst time will be the first item in the sorted array
         //$('#lead h1').text('MTA Tracker');
@@ -276,7 +276,7 @@ var tracker = {
         //$('#lead p').text('since the last MTA subway service alert.');
         $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
-    update_lead_zero: function() {
+    update_lead_alert: function() {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
         this.update_timer('yes-no', 'YES');
@@ -284,9 +284,34 @@ var tracker = {
         var s = '';
         var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;
         var len = this.lines.subway.worsts.length;
+
+        // If there are multiple delays we list them in a dl
+		// If any of the delay causes are identical we group them.
         if ( len > 1 ) {
             end_of_graf = ':';
             s = 's';
+
+			// First we see how many distinct causes there are.
+			var causes = [];
+			var groups = {};
+			var is_multiple = 0;
+			var multiples = [];
+            for ( var i = 0; i < len; i ++ ) {
+                var l = this.lines.subway.worsts[i];
+				var cause = this.get_line_data("line", l).cause;
+				if ( causes.indexOf(cause) === -1 ) {
+					causes.push(this.get_line_data("line", l).cause);
+					groups[cause] = [l];
+				}
+				else {
+					// We have a duplicate cause
+					is_multiple = 1;
+					multiples.push(cause);
+					groups[cause].push(l);
+				}
+			}
+			
+			// Next we generate and place the markup
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.lines.subway.worsts[i];
 				var record = this.get_line_data("line", l);
@@ -300,7 +325,6 @@ var tracker = {
         }
         $('#lead p').html('');
         $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
-        // If there are multiple delays we list them in a dl
     },
     init: function() {
         //startTime();
@@ -345,8 +369,8 @@ var tracker = {
 
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
-        if ( is_zero == 1 ) this.update_lead_zero();
-        else this.update_lead_nonzero();
+        if ( is_zero == 1 ) this.update_lead_alert();
+        else this.update_lead_no_alert();
         
         this.update_recent();
     }
