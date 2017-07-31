@@ -115,6 +115,16 @@ or this:
 7 Due to signal problems at 52 St, 34 St-bound [7] trains are running with delays.
 8*
 9 Allow additional travel time.
+
+or this:
+32* Following earlier signal problems at
+33 96 St
+34* , [2] and [3] train service has resumed with delays.
+
+and this:
+19*
+20 Due to signal problems at 125 St, northbound [1] trains are running with delays.
+21*
         """
         # So, we look for the telltale sign of that.
         if len(items) >= 9:
@@ -138,7 +148,7 @@ or this:
                 text = item.strip()
             elif isinstance(item, unicode) or isinstance(item, str):
                 if is_delay and self.args.verbose:
-                    print (i, item.strip())
+                    print ("%d*" % i, item.strip())
                 text = item.strip()
             else:
                 if is_delay and self.args.verbose:
