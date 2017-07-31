@@ -121,8 +121,9 @@ class Logger:
             ['test.xml']
             """
         type_ = 'subway'
-        if hasattr(args, 'type_'):
-            type_ = args.type_
+        if hasattr(self.args, 'type_'):
+            print self.args
+            type_ = self.args.type_
 
         # TODO: Make this flexible to handle the other modes of transit
         self.stop_check = dicts.lines
@@ -253,6 +254,7 @@ def main(args):
     log = Logger(args)
     if args.initial:
         log.initialize_db()
+
     files = log.get_files(args.files)
 
     for fn in files:
@@ -280,6 +282,7 @@ def build_parser(args):
     parser.add_argument("-i", "--initial", dest="initial", default=False, action="store_true")
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("--test", dest="test", default=False, action="store_true")
+    parser.add_argument("-t", "--type", dest="type_", default=None)
     parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
     return args
