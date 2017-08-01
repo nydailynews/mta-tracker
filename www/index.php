@@ -249,14 +249,18 @@ var tracker = {
     },
     update_recent: function() {
         // Write the list of recent alerts
+		shown = 0;
         Array.prototype.forEach.call(this.sorted, function(item, i) {
             var l = item['line'];
             if ( l == 'ALL' ) return false;
             if ( tracker.lines.subway.worsts.indexOf(l) > -1 ) return false;
+			shown += 1;
             if ( item['ago'] > 100332086 ) return false;
+			var since_the = '';
+			if ( shown < 2 ) since_the = 'since the last alert';
 
             var markup = '<dt><img src="img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
-                <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since last alert</dd>';
+                <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> ' + since_the + '</dd>';
             $('#recent dl').append(markup);
         });
         w = window.setInterval("tracker.count_up()", 1000);
