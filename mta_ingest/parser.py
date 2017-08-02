@@ -134,18 +134,11 @@ and this:
 9 Canarsie-Rockaway Pkwy
 10* , [L] train service has resumed.
 11
-
-and this (atrain.xml):
-5
-6* Following earlier signal problems at
-7 Liberty Av,
-8* [A] train service has resumed
-9
         """
         # So, we look for the telltale sign of that.
         if len(items) >= 9:
             if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString):
-                if len(items[8].strip()) > 0 and items[8].strip()[0] == ',':
+                if len(items[8].strip()) > 0 and items[8].strip()[0] in [',', '[']:
                     items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
                     items[7] = ''
                     items[8] = ''
