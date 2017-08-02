@@ -134,6 +134,13 @@ and this:
 9 Canarsie-Rockaway Pkwy
 10* , [L] train service has resumed.
 11
+
+and this (atrain.xml):
+5
+6* Following earlier signal problems at
+7 Liberty Av,
+8* [A] train service has resumed
+9
         """
         # So, we look for the telltale sign of that.
         if len(items) >= 9:

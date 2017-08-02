@@ -1,94 +1,161 @@
 body {
-    margin:0;
+    width: 100%;
+    margin: 0;
+    background-color: #fafafa;
+}
+
+#rh-subnav {
+    display: none;
+}
+
+article div {
+    text-align: center;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 40px;
+    text-transform: uppercase;
+    color: #333;
+    text-align: center;
+}
+
+h2#timer-text, h2#yes-no {
+    font-size: 250px;
+    letter-spacing: -15px;
+    color: #C70039;
+    margin: -50px auto;
+    text-align: center;
+}
+
+h2#timer-text + p, h2#yes-no + p, h2 {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: bold;
+    font-size: 31px;
+    letter-spacing: 1px;
+    color: #333;
+    margin: auto;
+    max-width: 800px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+article p {
+    text-align: center;
+    max-width: 800px;
+    margin: auto;
+    font-family: 'PT Serif', serif;
+    font-size: 24px;
+    line-height: 30px;
+}
+
+article li {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+    font-family: "PT Serif", serif;
+}
+
+.circle-yellow {
+    width: 36px;
+    height: 36px;
+    background: #fccc0a;
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
+    border-radius: 18px;
+    font: bold 25px 'Open Sans Condensed', sans-serif;
+}
+
+hr {
+    height: 12px;
+    margin: 20px 70px;
+    border: 0;
+    box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+}
+
+.recent {
+    width: 300px;
+    margin: auto;
+}
+#news {
+    width: 600px;
+    max-width: 600px;
+}
+
+article dl {
     width: 100%;
     overflow: hidden;
-} 
-
-@media only screen and (max-width: 768px) {
-    /* Adjust the layout */
-    body h1, body h2, body h3, body h4, body h5, body h6 { line-height: 1; }
-    body h1 { 
-        width: 100%!important; 
-        font-size: 2em!important;
-    }
-
-    /* Fix line-height on breadcrumbs */
-    #breadcrumbs {
-        line-height: 14px; 
-        margin-bottom: 10px;
-    }
-    /* Fix line-height on nav.app */
-    nav.app ul {
-        line-height: 0; 
-        margin-bottom: 5px;
-    }
-    /* More line-height fixes */
-    .stamp { margin-top: 10px; }
-
-    /* We want bullets on list items on mobile to make lists more readable. */
-    .row ul {
-        list-style-type: disc;
-        list-style-position: inside!important;
-    }
+    padding: 0;
+    margin: 0;
 }
 
-footer p, #content-footer p { text-align: center; }
-hr {
-    width: 80%;
-    margin: 8px auto;
+article dt {
+    clear: both;
+    float: left;
+    height: 50px;
 }
-.ad { margin-bottom: 10px; }
-.row { margin-left: 0; }
-nav.app ul li {
-    display: inline;
+article dt img {
+    width: 40px;
+    height: 40px;
 }
-nav.app ul li:after {
-    content: " ᴥ ";
+
+article dd {
+    font: normal 20px 'Open Sans', sans-serif;
+    padding: 5px;
+    height: 50px;
+    float: left;
 }
-nav.app ul li:last-child:after {
-    content: "";
+
+#lead dl {
+    margin: auto;
+    max-width: 800px;
+    overflow: visible;
 }
-.stamp, nav.app {
-    font-family: Georgia, serif;
-    font-style: italic;
-    color: #aaa;
+#lead dl dd {
+    float: none;
+}
+
+.ad {
+    margin-bottom: 5px;
+}
+.center {
+    margin: auto;
     text-align: center;
+}
+div.center > span {
+    font-size:10px;
+    color:#999;
+    font-family:sans-serif;
+}
+
+/* HANDHELD-SPECIFIC */
+@media only screen and ( min-width: 220px ) and ( max-width:727px ) {
+#news {
+    max-width: 100%;
     width: 100%;
-    line-height: 0.5;
+    margin: 0 30px;
 }
-.stamp span, nav.app ul span {
-    display: inline-block;
-    position: relative;  
+/* TABLET-SPECIFIC */
+@media only screen and ( min-width: 728px ) and (max-width:1023px) {
 }
-.stamp span:before,
-.stamp span:after,
-nav.app ul:before,
-nav.app ul:after {
-    content: "";
-    position: absolute;
-    height: 5px;
-    border-bottom: 1px dotted #ccc;
-    border-top: 1px dotted #ccc;
-    top: 0;
-    width: 600px;
+/* HANDHELD & TABLET */
+@media only screen and ( min-width: 220px ) and (max-width:1023px) {
+h1 {
+    font-size: 30px;
+    line-height: 25px;
 }
-.stamp span:before,
-nav.app ul:before {
-    right: 100%;
-    margin-right: 15px;
+h2#timer-text, h2#yes-no {
+    margin: -60px auto;
 }
-.stamp span:after,
-nav.app ul:after {
-    left: 100%;
-    margin-left: 15px;
+#lead p {
+    margin: auto 10px;
+}
 }
 
-#content-footer nav.app ul:before,
-#content-footer nav.app ul:after 
-{
-    border: 0px none;
-}
-
-h1 a, h2 a, h3 a, h4 a, h5 a {
-    text-decoration: underline;
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 }
