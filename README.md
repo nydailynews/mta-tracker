@@ -21,6 +21,8 @@ These are the database tables, that track:
 
 ### Dev Setup
 
+Welp, once you check out the code you also have to create a `_input` and an `_output` directory in the python code directory.
+
 #### How to reset the database
 
 ```bash
