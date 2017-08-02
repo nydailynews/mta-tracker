@@ -125,15 +125,6 @@ and this:
 19*
 20 Due to signal problems at 125 St, northbound [1] trains are running with delays.
 21*
-
-and this:
-5
-6* Following earlier track maintenance between
-7 Broadway Junction
-8* and
-9 Canarsie-Rockaway Pkwy
-10* , [L] train service has resumed.
-11
         """
         # So, we look for the telltale sign of that.
         if len(items) >= 9:
@@ -142,6 +133,12 @@ and this:
                     items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
                     items[7] = ''
                     items[8] = ''
+                if items[8].strip() == 'and':
+                    items[6] = '%s%s%s%s%s' % (items[6], items[7].text.strip(), items[8], items[9], items[10])
+                    items[7] = ''
+                    items[8] = ''
+                    items[9] = ''
+                    items[10] = ''
 
         for i, item in enumerate(items):
             # In some situations we're looking through all the item's markup.
