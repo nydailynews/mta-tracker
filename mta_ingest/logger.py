@@ -69,7 +69,7 @@ class Logger:
             self.previous = json.load(fh)
             fh.close()
         except:
-            pass
+            self.previous = None
 
         self.args = []
         if len(args) > 0:
@@ -121,7 +121,7 @@ class Logger:
             ['test.xml']
             """
         type_ = 'subway'
-        if hasattr(self.args, 'type_'):
+        if hasattr(self.args, 'type_') and self.args.type_:
             print self.args
             type_ = self.args.type_
 
@@ -188,11 +188,14 @@ class Logger:
         for line, item in lines.iteritems():
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
-            for prev in self.previous:
-                if line == prev['line']:
-                    prev_record = prev
-            if prev['start'] != 0:
-                prev_dt = self.db.q.convert_to_datetime(prev['start'])
+            if self.previous:
+                # First we match the line we're looking up with the line's previous record.
+                for prev in self.previous:
+                    if line == prev['line']:
+                        prev_record = prev
+                # Then we ....
+                if prev['start'] != 0:
+                    prev_dt = self.db.q.convert_to_datetime(prev['start'])
 
             # Update the current table in the database
             params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0]}
@@ -220,11 +223,12 @@ class Logger:
             >>> log.commit_stops()
             True
             """
-        for prev in self.previous:
-            # We only want to check for the stoppage of current alerts
-            if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
-                params = {'line': prev['line'], 'stop': datetime.now()}
-                self.db.q.update_current(**params)
+        if self.previous:
+            for prev in self.previous:
+                # We only want to check for the stoppage of current alerts
+                if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
+                    params = {'line': prev['line'], 'stop': datetime.now()}
+                    self.db.q.update_current(**params)
 
         return True
 
