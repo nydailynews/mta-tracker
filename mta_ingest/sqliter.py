@@ -24,6 +24,9 @@ class Storage:
 
     def setup(self):
         """ Create the tables.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
             """
         self.c.execute('''CREATE TABLE IF NOT EXISTS current 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
@@ -38,8 +41,13 @@ class Storage:
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
+        return True
+
     def _setup_current(self):
         """ Populate the current table.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
             """
         lines = dicts.lines['subway']
         items = []
@@ -88,16 +96,16 @@ class Query:
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
             >>> s.setup()
-            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A' }
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'type_': 'subway' }
             >>> print s.q.update_current(**d)
             True
             """
         if 'start' in kwargs:
-            sql = 'UPDATE current SET start = "%s", stop = "-1", cause = "%s" WHERE line = "%s" and type = "subway"' \
-                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'])
+            sql = 'UPDATE current SET start = "%s", stop = "-1", cause = "%s" WHERE line = "%s" and type = "%s"' \
+                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['type_'])
         if 'stop' in kwargs:
-            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "subway"' \
-                  % (self.convert_datetime(kwargs['stop']), kwargs['line'])
+            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
+                  % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['type_'])
         self.c.execute(sql)
         return True
 

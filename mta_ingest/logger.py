@@ -59,7 +59,7 @@ class Logger:
         have active service alerts and the timestamp on that alert.
         """
 
-    def __init__(self, *args):
+    def __init__(self, *args, **kwargs):
         """
             >>> log = Logger([])
             """
@@ -76,6 +76,9 @@ class Logger:
             self.args = args[0]
         self.db = Storage('mta')
         self.mta = ParseMTA(args[0])
+        self.type_ = 'subway'
+        if self.args.type_:
+            self.type_ = self.args.type_
 
     def initialize_db(self, dbname='mta'):
         """ Resets database. Also sets the self.db value to the name of the db.
@@ -107,6 +110,7 @@ class Logger:
             files = files_from_args
             if '*' in files[0]:
                 # Wildcard matching on filenames so we can process entire directories
+                # put example of that here.
                 pass
             if files[0][-1] == '/':
                 # If the arg ends with a forward slash that means it's a dir
@@ -198,7 +202,7 @@ class Logger:
                     prev_dt = self.db.q.convert_to_datetime(prev['start'])
 
             # Update the current table in the database
-            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0]}
+            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0], 'type_': 'subway'}
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
@@ -227,7 +231,7 @@ class Logger:
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
-                    params = {'line': prev['line'], 'stop': datetime.now()}
+                    params = {'line': prev['line'], 'stop': datetime.now(), 'type_': 'subway'}
                     self.db.q.update_current(**params)
 
         return True
