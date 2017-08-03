@@ -89,7 +89,9 @@ class ParseMTA(object):
         # That should give us whole-delay entries, alongside the titles, and the 
         # So, we've got this situation with the subway.
         # In some situations we get the delays split up into three strings like this:
-        joined = []
+        cleaned = []
+        blank_count = 0
+        current_string = ''
         for i, item in enumerate(items):
             if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
@@ -106,12 +108,25 @@ class ParseMTA(object):
             if not is_delay:
                 continue
 
+            # This code splices the strings together that have been separated,
+            # and separates the separate sentences.
+            # This gives us a list such as
+            # [u'Delays Posted:\xa008/02/2017\xa0 8:39PM', u'Following earlier signal problems at 8 Av...
+            # which is easier for us to parse than the list we had before.
             if text == '':
-                joined.append('@')
+                blank_count += 1
             else:
-                joined.append(text)
+                blank_count = 0
+                if current_string != '':
+                    current_string += ' '
+                current_string += text
 
-        #print(joined)
+            if blank_count > 1 and current_string != '':
+                blank_count = 0
+                cleaned.append(current_string)
+                current_string = ''
+
+        print(cleaned)
         """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St

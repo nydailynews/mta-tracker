@@ -79,7 +79,7 @@ class Logger:
         self.mta = ParseMTA(args[0])
         self.double_check = { 'in_text': 0, 'objects': 0 }
         self.transit_type = 'subway'
-        if self.args.transit_type:
+        if hasattr(self.args, 'transit_type') and self.args.transit_type:
             self.transit_type = self.args.transit_type
 
     def initialize_db(self, dbname='mta'):
@@ -289,6 +289,9 @@ def main(args):
 
     # Write the current-table data to json.
     log.write_json('current')
+
+    if args.verbose:
+        print log.double_check
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
