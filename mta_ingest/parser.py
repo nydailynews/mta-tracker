@@ -83,8 +83,35 @@ class ParseMTA(object):
         is_delay = False
         # print (dir(span))
 
+        # ** WE COULD:
+        # Loop through every item, and each time there's more than one consecutive blank line, axe those.
+        # Take the remaining pieces and put them in another list, then loop through that.
+        # That should give us whole-delay entries, alongside the titles, and the 
         # So, we've got this situation with the subway.
         # In some situations we get the delays split up into three strings like this:
+        joined = []
+        for i, item in enumerate(items):
+            if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
+                # Triggered when the text is not directly in a <p> / <strong> / <span> element.
+                text = item.strip()
+            else:
+                if is_delay and self.args.verbose:
+                    print (i, item.text.strip())
+                text = item.text.strip()
+
+            if text == 'Delays':
+                is_delay = True
+            elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
+                is_delay = False
+            if not is_delay:
+                continue
+
+            if text == '':
+                joined.append('@')
+            else:
+                joined.append(text)
+
+        print(joined)
         """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
@@ -165,7 +192,6 @@ and this:
                 is_delay = True
             elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
                 is_delay = False
-
             if not is_delay:
                 continue
 

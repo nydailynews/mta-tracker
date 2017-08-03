@@ -7,6 +7,7 @@ import json
 import os
 import random
 import string
+import re
 import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime
@@ -76,6 +77,7 @@ class Logger:
             self.args = args[0]
         self.db = Storage('mta')
         self.mta = ParseMTA(args[0])
+        self.double_check = { 'in_text': 0, 'objects': 0 }
         self.type_ = 'subway'
         if self.args.type_:
             self.type_ = self.args.type_
@@ -145,6 +147,8 @@ class Logger:
                 'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
                 'text': l.find('text').text
             }
+            if item['text']:
+                self.double_check['in_text'] += len(re.findall('TitleDelay', item['text']))
             if item['status']:
                 # Add the entry to the items dict if it's not there.
                 # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE
@@ -171,6 +175,7 @@ class Logger:
                             lines[line].cause = cause
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
+                            self.double_check['objects'] += 1
                             lines[line].datetimes.append(dt)
                             if hasattr(self.args, 'verbose') and self.args.verbose:
                                 print line, dt, len(lines[line].datetimes)
@@ -274,6 +279,8 @@ def main(args):
 
     # Write the current-table data to json.
     log.write_json('current')
+    print dir(log)
+    print log.double_check
 
     log.db.conn.close()
 
