@@ -83,6 +83,10 @@ class ParseMTA(object):
         is_delay = False
         # print (dir(span))
 
+        # In some situations we're looking through all the item's markup.
+        # In those situations we need to make sure we're looking at Delays
+        # and not at planned work.
+
         # ** WE COULD:
         # Loop through every item, and each time there's more than one consecutive blank line, axe those.
         # Take the remaining pieces and put them in another list, then loop through that.
@@ -95,6 +99,8 @@ class ParseMTA(object):
         for i, item in enumerate(items):
             if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
+                if is_delay and self.args.verbose:
+                    print ("%d*" % i, item.strip())
                 text = item.strip()
             else:
                 if is_delay and self.args.verbose:
@@ -182,44 +188,19 @@ and this:
                     items[9] = ''
                     items[10] = ''
 
-        for i, item in enumerate(items):
-            # In some situations we're looking through all the item's markup.
-            # In those situations we need to make sure we're looking at Delays
-            # and not at planned work.
+        for i, item in enumerate(cleaned):
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
             # TODO: Reduce the jank.
-            # Some delays, item by item, look like this:
-            if isinstance(item, NavigableString):
-                # Triggered when the text is not directly in a <p> / <strong> / <span> element.
-                if is_delay and self.args.verbose:
-                    print ("%d*" % i, item.strip())
-                text = item.strip()
-            elif isinstance(item, unicode) or isinstance(item, str):
-                if is_delay and self.args.verbose:
-                    print ("%d*" % i, item.strip())
-                text = item.strip()
-            else:
-                if is_delay and self.args.verbose:
-                    print (i, item.text.strip())
-                text = item.text.strip()
-
-            if text == 'Delays':
-                is_delay = True
-            elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
-                is_delay = False
-            if not is_delay:
-                continue
 
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
-            r = re.findall(self.subway_re, text)
+            r = re.findall(self.subway_re, item)
 
             if len(r) > 0:
-                for item in r:
-                    line = item.lstrip('[').rstrip(']')
-                    cause = text.strip()
+                for i in r:
+                    line = i.lstrip('[').rstrip(']')
                     if line not in lines_affected:
-                        lines_affected[line] = cause
+                        lines_affected[line] = item
 
         return lines_affected
 
