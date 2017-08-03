@@ -194,6 +194,7 @@ class Logger:
             >>> log.commit_starts(lines)
             True
             """
+        count = 0
         for line, item in lines.iteritems():
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
@@ -205,8 +206,10 @@ class Logger:
                 # Then we ....
                 if prev['start'] != 0:
                     prev_dt = self.db.q.convert_to_datetime(prev['start'])
+                    count += 1
 
             # Update the current table in the database
+            # ***HC
             params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0], 'type_': 'subway'}
             self.db.q.update_current(**params)
 
@@ -214,7 +217,7 @@ class Logger:
             if line in self.stop_check['subway']:
                 self.stop_check['subway'].remove(line)
 
-        return True
+        return count
 
     def commit_stops(self):
         """ Check the previous file to see if there are active alerts with lines
@@ -232,14 +235,16 @@ class Logger:
             >>> log.commit_stops()
             True
             """
+        count = 0
         if self.previous:
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
                     params = {'line': prev['line'], 'stop': datetime.now(), 'type_': 'subway'}
                     self.db.q.update_current(**params)
+                    count += 1
 
-        return True
+        return count
 
     def write_json(self, table, *args):
         """ Write the contents of a table to a json file.
@@ -251,6 +256,11 @@ class Logger:
         json.dump(self.db.q.make_dict(fields, rows), fh)
         fh.close()
         return True
+
+    def save_xml(self):
+        """ Save the XML for later.
+            """
+        pass
 
 
 def main(args):
@@ -273,14 +283,14 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    log.commit_starts(lines)
-    log.commit_stops()
+    commit_count = log.commit_starts(lines)
+    commit_count += log.commit_stops()
     log.db.conn.commit()
 
     # Write the current-table data to json.
     log.write_json('current')
-    print dir(log)
-    print log.double_check
+    if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
+        log.save_xml()
 
     log.db.conn.close()
 
