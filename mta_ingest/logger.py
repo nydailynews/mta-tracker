@@ -78,9 +78,9 @@ class Logger:
         self.db = Storage('mta')
         self.mta = ParseMTA(args[0])
         self.double_check = { 'in_text': 0, 'objects': 0 }
-        self.type_ = 'subway'
-        if self.args.type_:
-            self.type_ = self.args.type_
+        self.transit_type = 'subway'
+        if self.args.transit_type:
+            self.transit_type = self.args.transit_type
 
     def initialize_db(self, dbname='mta'):
         """ Resets database. Also sets the self.db value to the name of the db.
@@ -126,10 +126,10 @@ class Logger:
             >>> log.get_files(['test.xml'])
             ['test.xml']
             """
-        type_ = 'subway'
-        if hasattr(self.args, 'type_') and self.args.type_:
-            print self.args
-            type_ = self.args.type_
+        transit_type = 'subway'
+        if hasattr(self.args, 'transit_type') and self.args.transit_type:
+            #print self.args
+            transit_type = self.args.transit_type
 
         # TODO: Make this flexible to handle the other modes of transit
         self.stop_check = dicts.lines
@@ -139,7 +139,7 @@ class Logger:
         r = e.getroot()
         # Options beside subway:
         # bus, BT, LIRR, MetroNorth
-        for l in r.find(type_):
+        for l in r.find(transit_type):
             item = {
                 'status': l.find('status').text,
                 'status_detail': {},
@@ -210,7 +210,7 @@ class Logger:
 
             # Update the current table in the database
             # ***HC
-            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0], 'type_': 'subway'}
+            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
@@ -240,7 +240,7 @@ class Logger:
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
-                    params = {'line': prev['line'], 'stop': datetime.now(), 'type_': 'subway'}
+                    params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
                     count += 1
 
@@ -289,6 +289,7 @@ def main(args):
 
     # Write the current-table data to json.
     log.write_json('current')
+
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
 
@@ -307,7 +308,7 @@ def build_parser(args):
     parser.add_argument("-i", "--initial", dest="initial", default=False, action="store_true")
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("--test", dest="test", default=False, action="store_true")
-    parser.add_argument("-t", "--type", dest="type_", default=None)
+    parser.add_argument("-t", "--type", dest="transit_type", default=None)
     parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
     return args

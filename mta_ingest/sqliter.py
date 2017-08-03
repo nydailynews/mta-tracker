@@ -96,16 +96,16 @@ class Query:
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
             >>> s.setup()
-            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'type_': 'subway' }
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
             >>> print s.q.update_current(**d)
             True
             """
         if 'start' in kwargs:
             sql = 'UPDATE current SET start = "%s", stop = "-1", cause = "%s" WHERE line = "%s" and type = "%s"' \
-                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['type_'])
+                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
         if 'stop' in kwargs:
             sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
-                  % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['type_'])
+                  % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
         self.c.execute(sql)
         return True
 

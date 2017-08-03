@@ -111,7 +111,7 @@ class ParseMTA(object):
             else:
                 joined.append(text)
 
-        print(joined)
+        #print(joined)
         """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
