@@ -34,7 +34,7 @@ class Line(object):
         self.intervals = []
         self.line = line
         self.last_alert = ''
-        self.cause = ''
+        self.cause = []
 
     @staticmethod
     def parse_dt(dt):
@@ -175,13 +175,15 @@ class Logger:
                         if line not in lines:
                             lines[line] = Line(line)
                             lines[line].cause = cause
+                        # There will only be one datetime. It's pulled from the XML,
+                        # even though there are datetime(s) in the XML's text markup blob.
                         dt = lines[line].parse_dt(item['datetime'])
                         if dt not in lines[line].datetimes:
-                            self.double_check['objects'] += 1
+                            self.double_check['objects'] += len(cause)
                             lines[line].datetimes.append(dt)
                             if hasattr(self.args, 'verbose') and self.args.verbose:
                                 print line, dt, len(lines[line].datetimes)
-
+        
         return lines
 
     def commit_starts(self, lines):
@@ -242,6 +244,7 @@ class Logger:
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
+                    # ***HC
                     params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
                     count += 1
@@ -285,6 +288,7 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
+    print 'hey', lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     log.db.conn.commit()
