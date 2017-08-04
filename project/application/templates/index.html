@@ -145,6 +145,15 @@ var tracker = {
     },
     parse_cause: function() {
     },
+    slugify: function (text) {
+        // from https://gist.github.com/mathewbyrne/1280286
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+    },
     update_lead_alert: function() {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
@@ -169,12 +178,17 @@ var tracker = {
                 var l = this.lines.subway.worsts[i];
                 var cause = this.get_line_data("line", l).cause;
                 if ( causes.indexOf(cause) === -1 ) {
+                    // Add the cause to the list of causes
+                    // so we know if the next cause is new or not.
                     causes.push(this.get_line_data("line", l).cause);
+                    // Also associate the line with the cause so we can later
+                    // put all/any lines with the same cause together.
                     groups[cause] = [l];
                 }
                 else {
                     // We have a duplicate cause
                     is_multiple = 1;
+                    // We want to know which cause(s) are multiples.
                     multiples.push(cause);
                     groups[cause].push(l);
                 }
@@ -188,15 +202,24 @@ var tracker = {
                     var causes = record.cause.split(' *** ')
                     var jlen = causes.length;
                     for ( var j = 0; j < jlen; j ++ ) {
-                        var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+                        var slug = this.slugify(causes[j]);
+                        var markup = '<dt id="' + slug + '"><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
                          <dd>' + causes[j] + '</dd>';
                         $('#lead dl').append(markup);
                     }
                 }
                 else {
-                    var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
-                     <dd>' + record.cause + '</dd>';
-                    $('#lead dl').append(markup);
+                    var slug = this.slugify(record.cause);
+                    var img = '<img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon">';
+                    var dt = $('#' + slug);
+                    if ( dt.length ) {
+                        dt.append(img);
+                    }
+                    else {
+                        var markup = '<dt id="' + slug + '">' + img + '</dt>\n\
+                         <dd>' + record.cause + '</dd>';
+                        $('#lead dl').append(markup);
+                    }
                 }
             }
         }
