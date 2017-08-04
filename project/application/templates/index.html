@@ -198,26 +198,31 @@ var tracker = {
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.lines.subway.worsts[i];
                 var record = this.get_line_data("line", l);
+                var img = '<img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon">';
+
                 if ( record.cause.indexOf(' *** ') >= 0 ) {
                     var causes = record.cause.split(' *** ')
                     var jlen = causes.length;
                     for ( var j = 0; j < jlen; j ++ ) {
                         var slug = this.slugify(causes[j]);
-                        var markup = '<dt id="' + slug + '"><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
-                         <dd>' + causes[j] + '</dd>';
-                        $('#lead dl').append(markup);
+                        var dt = $('#' + slug);
+                        if ( dt.length ) {
+                            dt.append(img);
+                        }
+                        else {
+                            var markup = '<dt id="' + slug + '">' + img + '</dt><dd>' + causes[j] + '</dd>';
+                            $('#lead dl').append(markup);
+                        }
                     }
                 }
                 else {
                     var slug = this.slugify(record.cause);
-                    var img = '<img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon">';
                     var dt = $('#' + slug);
                     if ( dt.length ) {
                         dt.append(img);
                     }
                     else {
-                        var markup = '<dt id="' + slug + '">' + img + '</dt>\n\
-                         <dd>' + record.cause + '</dd>';
+                        var markup = '<dt id="' + slug + '">' + img + '</dt><dd>' + record.cause + '</dd>';
                         $('#lead dl').append(markup);
                     }
                 }
