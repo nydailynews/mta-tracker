@@ -214,7 +214,7 @@ class Logger:
 
             # Update the current table in the database
             # ***HC
-            params = {'cause': item.cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+            params = {'cause': "***".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
@@ -288,7 +288,6 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    print 'hey', lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     log.db.conn.commit()
