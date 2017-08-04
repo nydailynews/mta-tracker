@@ -147,8 +147,10 @@ class Logger:
                 'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
                 'text': l.find('text').text
             }
+            # DOUBLE-CHECK
             if item['text']:
                 self.double_check['in_text'] += len(re.findall('TitleDelay', item['text']))
+
             if item['status']:
                 # Add the entry to the items dict if it's not there.
                 # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE

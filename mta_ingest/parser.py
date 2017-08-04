@@ -69,7 +69,7 @@ class ParseMTA(object):
 
     def _extract_delay(self, span):
         """ Parse delay markup. Delays are sometimes embedded in <p> elements.
-            Return a dict of affected lines / reasons for the delay
+            Return a dict of affected lines / list of delay causes.
             """
         lines_affected = {}
         # We can't trust that the delay is always in a p element (blergh):
@@ -81,7 +81,6 @@ class ParseMTA(object):
             <br/><br/>"""
         items = span.find_parent().contents
         is_delay = False
-        # print (dir(span))
 
         # In some situations we're looking through all the item's markup.
         # In those situations we need to make sure we're looking at Delays
@@ -99,12 +98,12 @@ class ParseMTA(object):
         for i, item in enumerate(items):
             if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
-                if is_delay and self.args.verbose:
-                    print ("%d*" % i, item.strip())
+                #if is_delay and self.args.verbose:
+                #    print ("%d*" % i, item.strip())
                 text = item.strip()
             else:
-                if is_delay and self.args.verbose:
-                    print (i, item.text.strip())
+                #if is_delay and self.args.verbose:
+                #    print (i, item.text.strip())
                 text = item.text.strip()
 
             if text == 'Delays':
@@ -174,19 +173,6 @@ and this:
 20 Due to signal problems at 125 St, northbound [1] trains are running with delays.
 21*
         """
-        # So, we look for the telltale sign of that.
-        if len(items) >= 9:
-            if isinstance(items[6], NavigableString) and isinstance(items[8], NavigableString):
-                if len(items[8].strip()) > 0 and items[8].strip()[0] in [',', '[']:
-                    items[6] = '%s%s%s' % (items[6], items[7].text.strip(), items[8])
-                    items[7] = ''
-                    items[8] = ''
-                if items[8].strip() == 'and':
-                    items[6] = '%s%s%s%s%s' % (items[6], items[7].text.strip(), items[8], items[9], items[10])
-                    items[7] = ''
-                    items[8] = ''
-                    items[9] = ''
-                    items[10] = ''
 
         for i, item in enumerate(cleaned):
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
@@ -199,8 +185,13 @@ and this:
             if len(r) > 0:
                 for i in r:
                     line = i.lstrip('[').rstrip(']')
+                    print (line),
+                    # Compare the line and its delay cause to make sure
+                    # it's not already accounted for.
                     if line not in lines_affected:
-                        lines_affected[line] = item
+                        lines_affected[line] = [item]
+                    elif line in lines_affected and item not in lines_affected[line]:
+                        lines_affected[line].append(item)
 
         return lines_affected
 
