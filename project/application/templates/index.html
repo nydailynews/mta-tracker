@@ -143,6 +143,8 @@ var tracker = {
         //$('#lead p').text('since the last MTA subway service alert.');
         $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
+    parse_cause: function() {
+    },
     update_lead_alert: function() {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
@@ -182,9 +184,20 @@ var tracker = {
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.lines.subway.worsts[i];
                 var record = this.get_line_data("line", l);
-                var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
-                 <dd>' + record.cause + '</dd>';
-                $('#lead dl').append(markup);
+                if ( record.cause.indexOf(' *** ') >= 0 ) {
+                    var causes = record.cause.split(' *** ')
+                    var jlen = causes.length;
+                    for ( var j = 0; j < jlen; j ++ ) {
+                        var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+                         <dd>' + causes[j] + '</dd>';
+                        $('#lead dl').append(markup);
+                    }
+                }
+                else {
+                    var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+                     <dd>' + record.cause + '</dd>';
+                    $('#lead dl').append(markup);
+                }
             }
         }
         else {
@@ -194,8 +207,6 @@ var tracker = {
         $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
     },
     init: function() {
-        //startTime();
-        //console.log(this.data);
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
         //
