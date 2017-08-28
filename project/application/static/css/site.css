@@ -108,6 +108,7 @@ article dd {
     padding: 5px;
     height: auto;
     text-align: left;
+    line-height: 22px;
 }
 
 #lead dl {
@@ -115,8 +116,12 @@ article dd {
     max-width: 800px;
     overflow: visible;
 }
-#lead dl dd {
+dl dd {
     float: none;
+}
+
+#recent dl dd {
+    height: 50px;
 }
 
 .ad {
@@ -134,6 +139,9 @@ div.center > span {
 
 /* HANDHELD-SPECIFIC */
 @media only screen and ( min-width: 220px ) and ( max-width:727px ) {
+article {
+    margin: auto;
+}
 #news {
     max-width: 100%;
     width: 100%;
