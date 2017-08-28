@@ -132,6 +132,14 @@
     </div>
 </div>
 
+        <section class="chart" id="chart">
+            <h2>Today in MTA alerts</h2>
+            <p><em>Chart updates automatically every minute</em></p>
+            <div>
+                <img src="static/img/day-chart.png" alt="">
+            </div>
+        </section>
+
         <section class="recent" id="recent">
             <h2>Recent MTA alerts</h2>
             <div>
