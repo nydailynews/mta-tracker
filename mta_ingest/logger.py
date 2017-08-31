@@ -202,14 +202,20 @@ class Logger:
         for line, item in lines.iteritems():
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
+            print "LINE",line
             if self.previous:
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
+                    print prev['line']
                     if line == prev['line']:
                         prev_record = prev
+                        break
                 # Then we ....
-                if prev['start'] != 0:
-                    prev_dt = self.db.q.convert_to_datetime(prev['start'])
+                print line,prev_record
+                if prev_record['start'] != 0:
+                    prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
+                    # DOUBLE-CHECK
+                    print "HEY",line
                     count += 1
 
             # Update the current table in the database
@@ -288,6 +294,7 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
+    print lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     log.db.conn.commit()

@@ -36,6 +36,8 @@ class Storage:
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
+        self.c.execute('''CREATE TABLE IF NOT EXISTS minute
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, date DATE, minute INT, count INT, type TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
@@ -107,6 +109,30 @@ class Query:
             sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
                   % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
         self.c.execute(sql)
+        return True
+
+    def update_minute(self, **kwargs):
+        """ Update the "minute" table with the current number of minutes since midnight and the number of alerts
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> d = { 'minute': datetime(2017, 1, 1, 0, 0, 0), 'count': 3, 'transit_type': 'subway' }
+            >>> print s.q.update_minute(**d)
+            True
+            """
+        #(id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, date TEXT, minute INT, count INT, type TEXT)
+        sql = 'INSERT INTO minute VALUES (?, ?, ?, ?, ?)'
+        values = (None, self.q.convert_datetime(datetime.now()), kwargs['minute'], kwargs['count'], kwargs['transit_type'])
+        self.c.execute(sql, values)
+        return True
+
+    def update_archive(self, **kwargs):
+        """ Update the "archive" table with the records of the starts and stops for each line's alerts.
+            >>> s = Storage('test')
+            >>> s.setup()
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
+            >>> print s.q.update_current(**d)
+            True
+            """
         return True
 
     def make_dict(self, fields, rows):

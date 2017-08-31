@@ -193,6 +193,7 @@ and this:
                     elif line in lines_affected and item not in lines_affected[line]:
                         lines_affected[line].append(item)
 
+        print ("AFF", lines_affected)
         return lines_affected
 
 def build_parser(args):
