@@ -257,6 +257,21 @@ class Logger:
 
         return count
 
+    def commit_minute(self):
+        """ Write an entry in the minute table.
+            >>> log = Logger()
+            >>> log.initialize_db('test')
+            True
+            >>> files = log.get_files(['test.xml'])
+            >>> for fn in files:
+            ...     lines = log.parse_file(fn)
+            >>> log.commit_minute()
+            True
+            """
+        params = {'minute': 0, 'count': self.double_check['objects'], 'transit_type': 'subway'}
+        self.db.q.update_minute(**params)
+        return True
+
     def write_json(self, table, *args):
         """ Write the contents of a table to a json file.
             >>>
@@ -297,6 +312,7 @@ def main(args):
     print lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
+    log.commit_minute()
     log.db.conn.commit()
 
     # Write the current-table data to json.

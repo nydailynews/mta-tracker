@@ -121,7 +121,7 @@ class Query:
             """
         #(id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, date TEXT, minute INT, count INT, type TEXT)
         sql = 'INSERT INTO minute VALUES (?, ?, ?, ?, ?)'
-        values = (None, self.q.convert_datetime(datetime.now()), kwargs['minute'], kwargs['count'], kwargs['transit_type'])
+        values = (None, self.convert_datetime(datetime.now()), kwargs['minute'], kwargs['count'], kwargs['transit_type'])
         self.c.execute(sql, values)
         return True
 
