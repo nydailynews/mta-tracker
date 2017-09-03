@@ -36,8 +36,8 @@ class Storage:
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
-        self.c.execute('''CREATE TABLE IF NOT EXISTS minute
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, date DATE, minute INT, count INT, type TEXT)''')
+        #self.c.execute('''CREATE TABLE IF NOT EXISTS minute
+        #     (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetime DATE, line TEXT, type TEXT, cause TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS archive
              (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
         self.c.execute('''CREATE TABLE IF NOT EXISTS averages 

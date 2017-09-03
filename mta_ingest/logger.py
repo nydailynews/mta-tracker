@@ -312,7 +312,7 @@ def main(args):
     print lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
-    log.commit_minute()
+    #log.commit_minute()
     log.db.conn.commit()
 
     # Write the current-table data to json.
