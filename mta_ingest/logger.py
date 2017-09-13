@@ -203,23 +203,19 @@ class Logger:
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             if self.args.verbose:
-                print "LINE",line
+                print "CHECKING LINE",line
             if self.previous:
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
-                    if self.args.verbose:
-                        print prev['line']
                     if line == prev['line']:
                         prev_record = prev
                         break
                 # Then we ....
-                if self.args.verbose:
-                    print line,prev_record
                 if prev_record['start'] != 0:
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
                     if self.args.verbose:
-                        print "HEY",line
+                        print "THIS LINE HAS A NEW ALERT",line
                     count += 1
 
             # Update the current table in the database
