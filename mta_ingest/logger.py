@@ -201,10 +201,12 @@ class Logger:
         count = 0
         # Loop through the lines that have alerts
         for line, item in lines.iteritems():
+            if line not in dicts.lines['subway']:
+                continue
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             if self.args.verbose:
-                print "CHECKING LINE",line
+                print "NOTICE: CHECKING LINE",line
             if self.previous:
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
@@ -214,7 +216,7 @@ class Logger:
                 # Then we ....
                 if prev_record['start'] == 0:
                     if self.args.verbose:
-                        print "THIS LINE HAS A NEW ALERT",line
+                        print "NOTICE: THIS LINE HAS A NEW ALERT",line
                 else:
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
@@ -256,7 +258,7 @@ class Logger:
                 # The stop_check lists exists for this purpose: To check if an alert for a line has stopped.
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
                     if self.args.verbose:
-                        print "THIS LINE'S ALERT HAS STOPPED", prev['line']
+                        print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
                     # ***HC
                     params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
