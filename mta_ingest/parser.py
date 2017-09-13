@@ -73,7 +73,7 @@ class ParseMTA(object):
                 if type_ in unicode(item):
                     d[type_].update(self.extract_status(type_, item))
         if self.args.verbose:
-            print("WHAT", d)
+            print("The results of ParseMTA().extract():", d)
         return d
 
     def extract_status(self, status, span):
