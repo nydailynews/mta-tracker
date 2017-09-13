@@ -61,7 +61,8 @@ class Logger:
 
     def __init__(self, *args, **kwargs):
         """
-            >>> log = Logger([])
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             """
         # Get the results from the last time we ran this.
         try:
@@ -83,7 +84,8 @@ class Logger:
 
     def initialize_db(self, dbname='mta'):
         """ Resets database. Also sets the self.db value to the name of the db.
-            >>> log = Logger()
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.initialize_db('test')
             True
             """
@@ -94,7 +96,8 @@ class Logger:
 
     def get_files(self, files_from_args):
         """
-            >>> log = Logger()
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.get_files(['test.xml'])
             ['test.xml']
             """
@@ -121,7 +124,8 @@ class Logger:
     def parse_file(self, fn, *args):
         """ Pull out the data we need from the MTA's XML.
             You'd think XML would be well structured. You'd be about half right.
-            >>> log = Logger([])
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.get_files(['test.xml'])
             ['test.xml']
             """
@@ -184,33 +188,38 @@ class Logger:
     def commit_starts(self, lines):
         """ If there are alerts in the XML that we don't have in the database,
             add the alert to the database.
-            >>> log = Logger()
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.initialize_db('test')
             True
             >>> files = log.get_files(['test.xml'])
             >>> for fn in files:
             ...     lines = log.parse_file(fn)
             >>> log.commit_starts(lines)
-            True
+            0
             """
         count = 0
         for line, item in lines.iteritems():
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
-            print "LINE",line
+            if self.args.verbose:
+                print "LINE",line
             if self.previous:
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
-                    print prev['line']
+                    if self.args.verbose:
+                        print prev['line']
                     if line == prev['line']:
                         prev_record = prev
                         break
                 # Then we ....
-                print line,prev_record
+                if self.args.verbose:
+                    print line,prev_record
                 if prev_record['start'] != 0:
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
-                    print "HEY",line
+                    if self.args.verbose:
+                        print "HEY",line
                     count += 1
 
             # Update the current table in the database
@@ -229,16 +238,17 @@ class Logger:
             matching a line in our stop_check file. If there are, we need to update
             the stop value of that line's record in the database, because that means
             an alert has ended.
-            >>> log = Logger()
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.initialize_db('test')
             True
             >>> files = log.get_files(['test.xml'])
             >>> for fn in files:
             ...     lines = log.parse_file(fn)
             >>> log.commit_starts(lines)
-            True
+            0
             >>> log.commit_stops()
-            True
+            0
             """
         count = 0
         if self.previous:
@@ -252,9 +262,11 @@ class Logger:
 
         return count
 
+    '''
     def commit_minute(self):
         """ Write an entry in the minute table.
-            >>> log = Logger()
+            >>> args = build_parser([])
+            >>> log = Logger(args)
             >>> log.initialize_db('test')
             True
             >>> files = log.get_files(['test.xml'])
@@ -266,6 +278,7 @@ class Logger:
         params = {'minute': 0, 'count': self.double_check['objects'], 'transit_type': 'subway'}
         self.db.q.update_minute(**params)
         return True
+    '''
 
     def write_json(self, table, *args):
         """ Write the contents of a table to a json file.
@@ -304,7 +317,8 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    print lines
+    if args.verbose:
+        print lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     #log.commit_minute()
