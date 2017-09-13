@@ -28,10 +28,10 @@ class Storage:
             >>> s.setup()
             True
             """
-        self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
         # INDEXNAME, TABLENAME, COLUMNNAME
         # self.c.execute('CREATE INDEX ? ON ?(?)', value)
+        self.c.execute('''CREATE TABLE IF NOT EXISTS current 
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
         self._setup_current()
 
         self.c.execute('''CREATE TABLE IF NOT EXISTS raw

@@ -8,12 +8,14 @@ import re
 import doctest
 from bs4 import BeautifulSoup, NavigableString
 from collections import defaultdict
+import xml.etree.ElementTree as ET
 
 
 class ParseMTA(object):
     def __init__(self, *args):
         """
-            >>> p = ParseMTA([])
+            >>> args = build_parser(['test.xml'])
+            >>> p = ParseMTA(args)
             """
         self.args = args[0]
         self.lines = []
@@ -24,42 +26,70 @@ class ParseMTA(object):
             """
         pass
 
-    def extract(self, value):
-        """ Given a line object, return the relevant parts.
-            >>> p = ParseMTA([])
+    def parse_file(self, fn, transit_type):
+        """ Given a filename, turn an xml file into an object and return entries
+            for the specified transit_type.
+            >>> args = build_parser(['test.xml'])
+            >>> p = ParseMTA(args)
+            >>> entries = p.parse_file('test.xml', 'subway')
+            >>> print(entries[0].find('name').text)
+            123
             """
-        lines = self.extract_lines(value)
-        has_delays = 0
-        has_planned_work = 0
-        return lines
+        e = ET.parse('_input/%s' % fn)
+        r = e.getroot()
+        # Options for transit_type: subway, bus, BT, LIRR, MetroNorth
+        return r.find(transit_type)
 
-    def extract_lines(self, value):
-        """ Given a line's status, parse the MTA lines mentioned in it.
-            Returns a list of ____
+    def extract(self, value):
+        """ Given an entry derived loosely from the MTA's XML, return the relevant parts.
+            An item, defined in logger.py, looks something like:
+            item = {
+                'status': l.find('status').text,
+                'status_detail': {},
+                'lines': l.find('name').text,  # This is generic, the actual lines affected may be some of these, or others.
+                'datetime': '%s %s' % (l.find('Date').text, l.find('Time').text),
+                'text': l.find('text').text
+            }
+            >>> args = build_parser(['test.xml'])
+            >>> p = ParseMTA(args)
+            >>> entries = p.parse_file('test.xml', 'subway')
+            >>> item = { 'text': entries[0].find('text').text }
+            >>> lines = p.extract(item)
+            >>> print(lines.keys())
+            ['TitleDelay', 'TitlePlannedWork']
             """
         if value['text']:
             self.soup = BeautifulSoup(value['text'], 'html.parser')
         else:
             return None
-        # print (soup.get_text())
-        # print (dir(soup))
-        # print (soup.prettify())
+        # print(soup.get_text())
+        # print(dir(soup))
+        # print(soup.prettify())
         spans = self.soup.find_all('span')
         types = ['TitlePlannedWork', 'TitleDelay']
         d = {'TitlePlannedWork': {}, 'TitleDelay': {}}
         for item in spans:
             for type_ in types:
                 if type_ in unicode(item):
-                    d[type_].update(self.extract_subway_delay(type_, item))
+                    d[type_].update(self.extract_status(type_, item))
+        if self.args.verbose:
+            print("WHAT", d)
         return d
 
-    def extract_subway_delay(self, delay, span):
+    def extract_status(self, status, span):
         """ Given a type of delay, extract the data from the markup that usually
             runs with that delay. Returns a dict.
+            >>> args = build_parser(['test.xml'])
+            >>> p = ParseMTA(args)
+            >>> entries = p.parse_file('test.xml', 'subway')
+            >>> item = { 'text': entries[0].find('text').text }
+            >>> lines = p.extract(item)
+            >>> print(lines['TitleDelay']['5'])
+            [u'Following earlier NYPD activity at Wall St , [4] and [5] train service has resumed.']
             """
-        if delay == 'TitlePlannedWork':
+        if status == 'TitlePlannedWork':
             return self._extract_planned_work(span)
-        elif delay == 'TitleDelay':
+        elif status == 'TitleDelay':
             return self._extract_delay(span)
 
     def _extract_planned_work(self, span):
@@ -70,6 +100,7 @@ class ParseMTA(object):
     def _extract_delay(self, span):
         """ Parse delay markup. Delays are sometimes embedded in <p> elements.
             Return a dict of affected lines / list of delay causes.
+            Ex: {u'3': [u'Following an earlier incident involving track repairs...
             """
         lines_affected = {}
         # We can't trust that the delay is always in a p element (blergh):
@@ -99,16 +130,19 @@ class ParseMTA(object):
             if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
                 #if is_delay and self.args.verbose:
-                #    print ("%d*" % i, item.strip())
+                #    print("%d*" % i, item.strip())
                 text = item.strip()
             else:
                 #if is_delay and self.args.verbose:
-                #    print (i, item.text.strip())
+                #    print(i, item.text.strip())
                 text = item.text.strip()
 
             if text == 'Delays':
                 is_delay = True
             elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
+                if self.args.verbose:
+                    print(text)
+                    print('********')
                 is_delay = False
             if not is_delay:
                 continue
@@ -131,7 +165,8 @@ class ParseMTA(object):
                 cleaned.append(current_string)
                 current_string = ''
 
-        print(cleaned)
+        if self.args.verbose:
+            print("CLEANED\n", cleaned)
         """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
@@ -185,7 +220,8 @@ and this:
             if len(r) > 0:
                 for i in r:
                     line = i.lstrip('[').rstrip(']')
-                    print (line),
+                    if self.args.verbose:
+                        print(line,)
                     # Compare the line and its delay cause to make sure
                     # it's not already accounted for.
                     if line not in lines_affected:
@@ -193,19 +229,22 @@ and this:
                     elif line in lines_affected and item not in lines_affected[line]:
                         lines_affected[line].append(item)
 
-        print ("AFF", lines_affected)
+        if self.args.verbose:
+            print("RETURNING THESE AFFECTED LINES from _extract_delay()\n", lines_affected)
         return lines_affected
 
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
-        >>> print (args.verbose)
+        >>> print(args.verbose)
         True
         """
     parser = argparse.ArgumentParser(usage='$ python parser.py',
                                      description='Parse the MTA alert feed, return a dict.',
-                                     epilog='Examply use: python parser.py')
+                                     epilog='Example use: python parser.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
+    parser.add_argument("--test", dest="test", default=False, action="store_true")
+    parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
     args = parser.parse_args(args)
     return args
 
@@ -213,5 +252,5 @@ def build_parser(args):
 if __name__ == '__main__':
     args = build_parser(sys.argv[1:])
 
-    if args.verbose:
+    if args.test:
         doctest.testmod(verbose=args.verbose)

@@ -9,7 +9,6 @@ import random
 import string
 import re
 import sys
-import xml.etree.ElementTree as ET
 from datetime import datetime
 
 from filewrapper import FileWrapper
@@ -133,13 +132,9 @@ class Logger:
 
         # TODO: Make this flexible to handle the other modes of transit
         self.stop_check = dicts.lines
-        items = {}
-        lines = {}
-        e = ET.parse('_input/%s' % fn)
-        r = e.getroot()
-        # Options beside subway:
-        # bus, BT, LIRR, MetroNorth
-        for l in r.find(transit_type):
+        items, lines = {}, {}
+        entries = self.mta.parse_file(fn, transit_type)
+        for l in entries:
             item = {
                 'status': l.find('status').text,
                 'status_detail': {},
