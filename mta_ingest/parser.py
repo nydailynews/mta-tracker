@@ -56,7 +56,7 @@ class ParseMTA(object):
             >>> item = { 'text': entries[0].find('text').text }
             >>> lines = p.extract(item)
             >>> print(lines.keys())
-            ['TitleDelay', 'TitlePlannedWork']
+            ['TitleDelay', 'TitlePlannedWork', 'TitleServiceChange']
             """
         if value['text']:
             self.soup = BeautifulSoup(value['text'], 'html.parser')
@@ -66,8 +66,9 @@ class ParseMTA(object):
         # print(dir(soup))
         # print(soup.prettify())
         spans = self.soup.find_all('span')
-        types = ['TitlePlannedWork', 'TitleDelay']
-        d = {'TitlePlannedWork': {}, 'TitleDelay': {}}
+        types = ['TitlePlannedWork', 'TitleDelay', 'TitleServiceChange']
+]
+        d = {'TitlePlannedWork': {}, 'TitleDelay': {}, 'TitleServiceChange': {}}
         for item in spans:
             for type_ in types:
                 if type_ in unicode(item):
