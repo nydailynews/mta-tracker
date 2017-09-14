@@ -67,7 +67,7 @@ class ParseMTA(object):
         # print(soup.prettify())
         spans = self.soup.find_all('span')
         types = ['TitlePlannedWork', 'TitleDelay', 'TitleServiceChange']
-]
+
         d = {'TitlePlannedWork': {}, 'TitleDelay': {}, 'TitleServiceChange': {}}
         for item in spans:
             for type_ in types:
@@ -88,10 +88,11 @@ class ParseMTA(object):
             >>> print(lines['TitleDelay']['5'])
             [u'Following earlier NYPD activity at Wall St , [4] and [5] train service has resumed.']
             """
-        if status == 'TitlePlannedWork':
-            return self._extract_planned_work(span)
-        elif status == 'TitleDelay':
+        if status == 'TitleDelay':
             return self._extract_delay(span)
+        #elif status == 'TitlePlannedWork':
+        #    return self._extract_planned_work(span)
+        return {}
 
     def _extract_planned_work(self, span):
         """ Parse a planned work markup. Return a dict.
