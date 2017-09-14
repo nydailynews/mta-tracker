@@ -127,12 +127,21 @@ class Query:
 
     def update_archive(self, **kwargs):
         """ Update the "archive" table with the records of the starts and stops for each line's alerts.
+            db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, cause
             >>> s = Storage('test')
             >>> s.setup()
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
-            >>> print s.q.update_current(**d)
+            >>> print s.q.update_archive(**d)
             True
             """
+        if 'start' in kwargs:
+            sql = 'INSERT INTO current VALUES (? ? ? ? ? ? ? ? ? ?)'
+            values = (None,self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
+            self.c.execute(sql, values)
+        if 'stop' in kwargs:
+            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
+                  % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
+            self.c.execute(sql)
         return True
 
     def make_dict(self, fields, rows):

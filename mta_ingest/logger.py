@@ -107,7 +107,10 @@ class Logger:
             url = 'http://web.mta.info/status/serviceStatus.txt?%s' % rando
             fh = FileWrapper('_input/mta.xml')
             fh.open()
-            fh.write(fh.request(url))
+            try:
+                fh.write(fh.request(url))
+            except:
+                fh.write(fh.request(url))
             fh.close()
             files = ['mta.xml']
         else:
