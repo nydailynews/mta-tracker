@@ -175,50 +175,12 @@ class ParseMTA(object):
                 blank_count = 0
                 cleaned.append(current_string)
                 current_string = ''
+            else:
+                if self.args.verbose:
+                    print('>>>',current_string)
 
         if self.args.verbose:
             print("NOTICE: Cleaned text:", cleaned)
-        """
-6* Following an earlier signal problems at
-7 Van Cortlandt Park-242 St
-8* , [1] train service has resumed with delays.
-
-or this:
-6* Due to an earlier incident involving a train with mechanical problems at
-7 Rockaway Blvd
-8* , [A] train service has resumed with delays.
-
-or this:
-3 Posted: 07/25/2017 12:13PM
-4
-5
-6* Following an earlier incident at
-7 Canal St
-8* , [A], [C] and [F] train service has resumed with delays.
-
-or this:
-4
-5
-6* Following an earlier incident involving a train with mechanical problems at
-7 Canal St
-8* , [4], [5] and [6] train service has resumed with delays.
-
-or this:
-6*
-7 Due to signal problems at 52 St, 34 St-bound [7] trains are running with delays.
-8*
-9 Allow additional travel time.
-
-or this:
-32* Following earlier signal problems at
-33 96 St
-34* , [2] and [3] train service has resumed with delays.
-
-and this:
-19*
-20 Due to signal problems at 125 St, northbound [1] trains are running with delays.
-21*
-        """
 
         for i, item in enumerate(cleaned):
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
