@@ -4,7 +4,7 @@ import sys
 import argparse
 import doctest
 import sqlite3
-from datetime import datetime
+from datetime import datetime, time
 import dicts
 
 
@@ -22,7 +22,7 @@ class Storage:
         self.c = self.conn.cursor()
         self.q = Query(self.c)
 
-    def setup(self):
+    def setup(self, table=None):
         """ Create the tables.
             >>> s = Storage('test')
             >>> s.setup()
@@ -30,18 +30,22 @@ class Storage:
             """
         # INDEXNAME, TABLENAME, COLUMNNAME
         # self.c.execute('CREATE INDEX ? ON ?(?)', value)
-        self.c.execute('''CREATE TABLE IF NOT EXISTS current 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
-        self._setup_current()
+        if not table or table == 'current':
+            self.c.execute('''CREATE TABLE IF NOT EXISTS current 
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
+            self._setup_current()
 
-        self.c.execute('''CREATE TABLE IF NOT EXISTS raw
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
+        if not table or table == 'raw':
+            self.c.execute('''CREATE TABLE IF NOT EXISTS raw
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
         #self.c.execute('''CREATE TABLE IF NOT EXISTS minute
         #     (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetime DATE, line TEXT, type TEXT, cause TEXT)''')
-        self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
-        self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
-             (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+        if not table or table == 'archive':
+            self.c.execute('''CREATE TABLE IF NOT EXISTS archive
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
+        if not table or table == 'averages':
+            self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
         return True
 
@@ -94,6 +98,30 @@ class Query:
             """
         return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
+    @staticmethod
+    def is_rush(value):
+        """ Takes a datetime object and returns whether it happened in rush hour.
+            Returns True or False.
+            >>> s = Storage('test')
+            >>> print s.q.is_rush(s.q.convert_to_datetime('2017-01-01 00:00:00'))
+            False
+            """
+        if 6 <= value.hour < 9 or 16 <= value.hour < 7:
+            return True
+        return False
+
+    @staticmethod
+    def is_weekend(value):
+        """ Takes a datetime object and returns whether it happened on a weekend.
+            Returns True or False.
+            >>> s = Storage('test')
+            >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-01 00:00:00'))
+            False
+            """
+        if value.weekday() >= 5:
+            return True
+        return False
+
     def update_current(self, **kwargs):
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
@@ -135,10 +163,14 @@ class Query:
             True
             """
         if 'start' in kwargs:
+            start = self.convert_datetime(kwargs['start'])
+            is_rush = self.is_rush(start)
+            is_weekend = self.is_weekend(start)
             sql = 'INSERT INTO current VALUES (? ? ? ? ? ? ? ? ? ?)'
-            values = (None,self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
+            values = (None, start, None, kwargs['line'], 'subway', is_rush, is_weekend, None, kwargs['cause'])
             self.c.execute(sql, values)
         if 'stop' in kwargs:
+            is_rush = self.is_rush(kwargs['stop'])
             sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
                   % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
             self.c.execute(sql)

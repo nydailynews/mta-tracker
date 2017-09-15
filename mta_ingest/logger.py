@@ -217,6 +217,7 @@ class Logger:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
                 else:
+                    print prev_record
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
                     count += 1
