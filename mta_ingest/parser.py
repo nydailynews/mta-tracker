@@ -202,7 +202,7 @@ Here's the legend for those symbols:
                         print('    >>>',current_string)
 
         if self.args.verbose:
-            print("NOTICE: Cleaned text:", cleaned)
+            print("\n\nNOTICE: Cleaned text:", cleaned)
 
         for i, item in enumerate(cleaned):
             # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then

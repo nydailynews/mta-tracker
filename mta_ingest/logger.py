@@ -325,7 +325,7 @@ def main(args):
     log.write_json('current')
 
     if args.verbose:
-        print log.double_check
+        print "NOTICE: ", log.double_check
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
