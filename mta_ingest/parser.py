@@ -165,7 +165,7 @@ class ParseMTA(object):
             # which is easier for us to parse than the list we had before.
             if text == '':
                 blank_count += 1
-            else:
+            elif text not in ['Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience']:
                 blank_count = 0
                 if current_string != '':
                     current_string += ' '
@@ -177,7 +177,7 @@ class ParseMTA(object):
                 current_string = ''
 
         if self.args.verbose:
-            print("CLEANED\n", cleaned)
+            print("NOTICE: Cleaned text:", cleaned)
         """
 6* Following an earlier signal problems at
 7 Van Cortlandt Park-242 St
