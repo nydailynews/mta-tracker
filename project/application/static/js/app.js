@@ -1,3 +1,4 @@
+//**TODO add a countdown that lets a reader know how long until the next check for updates
 var tracker = {
     now: Date.now(),
     tz_offset: -6,
@@ -51,8 +52,11 @@ var tracker = {
     },
     calc_time_since: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
-        if ( time == 0 ) return 0;
+        if ( time <= 0 ) return 0;
+        console.log(time);
         var t = time.replace(' ', 'T');
+        //var t = time
+        window.t = Date.parse(t)
         //var t = time.replace(' ', 'T') + "-0400";
         //console.log(time, Date.parse(t), t);
         return Math.floor((Date.now() - Date.parse(t))/1000);
