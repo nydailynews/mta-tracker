@@ -139,13 +139,22 @@ class ParseMTA(object):
                 #    print(i, item.text.strip())
                 text = item.text.strip()
 
+            has_keyphrase = False
+            for keyphrase in ['Planned Work', 'Service Change', 'Planned Detour', 'Service Change']:
+                if keyphrase in text:
+                    has_keyphrase = True
+
             if text == 'Delays':
                 is_delay = True
-            elif text in ['Planned Work', 'Service Change', 'Planned Detour']:
+            elif has_keyphrase:
                 if self.args.verbose:
                     print(text)
-                    print('********')
+                    print('%%%%%%%%')
                 is_delay = False
+            #else:
+            #    print('********')
+            #    print(text)
+            #    print('********')
             if not is_delay:
                 continue
 
