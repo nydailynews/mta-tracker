@@ -134,7 +134,6 @@ class Logger:
             """
         transit_type = 'subway'
         if hasattr(self.args, 'transit_type') and self.args.transit_type:
-            #print self.args
             transit_type = self.args.transit_type
 
         # TODO: Make this flexible to handle the other modes of transit
@@ -178,8 +177,6 @@ class Logger:
                         if dt not in lines[line].datetimes:
                             self.double_check['objects'] += len(cause)
                             lines[line].datetimes.append(dt)
-                            if hasattr(self.args, 'verbose') and self.args.verbose:
-                                print line, dt, len(lines[line].datetimes)
         
         return lines
 
@@ -319,8 +316,6 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    if args.verbose:
-        print lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     #log.commit_minute()
