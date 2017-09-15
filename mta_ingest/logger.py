@@ -332,6 +332,13 @@ def main(args):
 
     if args.verbose:
         print "NOTICE: ", log.double_check
+        print "NOTICE: ", log.new['subway']
+
+    # Update the archive table with the new items
+    for item in log.new['subway']['starts']:
+        pass
+    for item in log.new['subway']['stops']:
+        pass
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
