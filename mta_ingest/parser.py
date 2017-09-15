@@ -74,7 +74,7 @@ class ParseMTA(object):
                 if type_ in unicode(item):
                     d[type_].update(self.extract_status(type_, item))
         if self.args.verbose:
-            print("The results of ParseMTA().extract():", d)
+            print("NOTICE: The results of ParseMTA().extract():", d)
         return d
 
     def extract_status(self, status, span):
@@ -231,8 +231,6 @@ and this:
             if len(r) > 0:
                 for i in r:
                     line = i.lstrip('[').rstrip(']')
-                    if self.args.verbose:
-                        print(line,)
                     # Compare the line and its delay cause to make sure
                     # it's not already accounted for.
                     if line not in lines_affected:
@@ -241,7 +239,7 @@ and this:
                         lines_affected[line].append(item)
 
         if self.args.verbose:
-            print("RETURNING THESE AFFECTED LINES from _extract_delay()\n", lines_affected)
+            print("NOTICE: Affected lines from _extract_delay()", lines_affected.keys())
         return lines_affected
 
 def build_parser(args):
