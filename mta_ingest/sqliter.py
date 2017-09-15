@@ -42,7 +42,7 @@ class Storage:
         #     (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetime DATE, line TEXT, type TEXT, cause TEXT)''')
         if not table or table == 'archive':
             self.c.execute('''CREATE TABLE IF NOT EXISTS archive
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, cause TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, latest INT, cause TEXT)''')
         if not table or table == 'averages':
             self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
@@ -155,7 +155,7 @@ class Query:
 
     def update_archive(self, **kwargs):
         """ Update the "archive" table with the records of the starts and stops for each line's alerts.
-            db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, cause
+            db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, length, latest, cause
             >>> s = Storage('test')
             >>> s.setup()
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
@@ -166,12 +166,12 @@ class Query:
             start = self.convert_datetime(kwargs['start'])
             is_rush = self.is_rush(start)
             is_weekend = self.is_weekend(start)
-            sql = 'INSERT INTO current VALUES (? ? ? ? ? ? ? ? ? ?)'
-            values = (None, start, None, kwargs['line'], 'subway', is_rush, is_weekend, None, kwargs['cause'])
+            sql = 'INSERT INTO archive VALUES (? ? ? ? ? ? ? ? ? ? ? ?)'
+            values = (None, start, None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
             self.c.execute(sql, values)
         if 'stop' in kwargs:
             is_rush = self.is_rush(kwargs['stop'])
-            sql = 'UPDATE current SET start = "0", stop = "%s" WHERE line = "%s" and type = "%s"' \
+            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s"' \
                   % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
             self.c.execute(sql)
         return True
