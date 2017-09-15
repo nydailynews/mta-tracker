@@ -142,12 +142,8 @@ Here's the legend for those symbols:
         for i, item in enumerate(items):
             if isinstance(item, NavigableString) or isinstance(item, unicode) or isinstance(item, str):
                 # Triggered when the text is not directly in a <p> / <strong> / <span> element.
-                #if is_delay and self.args.verbose:
-                #    print("%d*" % i, item.strip())
                 text = item.strip()
             else:
-                #if is_delay and self.args.verbose:
-                #    print(i, item.text.strip())
                 text = item.text.strip()
 
             has_keyphrase = False
@@ -205,9 +201,6 @@ Here's the legend for those symbols:
             print("\n\nNOTICE: Cleaned text:", cleaned)
 
         for i, item in enumerate(cleaned):
-            # TODO: Sus out when an element has a class with Title in the class name and turn on / off the is_delay flag then
-            # TODO: Reduce the jank.
-
             # The subway lines, if they're in this, will be
             # enclosed in brackets, ala [M] and [F]
             r = re.findall(self.subway_re, item)

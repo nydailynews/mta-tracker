@@ -34,6 +34,8 @@ class Line(object):
         self.line = line
         self.last_alert = ''
         self.cause = []
+        # *** HC
+        self.transit_type = 'subway'
 
     @staticmethod
     def parse_dt(dt):
@@ -78,6 +80,7 @@ class Logger:
         self.db = Storage('mta')
         self.mta = ParseMTA(args[0])
         self.double_check = { 'in_text': 0, 'objects': 0 }
+        self.new = { 'subway': { 'starts': [], 'stops': [] } }
         self.transit_type = 'subway'
         if hasattr(self.args, 'transit_type') and self.args.transit_type:
             self.transit_type = self.args.transit_type
@@ -201,7 +204,7 @@ class Logger:
             # Make sure this is a new record
             # We only want to update the database with alerts we don't already have in there.
             if self.args.verbose:
-                print "NOTICE: CHECKING LINE",line
+                print "NOTICE: Checking line", line
             if self.previous:
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
@@ -210,8 +213,9 @@ class Logger:
                         break
                 # Then we ....
                 if prev_record['start'] == 0:
+                    self.new[item.transit_type]['starts'].append(line)
                     if self.args.verbose:
-                        print "NOTICE: THIS LINE HAS A NEW ALERT",line
+                        print "NOTICE: THIS LINE HAS A NEW ALERT", line
                 else:
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
@@ -251,9 +255,11 @@ class Logger:
                 # We only want to check for the stoppage of current alerts.
                 # Any line with a current alert *will not* be in the stop_check list.
                 # The stop_check lists exists for this purpose: To check if an alert for a line has stopped.
+                # ***HC
                 if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
+                    self.new['subway']['stops'].append(prev['line'])
                     # ***HC
                     params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
