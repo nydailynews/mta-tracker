@@ -20,6 +20,19 @@ class ParseMTA(object):
         self.args = args[0]
         self.lines = []
         self.subway_re = '\[[0-9A-Z]+\]'
+        if self.args.verbose:
+            print("""\n\nWELCOME TO THE MTA PARSER.
+You're here because you're curious.
+
+We're taking the MTA's XML and making it even more machine-readable. To do this we have to concatenate strings.
+To increase the visibility of how these strings are assembled, we assign a symbol to each string operation.
+
+Here's the legend for those symbols:
+    +++ means "This string was added to the current string"
+    >>> means "This is the current string"
+    ***  means "This current string is finished, this is what it is, and we're moving on to the next."
+    XXX means "This string has been skipped and will not be added to the current string."
+""")
 
     def make_datetime(self, value):
         """ Turn a string such as '05/23/2017 12:08AM' into a datetime object.
@@ -119,12 +132,10 @@ class ParseMTA(object):
         # In those situations we need to make sure we're looking at Delays
         # and not at planned work.
 
-        # ** WE COULD:
+        # WHAT WE'RE DOING:
         # Loop through every item, and each time there's more than one consecutive blank line, axe those.
         # Take the remaining pieces and put them in another list, then loop through that.
-        # That should give us whole-delay entries, alongside the titles, and the 
-        # So, we've got this situation with the subway.
-        # In some situations we get the delays split up into three strings like this:
+        # That should give us whole-delay entries, alongside the titles
         cleaned = []
         blank_count = 0
         current_string = ''
@@ -147,9 +158,10 @@ class ParseMTA(object):
             if text == 'Delays':
                 is_delay = True
             elif has_keyphrase:
-                if self.args.verbose:
-                    print(text)
-                    print('%%%%%%%%')
+                #if self.args.verbose:
+                #    print('%%%%%%%%')
+                #    print(text)
+                #    print('%%%%%%%%')
                 is_delay = False
             #else:
             #    print('********')
@@ -165,19 +177,29 @@ class ParseMTA(object):
             # which is easier for us to parse than the list we had before.
             if text == '':
                 blank_count += 1
-            elif text not in ['Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience']:
+            elif text not in ['Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience','Allow additional travel time.We apologize for any inconvenience.','Allow additional travel time.']:
                 blank_count = 0
                 if current_string != '':
                     current_string += ' '
                 current_string += text
+                if self.args.verbose:
+                    print('    +++', text)
+            else:
+                blank_count += 1
+                if self.args.verbose:
+                    print('    XXX', text)
 
+            # We only count an entry as finished when there's at least one blank line between items
             if blank_count > 1 and current_string != '':
                 blank_count = 0
+                if self.args.verbose:
+                    print('    ***', current_string)
                 cleaned.append(current_string)
                 current_string = ''
             else:
                 if self.args.verbose:
-                    print('>>>',current_string)
+                    if text != '':
+                        print('    >>>',current_string)
 
         if self.args.verbose:
             print("NOTICE: Cleaned text:", cleaned)
