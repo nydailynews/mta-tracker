@@ -139,7 +139,7 @@ class Logger:
 
         # TODO: Make this flexible to handle the other modes of transit
         self.stop_check = dicts.lines
-        items, lines = {}, {}
+        items, lines = [], {}
         entries = self.mta.parse_file(fn, transit_type)
         for l in entries:
             item = {
@@ -154,21 +154,16 @@ class Logger:
                 self.double_check['in_text'] += len(re.findall('TitleDelay', item['text']))
 
             if item['status']:
-                # Add the entry to the items dict if it's not there.
-                # Possible statuses: PLANNED WORK, DELAYS, GOOD SERVICE
-                if not hasattr(items, item['status']):
-                    items[item['status']] = []
-
                 # Pull out the actual lines affected if we can
                 item['status_detail'] = self.mta.extract(item)
-                items[item['status']].append(item)
+                items.append(item)
                 if hasattr(self.args, 'verbose') and self.args.verbose:
-                    if item['status'] == 'DELAYS':
-                        print '%(status)s: %(lines)s (%(datetime)s)' % item
+                    if item['status_detail'] and item['status_detail']['TitleDelay'] != {}:
+                        print 'NOTICE: %(status)s: %(lines)s (%(datetime)s)' % item
 
             # Assemble this file's delays into its individual lines
-            if 'DELAYS' in items:
-                for item in items['DELAYS']:
+            for item in items:
+                if item['status_detail']:
                     for dict_ in item['status_detail']['TitleDelay']:
                         # dict_ looks like {u'1': u'Due to signal pr...'}
                         line = dict_
