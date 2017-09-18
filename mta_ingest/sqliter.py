@@ -110,7 +110,7 @@ class Query:
             Returns True or False.
             >>> s = Storage('test')
             >>> print s.q.is_rush(s.q.convert_to_datetime('2017-01-01 00:00:00'))
-            False
+            0
             """
         if 6 <= value.hour < 9 or 16 <= value.hour < 7:
             return 1
@@ -122,9 +122,9 @@ class Query:
             Returns True or False.
             >>> s = Storage('test')
             >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-01 00:00:00'))
-            True
+            1
             >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-03 00:00:00'))
-            False
+            0
             """
         if value.weekday() >= 5:
             return 1
@@ -175,14 +175,16 @@ class Query:
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
             >>> print s.q.update_archive(**d)
             True
+            >>> d = { 'stop': datetime(2017, 1, 1, 3, 0, 0), 'length': 10800, 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
+            >>> print s.q.update_archive(**d)
+            True
             """
         if 'stop' in kwargs:
             stop = kwargs['stop']
             is_rush = self.is_rush(stop)
             is_weekend = self.is_weekend(stop)
-            sql = 'UPDATE archive SET stop = "%s", active = 0 WHERE line = "%s" and type = "%s" AND cause = "%s" AND active = 1' \
-                  % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'], kwargs['cause'])
-            print sql
+            sql = 'UPDATE archive SET stop = "%s", length = %d, active = 0 WHERE line = "%s" and type = "%s" AND cause = "%s" AND active = 1' \
+                  % (self.convert_datetime(stop), kwargs['length'], kwargs['line'], kwargs['transit_type'], kwargs['cause'])
             self.c.execute(sql)
         elif 'start' in kwargs:
             start = kwargs['start']
@@ -193,7 +195,6 @@ class Query:
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?)'''
             values = (self.convert_datetime(start), kwargs['line'], 'subway', is_rush, is_weekend, 1, kwargs['cause'])
-            print values
             self.c.execute(sql, values)
         return True
 
@@ -225,6 +226,7 @@ class Query:
             >>> s.setup()
             True
             >>> print s.q.get_table_records('archive')
+            []
             """
         sql = 'SELECT * FROM %s' % table
         self.c.execute(sql)

@@ -280,7 +280,7 @@ class Logger:
     def commit_archive_stop(self, line, item):
         """ Update the record for this alert in the archive table.
             """
-        params = {'cause': item['cause'], 'line': line, 'stop': datetime.now(), 'transit_type': 'subway'}
+        params = {'cause': item['cause'], 'length': item['length'], 'line': line, 'stop': datetime.now(), 'transit_type': 'subway'}
         self.db.q.update_archive(**params)
         return True
 
@@ -363,6 +363,8 @@ def main(args):
     for item in log.new['subway']['stops']:
         for prev in log.previous:
             if prev['line'] == item:
+                prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
+                # Calculate the length of the delay
                 log.commit_archive_stop(item, prev)
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
