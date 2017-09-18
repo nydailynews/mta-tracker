@@ -42,10 +42,12 @@ class Storage:
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
         #self.c.execute('''CREATE TABLE IF NOT EXISTS minute
         #     (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetime DATE, line TEXT, type TEXT, cause TEXT)''')
+
         if not table or table == 'archive':
             self.c.execute('DROP TABLE archive')
             self.c.execute('''CREATE TABLE archive
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, latest INT, cause TEXT)''')
+
         if not table or table == 'averages':
             self.c.execute('DROP TABLE averages')
             self.c.execute('''CREATE TABLE averages 
@@ -213,6 +215,19 @@ class Query:
             items.append(dict(zip(fields, rows)))
         return items
 
+    def get_tables(self):
+        """ Get the names of the tables in the database.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
+            >>> print s.q.get_tables()
+            [u'sqlite_sequence', u'current', u'raw', u'archive', u'averages']
+            """
+        sql = 'SELECT name FROM sqlite_master WHERE type = "table"'
+        self.c.execute(sql)
+        tables = [tup[0] for tup in self.c.fetchall()]
+        return tables
+
     def get_table_fields(self, table):
         """ Get the fields in a table for more useful query results.
             >>> s = Storage('test')
@@ -243,6 +258,15 @@ class Query:
         return rows
 
 
+def main(args):
+    """
+        >>> args = build_parser([])
+        >>> main(args)
+        """
+    if args.reset_table:
+        s = Storage('mta')
+        s.setup
+        
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
@@ -254,6 +278,7 @@ def build_parser(args):
                                      epilog='Example use: python sqliter.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("--test", dest="test", default=True, action="store_true")
+    parser.add_argument("--reset_table", dest="reset_table", default=False, help="Truncate and create a table in the database")
     args = parser.parse_args(args)
     return args
 
@@ -263,3 +288,4 @@ if __name__ == '__main__':
 
     if args.test:
         doctest.testmod(verbose=args.verbose)
+    main(args)
