@@ -126,6 +126,7 @@ class Query:
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
             >>> print s.q.update_current(**d)
             True
@@ -139,10 +140,12 @@ class Query:
         self.c.execute(sql)
         return True
 
+    '''
     def update_minute(self, **kwargs):
         """ Update the "minute" table with the current number of minutes since midnight and the number of alerts
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> d = { 'minute': datetime(2017, 1, 1, 0, 0, 0), 'count': 3, 'transit_type': 'subway' }
             >>> print s.q.update_minute(**d)
             True
@@ -152,27 +155,32 @@ class Query:
         values = (None, self.convert_datetime(datetime.now()), kwargs['minute'], kwargs['count'], kwargs['transit_type'])
         self.c.execute(sql, values)
         return True
+    '''
 
     def update_archive(self, **kwargs):
         """ Update the "archive" table with the records of the starts and stops for each line's alerts.
             db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, length, latest, cause
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
             >>> print s.q.update_archive(**d)
             True
             """
         if 'start' in kwargs:
-            start = self.convert_datetime(kwargs['start'])
+            start = kwargs['start']
             is_rush = self.is_rush(start)
             is_weekend = self.is_weekend(start)
             sql = 'INSERT INTO archive VALUES (? ? ? ? ? ? ? ? ? ? ? ?)'
-            values = (None, start, None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
+            values = (None, self.convert_datetime(start), None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
             self.c.execute(sql, values)
         if 'stop' in kwargs:
-            is_rush = self.is_rush(kwargs['stop'])
-            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s"' \
-                  % (self.convert_datetime(kwargs['stop']), kwargs['line'], kwargs['transit_type'])
+            stop = kwargs['stop']
+            is_rush = self.is_rush(stop)
+            is_weekend = self.is_weekend(stop)
+            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s" AND active = 1 LIMIT 1' \
+                  % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'])
+            print sql
             self.c.execute(sql)
         return True
 
@@ -180,13 +188,14 @@ class Query:
         """ Return a list of dicts of query results.
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> fields = s.q.get_table_fields('current')
             >>> rows = s.q.select_current()
             >>> d = s.q.make_dict(fields, rows[:1])
             >>> # d will look something like
             >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'subway', u'id': 1, u'alert': '2017-07-09 20:04:00'}]
             >>> print d[0]['type'], d[0]['id']
-            MTA 1
+            subway 1
             """
         items = []
         try:
@@ -201,6 +210,7 @@ class Query:
         """ Get the fields in a table for more useful query results.
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> print s.q.get_table_fields('current')
             [u'id', u'datestamp', u'line', u'type', u'alert']
             """
@@ -213,9 +223,10 @@ class Query:
         """ Select the contents of the current table, return a list.
             >>> s = Storage('test')
             >>> s.setup()
+            True
             >>> rows = s.q.select_current()
             >>> print rows[0][2:]
-            (u'ALL', u'subway', 0)
+            (u'ALL', u'subway', 0, 0, u'')
             """
         sql = 'SELECT * FROM current'
         self.c.execute(sql)

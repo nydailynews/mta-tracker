@@ -268,6 +268,13 @@ class Logger:
 
         return count
 
+    def commit_archive_start(self, line, item):
+        """ Insert a record into the archive table.
+            """
+        params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+        self.db.q.update_archive(**params)
+        return True
+
     '''
     def commit_minute(self):
         """ Write an entry in the minute table.
@@ -337,7 +344,8 @@ def main(args):
 
     # Update the archive table with the new items
     for item in log.new['subway']['starts']:
-        pass
+        #pass
+        log.commit_archive_start(item, lines[item])
     for item in log.new['subway']['stops']:
         pass
 
