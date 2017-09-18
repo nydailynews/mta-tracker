@@ -196,6 +196,8 @@ class Query:
                 (?, ?, ?, ?, ?, ?, ?)'''
             values = (self.convert_datetime(start), kwargs['line'], 'subway', is_rush, is_weekend, 1, kwargs['cause'])
             self.c.execute(sql, values)
+        #if self.args
+        print sql
         return True
 
     def make_dict(self, fields, rows):
@@ -272,6 +274,23 @@ class Query:
             """
         sql = 'SELECT * FROM current'
         self.c.execute(sql)
+        rows = self.c.fetchall()
+        return rows
+
+    def select_archive(self, **params):
+        """ Select from the archive table.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
+            >>> rows = s.q.select_archive()
+            >>> print rows[0][2:]
+            """
+        clause, values = '', ()
+        if 'date' in params:
+            clause = ' WHERE start LIKE ? AND stop LIKE ?'
+            values = ('%s\%' % params['date'], '%s\%' % params['date'])
+        sql = 'SELECT * FROM archive%s' % clause
+        self.c.execute(sql, values)
         rows = self.c.fetchall()
         return rows
 

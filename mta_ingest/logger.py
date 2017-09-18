@@ -218,7 +218,7 @@ class Logger:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
                 else:
-                    print prev_record
+                    #print prev_record
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
                     # DOUBLE-CHECK
                     count += 1
@@ -302,14 +302,22 @@ class Logger:
         return True
     '''
 
-    def write_json(self, table, *args):
+    def write_json(self, table, *args, **kwargs):
         """ Write the contents of a table to a json file.
-            >>>
+            >>> args = build_parser([])
+            >>> log = Logger(args)
+            >>> log.initialize_db('test')
+            True
             """
-        fields = self.db.q.get_table_fields(table)
-        rows = self.db.q.select_current()
         fh = open('_output/%s.json' % table, 'wb')
-        json.dump(self.db.q.make_dict(fields, rows), fh)
+        if table == 'current':
+            fields = self.db.q.get_table_fields(table)
+            rows = self.db.q.select_current()
+            json.dump(self.db.q.make_dict(fields, rows), fh)
+        elif table == 'archive':
+            fields = self.db.q.get_table_fields(table)
+            rows = self.db.q.select_archive()
+            json.dump(self.db.q.make_dict(fields, rows), fh)
         fh.close()
         return True
 
@@ -350,22 +358,27 @@ def main(args):
     commit_count += log.commit_stops()
     log.db.conn.commit()
 
-    # Write the current-table data to json.
     log.write_json('current')
 
     if args.verbose:
         print "NOTICE: ", log.double_check
         print "NOTICE: ", log.new['subway']
 
+
     # Update the archive table with the new items
+    new_len = len(log.new['subway']['starts']) + len(log.new['subway']['stops'])
     for item in log.new['subway']['starts']:
         log.commit_archive_start(item, lines[item])
     for item in log.new['subway']['stops']:
         for prev in log.previous:
             if prev['line'] == item:
-                prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
                 # Calculate the length of the delay
+                prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
                 log.commit_archive_stop(item, prev)
+    if new_len > 0:
+        log.db.conn.commit()
+    params = { 'date': datetime.now().date().__str__() }
+    log.write_json('archive', **params)
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
