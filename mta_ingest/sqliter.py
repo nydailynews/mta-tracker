@@ -31,20 +31,24 @@ class Storage:
         # INDEXNAME, TABLENAME, COLUMNNAME
         # self.c.execute('CREATE INDEX ? ON ?(?)', value)
         if not table or table == 'current':
-            self.c.execute('''CREATE TABLE IF NOT EXISTS current 
+            self.c.execute('DROP TABLE current')
+            self.c.execute('''CREATE TABLE current 
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, stop DATETIME, cause TEXT)''')
             self._setup_current()
 
         if not table or table == 'raw':
-            self.c.execute('''CREATE TABLE IF NOT EXISTS raw
+            self.c.execute('DROP TABLE raw')
+            self.c.execute('''CREATE TABLE raw
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, cause TEXT)''')
         #self.c.execute('''CREATE TABLE IF NOT EXISTS minute
         #     (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetime DATE, line TEXT, type TEXT, cause TEXT)''')
         if not table or table == 'archive':
-            self.c.execute('''CREATE TABLE IF NOT EXISTS archive
+            self.c.execute('DROP TABLE archive')
+            self.c.execute('''CREATE TABLE archive
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, latest INT, cause TEXT)''')
         if not table or table == 'averages':
-            self.c.execute('''CREATE TABLE IF NOT EXISTS averages 
+            self.c.execute('DROP TABLE averages')
+            self.c.execute('''CREATE TABLE averages 
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
 
         return True
@@ -116,6 +120,8 @@ class Query:
             Returns True or False.
             >>> s = Storage('test')
             >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-01 00:00:00'))
+            True
+            >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-03 00:00:00'))
             False
             """
         if value.weekday() >= 5:
@@ -127,7 +133,7 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             True
-            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
             >>> print s.q.update_current(**d)
             True
             """
@@ -163,7 +169,7 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             True
-            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway' }
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
             >>> print s.q.update_archive(**d)
             True
             """
@@ -172,7 +178,8 @@ class Query:
             is_rush = self.is_rush(start)
             is_weekend = self.is_weekend(start)
             sql = 'INSERT INTO archive VALUES (? ? ? ? ? ? ? ? ? ? ? ?)'
-            values = (None, self.convert_datetime(start), None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
+            values = (None, None, self.convert_datetime(start), None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
+            print values
             self.c.execute(sql, values)
         if 'stop' in kwargs:
             stop = kwargs['stop']
@@ -212,7 +219,9 @@ class Query:
             >>> s.setup()
             True
             >>> print s.q.get_table_fields('current')
-            [u'id', u'datestamp', u'line', u'type', u'alert']
+            [u'id', u'datestamp', u'line', u'type', u'start', u'stop', u'cause']
+            >>> print s.q.get_table_fields('archive')
+            [u'id', u'datestamp', u'start', u'stop', u'line', u'type', u'is_rush', u'is_weekend', u'sincelast', u'length', u'latest', u'cause']
             """
         sql = 'PRAGMA TABLE_INFO(%s)' % table
         self.c.execute(sql)
