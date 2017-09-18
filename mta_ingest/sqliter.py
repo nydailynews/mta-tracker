@@ -113,8 +113,8 @@ class Query:
             False
             """
         if 6 <= value.hour < 9 or 16 <= value.hour < 7:
-            return True
-        return False
+            return 1
+        return 0
 
     @staticmethod
     def is_weekend(value):
@@ -127,8 +127,8 @@ class Query:
             False
             """
         if value.weekday() >= 5:
-            return True
-        return False
+            return 1
+        return 0
 
     def update_current(self, **kwargs):
         """ Update the "current" table with the latest alert datetime.
@@ -167,6 +167,7 @@ class Query:
 
     def update_archive(self, **kwargs):
         """ Update the "archive" table with the records of the starts and stops for each line's alerts.
+            Note that the calling command when we have a stop will include the start time (to make lookups easier).
             db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, length, latest, cause
             >>> s = Storage('test')
             >>> s.setup()
@@ -175,14 +176,6 @@ class Query:
             >>> print s.q.update_archive(**d)
             True
             """
-        if 'start' in kwargs:
-            start = kwargs['start']
-            is_rush = self.is_rush(start)
-            is_weekend = self.is_weekend(start)
-            sql = 'INSERT INTO archive VALUES (? ? ? ? ? ? ? ? ? ? ? ?)'
-            values = (None, None, self.convert_datetime(start), None, kwargs['line'], 'subway', is_rush, is_weekend, None, None, 1, kwargs['cause'])
-            print values
-            self.c.execute(sql, values)
         if 'stop' in kwargs:
             stop = kwargs['stop']
             is_rush = self.is_rush(stop)
@@ -191,6 +184,17 @@ class Query:
                   % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'])
             print sql
             self.c.execute(sql)
+        elif 'start' in kwargs:
+            start = kwargs['start']
+            is_rush = self.is_rush(start)
+            is_weekend = self.is_weekend(start)
+            sql = '''INSERT INTO archive
+                (start, line, type, is_rush, is_weekend, latest, cause)
+                VALUES
+                (?, ?, ?, ?, ?, ?, ?)'''
+            values = (self.convert_datetime(start), kwargs['line'], 'subway', is_rush, is_weekend, 1, kwargs['cause'])
+            print values
+            self.c.execute(sql, values)
         return True
 
     def make_dict(self, fields, rows):
@@ -214,6 +218,18 @@ class Query:
             # This fires when there's only one row
             items.append(dict(zip(fields, rows)))
         return items
+
+    def get_table_records(self, table):
+        """ Get all the records in a particular table.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
+            >>> print s.q.get_table_records('archive')
+            """
+        sql = 'SELECT * FROM %s' % table
+        self.c.execute(sql)
+        records = [tup[0] for tup in self.c.fetchall()]
+        return records
 
     def get_tables(self):
         """ Get the names of the tables in the database.
@@ -278,4 +294,3 @@ if __name__ == '__main__':
 
     if args.test:
         doctest.testmod(verbose=args.verbose)
-    main(args)

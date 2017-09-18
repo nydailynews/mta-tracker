@@ -275,6 +275,13 @@ class Logger:
         self.db.q.update_archive(**params)
         return True
 
+    def commit_archive_stop(self, line, item):
+        """ Update the record for this alert in the archive table.
+            """
+        params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'stop': datetime.now(), 'transit_type': 'subway'}
+        self.db.q.update_archive(**params)
+        return True
+
     '''
     def commit_minute(self):
         """ Write an entry in the minute table.
@@ -339,7 +346,6 @@ def main(args):
 
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
-    #log.commit_minute()
     log.db.conn.commit()
 
     # Write the current-table data to json.
@@ -353,7 +359,9 @@ def main(args):
     for item in log.new['subway']['starts']:
         #pass
         log.commit_archive_start(item, lines[item])
+    print lines
     for item in log.new['subway']['stops']:
+        log.commit_archive_stop(item, lines[item])
         pass
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
