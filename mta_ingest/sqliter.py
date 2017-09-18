@@ -46,7 +46,7 @@ class Storage:
         if not table or table == 'archive':
             self.c.execute('DROP TABLE archive')
             self.c.execute('''CREATE TABLE archive
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, latest INT, cause TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, active INT, cause TEXT)''')
 
         if not table or table == 'averages':
             self.c.execute('DROP TABLE averages')
@@ -168,7 +168,7 @@ class Query:
     def update_archive(self, **kwargs):
         """ Update the "archive" table with the records of the starts and stops for each line's alerts.
             Note that the calling command when we have a stop will include the start time (to make lookups easier).
-            db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, length, latest, cause
+            db fields: id, datestamp, start, stop, line, type, is_rush, is_weekend, sincelast, length, active, cause
             >>> s = Storage('test')
             >>> s.setup()
             True
@@ -180,7 +180,7 @@ class Query:
             stop = kwargs['stop']
             is_rush = self.is_rush(stop)
             is_weekend = self.is_weekend(stop)
-            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s" AND cause = "%s" AND latest = 1' \
+            sql = 'UPDATE archive SET stop = "%s", active = 0 WHERE line = "%s" and type = "%s" AND cause = "%s" AND active = 1' \
                   % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'], kwargs['cause'])
             print sql
             self.c.execute(sql)
@@ -189,7 +189,7 @@ class Query:
             is_rush = self.is_rush(start)
             is_weekend = self.is_weekend(start)
             sql = '''INSERT INTO archive
-                (start, line, type, is_rush, is_weekend, latest, cause)
+                (start, line, type, is_rush, is_weekend, active, cause)
                 VALUES
                 (?, ?, ?, ?, ?, ?, ?)'''
             values = (self.convert_datetime(start), kwargs['line'], 'subway', is_rush, is_weekend, 1, kwargs['cause'])
@@ -252,7 +252,7 @@ class Query:
             >>> print s.q.get_table_fields('current')
             [u'id', u'datestamp', u'line', u'type', u'start', u'stop', u'cause']
             >>> print s.q.get_table_fields('archive')
-            [u'id', u'datestamp', u'start', u'stop', u'line', u'type', u'is_rush', u'is_weekend', u'sincelast', u'length', u'latest', u'cause']
+            [u'id', u'datestamp', u'start', u'stop', u'line', u'type', u'is_rush', u'is_weekend', u'sincelast', u'length', u'active', u'cause']
             """
         sql = 'PRAGMA TABLE_INFO(%s)' % table
         self.c.execute(sql)
