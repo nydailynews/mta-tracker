@@ -46,12 +46,12 @@ class Storage:
         if not table or table == 'archive':
             self.c.execute('DROP TABLE IF EXISTS archive')
             self.c.execute('''CREATE TABLE archive
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, active INT, cause TEXT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, start DATETIME, stop DATETIME, line TEXT, type TEXT, is_rush INT, is_weekend INT, sincelast INT, length INT, active INT, direction TEXT, cause TEXT)''')
 
         if not table or table == 'averages':
             self.c.execute('DROP TABLE IF EXISTS averages')
             self.c.execute('''CREATE TABLE averages 
-                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT)''')
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, datetype TEXT, line TEXT, type TEXT, is_rush INT, is_weekend INT, direction TEXT)''')
 
         return True
 
@@ -196,8 +196,6 @@ class Query:
                 (?, ?, ?, ?, ?, ?, ?)'''
             values = (self.convert_datetime(start), kwargs['line'], 'subway', is_rush, is_weekend, 1, kwargs['cause'])
             self.c.execute(sql, values)
-        #if self.args
-        print sql
         return True
 
     def make_dict(self, fields, rows):
