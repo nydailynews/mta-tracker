@@ -257,15 +257,6 @@ class Query:
         rows = self.c.fetchall()
         return rows
 
-
-def main(args):
-    """
-        >>> args = build_parser([])
-        >>> main(args)
-        """
-    if args.reset_table:
-        s = Storage('mta')
-        s.setup
         
 def build_parser(args):
     """ This method allows us to test the args.
@@ -278,7 +269,6 @@ def build_parser(args):
                                      epilog='Example use: python sqliter.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("--test", dest="test", default=True, action="store_true")
-    parser.add_argument("--reset_table", dest="reset_table", default=False, help="Truncate and create a table in the database")
     args = parser.parse_args(args)
     return args
 

@@ -325,6 +325,13 @@ def main(args):
     if args.initial:
         log.initialize_db()
 
+    if args.reset_table:
+        tables = log.db.q.get_tables()
+        if args.verbose:
+            print "NOTICE: We are resetting the %s table (amongst %s)" % (args.reset_table, tables.__str__())
+        if args.reset_table in tables:
+            log.db.setup(args.reset_table)
+
     files = log.get_files(args.files)
 
     for fn in files:
@@ -369,6 +376,7 @@ def build_parser(args):
     parser.add_argument("--test", dest="test", default=False, action="store_true")
     parser.add_argument("-t", "--type", dest="transit_type", default=None)
     parser.add_argument("files", nargs="*", help="Path to files to ingest manually")
+    parser.add_argument("--reset_table", dest="reset_table", default=False, help="Truncate and create a table in the database")
     args = parser.parse_args(args)
     return args
 
