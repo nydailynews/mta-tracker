@@ -206,6 +206,7 @@ class Logger:
             if self.args.verbose:
                 print "NOTICE: Checking line", line
             if self.previous:
+                # self.previous is a dict taken from the json written by the last time we ran this script.
                 # First we match the line we're looking up with the line's previous record.
                 for prev in self.previous:
                     if line == prev['line']:
@@ -252,6 +253,7 @@ class Logger:
             """
         count = 0
         if self.previous:
+            # self.previous is a dict taken from the json written by the last time we ran this script.
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts.
                 # Any line with a current alert *will not* be in the stop_check list.
@@ -278,7 +280,7 @@ class Logger:
     def commit_archive_stop(self, line, item):
         """ Update the record for this alert in the archive table.
             """
-        params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'stop': datetime.now(), 'transit_type': 'subway'}
+        params = {'cause': item['cause'], 'line': line, 'stop': datetime.now(), 'transit_type': 'subway'}
         self.db.q.update_archive(**params)
         return True
 
@@ -357,12 +359,11 @@ def main(args):
 
     # Update the archive table with the new items
     for item in log.new['subway']['starts']:
-        #pass
         log.commit_archive_start(item, lines[item])
-    print lines
     for item in log.new['subway']['stops']:
-        log.commit_archive_stop(item, lines[item])
-        pass
+        for prev in log.previous:
+            if prev['line'] == item:
+                log.commit_archive_stop(item, prev)
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()

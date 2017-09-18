@@ -180,8 +180,8 @@ class Query:
             stop = kwargs['stop']
             is_rush = self.is_rush(stop)
             is_weekend = self.is_weekend(stop)
-            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s" AND active = 1 LIMIT 1' \
-                  % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'])
+            sql = 'UPDATE archive SET stop = "%s" WHERE line = "%s" and type = "%s" AND cause = "%s" AND latest = 1' \
+                  % (self.convert_datetime(stop), kwargs['line'], kwargs['transit_type'], kwargs['cause'])
             print sql
             self.c.execute(sql)
         elif 'start' in kwargs:
