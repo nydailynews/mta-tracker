@@ -166,6 +166,10 @@ Here's the legend for those symbols:
             if not is_delay:
                 continue
 
+            # Clean up some of the boilerplate the MTA sticks in there
+            if 'Allow additional travel time.' in text or 'www.mymtaalerts.com' in text:
+                pass
+
             # This code splices the strings together that have been separated,
             # and separates the separate sentences.
             # This gives us a list such as
@@ -173,7 +177,7 @@ Here's the legend for those symbols:
             # which is easier for us to parse than the list we had before.
             if text == '':
                 blank_count += 1
-            elif text not in ['Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience','Allow additional travel time.We apologize for any inconvenience.','Allow additional travel time.']:
+            elif text not in ['Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience','Allow additional travel time.We apologize for any inconvenience.','Allow additional travel time.','Allow additional travel time. Know Before You Go!','Sign Up for My MTA Alerts at www.mymtaalerts.com']:
                 blank_count = 0
                 if current_string != '':
                     current_string += ' '
