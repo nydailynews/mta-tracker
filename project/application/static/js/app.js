@@ -1,5 +1,6 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
 var tracker = {
+    d: {},
     now: Date.now(),
     tz_offset: -6,
     rando: function()
@@ -81,9 +82,9 @@ var tracker = {
     },
     get_line_data: function(key, value) {
         // loop through the data object until an item's key matches its value.
-        var l = this.data.length;
+        var l = this.d.current.length;
         for ( var i = 0; i < l; i ++ ) {
-            if ( this.data[i][key] == value ) return this.data[i];
+            if ( this.d.current[i][key] == value ) return this.d.current[i];
         }
     },
     update_recent: function() {
@@ -217,11 +218,11 @@ var tracker = {
         is_zero = 0;
         worst = { stop: '' };
         worsts = [];
-        Array.prototype.forEach.call(this.data, function(item, i) {
+        Array.prototype.forEach.call(this.d.current, function(item, i) {
 
             // Add the time since to each item
             //console.log(item, item['stop'], tracker.calc_time_since(item['stop']));
-            tracker.data[i]['ago'] = tracker.calc_time_since(item['stop']);
+            tracker.d.current[i]['ago'] = tracker.calc_time_since(item['stop']);
 
             if ( item['stop'] === -1 ) {
                 // If this is our first current alert, we reset the worsts array,
@@ -245,7 +246,7 @@ var tracker = {
             //console.log(i, item['line'], item['stop']);
         });
         // Sort the data
-        this.sorted = this.data.sort(function(a, b) { return a.ago - b.ago });
+        this.sorted = this.d.current.sort(function(a, b) { return a.ago - b.ago });
 
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
@@ -258,7 +259,7 @@ var tracker = {
 
 
 $.getJSON('data/current.json?' + tracker.rando(), function(data) {
-    tracker.data = data;
+    tracker.d.current = data;
     tracker.init();
 });
  
