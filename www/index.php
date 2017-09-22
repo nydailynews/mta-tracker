@@ -135,6 +135,37 @@
         <section class="chart" id="chart">
             <h2>Today in MTA alerts</h2>
             <p><em>Chart updates automatically every minute</em></p>
+<style>
+
+.enter {
+  fill: green;
+}
+
+.update {
+  fill: steelblue;
+}
+
+.exit {
+  fill: brown;
+}
+
+div.tooltip {
+  color: black;
+  position: absolute;
+  text-align: left;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  font-family: Futura;
+  font: 12px sans-serif ;
+  background: #FCB8C3FF;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+</style>
+
             <div>
 				<figure id="day-chart"></figure>
                 <img src="static/img/day-chart.png" alt="">
@@ -177,7 +208,7 @@
 <script>
 /** https://github.com/csnover/js-iso8601 */(function(n,f){var u=n.parse,c=[1,4,5,6,7,10,11];n.parse=function(t){var i,o,a=0;if(o=/^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/.exec(t)){for(var v=0,r;r=c[v];++v)o[r]=+o[r]||0;o[2]=(+o[2]||1)-1,o[3]=+o[3]||1,o[8]!=="Z"&&o[9]!==f&&(a=o[10]*60+o[11],o[9]==="+"&&(a=0-a)),i=n.UTC(o[1],o[2],o[3],o[4],o[5]+a,o[6],o[7])}else i=u?u(t):NaN;return i}})(Date)
 </script>
-<script src="http://interactive.nydailynews.com/js/d3.v3.min.js"></script>
+<script src="http://interactive.nydailynews.com/js/d3/d3.v4.min.js"></script>
 <script src="js/app.js"></script>
 <!-- CONTENT-END -->
 
