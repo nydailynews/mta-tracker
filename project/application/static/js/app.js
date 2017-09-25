@@ -380,9 +380,10 @@ console.log(dots)
     init: function() {
         this.minutes_since_midnight = this.get_minutes_since_midnight();
         this.msms = [];
-        for ( var i = 0; i <= this.minutes_since_midnight; i ++ ) {
+        var lower = 0;
+        for ( var i = 0; lower <= this.minutes_since_midnight; i ++ ) {
             // Assign the upper and lower bound for each five-minute block
-            var lower = i * 5;
+            lower = i * 5;
             this.msms.push([lower, lower+4]);
         }
         // Build the data set we pass to the chart.
@@ -400,7 +401,16 @@ console.log(dots)
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
             var rec = this.d.archive_raw[i];
-            console.log(rec)
+
+            // Loop through each five-minute span.
+            var len = this.msms.length;
+            for ( var j = 0; j < len; j ++ ) {
+                var overlap = Math.max(this.msms[j][0], rec.start_bin) <= Math.min(this.msms[j][1], rec.stop_bin);
+                if ( overlap ) {
+                    rec.value = this.msms[j][0];
+                    this.d.archive.push(rec);
+                }
+            }
         }
 
         // Set the dimensions of the graph
