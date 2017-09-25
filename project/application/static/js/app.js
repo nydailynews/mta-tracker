@@ -271,8 +271,13 @@ var charter = {
     utc_offset: -400,
     nyc_now: new Date(),
     minutes_since_midnight: null,
-    get_minutes_since_midnight: function() {
+    get_minutes_since_midnight: function(time) {
+        // Gets the number of minutes from now to this morning's midnight,
+        // unless an argument is given, in which case it delivers the number
+        // of minutes between midnight and that time.
+        // Note that it's not actual minutes, it's a five-minute bin of minutes.
         var seconds_in_minute = 60, ms_in_sec = 1000, minutes_in_bin = 5;
+        if ( time !== null ) now = time;
         var now = new Date(),
             then = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0),
             diff = now.getTime() - then.getTime();
@@ -361,17 +366,25 @@ console.log(dots)
     },
     init: function() {
         this.minutes_since_midnight = this.get_minutes_since_midnight();
+        this.msms = [];
+        for ( var i = 0; i <= this.minutes_since_midnight; i ++ ) {
+            // Assign the upper and lower bound for each five-minute block
+            var lower = i * 5;
+            this.msms.push([lower, lower+4]);
+        }
         // Build the data set we pass to the chart.
         // For this data set we need to know how many alerts existed within each five-minute window
         // from midnight until the current time.
         // That means we:
-        // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight.
+        // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight, then divide it by five, rounding down.
         // 2. Do the same for the record's stop time, if the stop time is available.
         //  2a. If the stop time is not available we assign it the value of now.
         // 3. Loop through each five-minute span.
         // 4. In each loop, compare the delay's start and stop.
-        //    If the start or the stop are greater than the five-minute-span's start or stop, add that delay item to a new array.
+        //    If the ranges overlap, add the delay to the processed delays.
+        //    overlap = max(start1, start2) <= min(end1, end2)
         for ( var i = 0; i < this.len; i ++ ) {
+            
             this.d.archive[i].value = Math.floor(Math.random() * this.minutes_since_midnight);
         }
 
@@ -412,7 +425,8 @@ console.log(dots)
     }
 };
 $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
-    charter.d.archive = data;
+    charter.d.archive_raw = data;
+    charter.d.archive = [];
     charter.len = data.length;
     charter.init();
 });
