@@ -230,6 +230,9 @@ div.tooltip {
 .grey, .subwayL {
     fill: #a7a9ac;
 }
+.hover {
+    fill: white;
+}
 
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {

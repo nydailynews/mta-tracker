@@ -358,7 +358,7 @@ var charter = {
           .merge(dots)
           .on("mouseover", function(d) {
               d3.select(this)
-                .style("fill", "red")
+                .attr("class", "hover")
               charter.tooltip.transition()
                    .duration(200)
                    .style("opacity", .9);
@@ -368,7 +368,7 @@ var charter = {
             })
             .on("mouseout", function(d) {
               d3.select(this)
-                  .style("fill", "steelblue");
+                  .attr("class", "subway" + d.name);
                 charter.tooltip.transition()
                      .duration(500)
                      .style("opacity", 0);
