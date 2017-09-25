@@ -135,37 +135,6 @@
         <section class="chart" id="chart">
             <h2>Today in MTA alerts</h2>
             <p><em>Chart updates automatically every minute</em></p>
-<style>
-
-.enter {
-  fill: green;
-}
-
-.update {
-  fill: steelblue;
-}
-
-.exit {
-  fill: brown;
-}
-
-div.tooltip {
-  color: black;
-  position: absolute;
-  text-align: left;
-  width: auto;
-  height: auto;
-  padding: 5px;
-  font-family: Futura;
-  font: 12px sans-serif ;
-  background: #FCB8C3FF;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-</style>
-
             <div>
 				<figure id="day-chart"></figure>
                 <img src="static/img/day-chart.png" alt="">
