@@ -167,3 +167,32 @@ h2#timer-text, h2#yes-no {
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 }
+
+/* CHART STYLES */
+
+.enter {
+  fill: green;
+}
+
+.update {
+  fill: steelblue;
+}
+
+.exit {
+  fill: brown;
+}
+
+div.tooltip {
+  color: black;
+  position: absolute;
+  text-align: left;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  font-family: Futura;
+  font: 12px sans-serif ;
+  background: #FCB8C3FF;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}

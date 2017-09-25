@@ -54,7 +54,7 @@ var tracker = {
     calc_time_since: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         if ( time <= 0 ) return 0;
-        console.log(time);
+        //console.log(time);
         var t = time.replace(' ', 'T');
         //var t = time
         window.t = Date.parse(t)
@@ -118,7 +118,8 @@ var tracker = {
         //$('#lead p').text('since the last MTA subway service alert.');
         $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
-    parse_cause: function() {
+    parse_cause: function(value) {
+        return value;
     },
     slugify: function (text) {
         // from https://gist.github.com/mathewbyrne/1280286
@@ -262,4 +263,145 @@ $.getJSON('data/current.json?' + tracker.rando(), function(data) {
     tracker.d.current = data;
     tracker.init();
 });
- 
+
+var charter = {
+    d: {},
+    p: {},
+    id: 'day-chart',
+    utc_offset: -400,
+    nyc_now: new Date(),
+    minutes_since_midnight: function() {
+        var now = new Date(),
+            then = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0),
+            diff = now.getTime() - then.getTime();
+        return diff;
+    },
+    update: function() {
+        // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
+        var t = d3.transition()
+          .duration(1000);
+
+        var data = this.d.archive
+
+        // Scale the range of the data
+        this.y.domain([0, data.length]);
+
+        // Set up the binning parameters for the histogram
+        var nbins = Math.floor(this.minutes_since_midnight()/(5000*60));
+        console.log("Minutes since midnight: ", nbins)
+        var histogram = d3.histogram()
+          .domain(this.x.domain())
+          .thresholds(this.x.ticks(nbins))
+          .value(function(d) { return d.value;} )
+
+        // Compute the histogram
+        var bins = histogram(data);
+
+        // radius dependent of data length
+        var radius = this.y(data.length-1)/2.2;
+
+        // bins objects
+        console.log(bins)
+        var bin_container = this.svg.selectAll("g")
+          .data(bins);
+
+        bin_container.enter().append("g")
+          .attr("transform", d => "translate("+this.x(d.x0)+", 0)");
+
+        // JOIN new data with old elements.
+        var dots = bin_container.selectAll("bar")
+          .data(function(d) {
+            //return d.map(function(data, i){return {"idx": i, "name": i, "value": 3};})
+            return d.map(function(data, i){return {"idx": i, "name": data.line, "value": data.value};})
+            });
+
+        // EXIT old elements not present in new data.
+        dots.exit()
+            .attr("class", "exit")
+          .transition(t)
+            .attr("r", 0)
+            .remove();
+
+        // UPDATE old elements present in new data.
+        dots.attr("class", "update");
+
+        // ENTER new elements present in new data.
+        dots.enter().append("circle")
+          .attr("class", "enter")
+          .attr("cx", 0) //g element already at correct x pos
+          .attr("cy", function(d) {
+              return charter.y(d.idx)-radius; })
+          .attr("r", 0)
+          .merge(dots)
+          .on("mouseover", function(d) {
+              d3.select(this)
+                .style("fill", "red")
+              tooltip.transition()
+                   .duration(200)
+                   .style("opacity", .9);
+              tooltip.html(d.name + "<br/> (" + d.value + ")")
+                .style("left", d3.select(this).attr("cx") + "px")
+                .style("top", (d3.select(this).attr("cy")-50) + "px");
+            })
+            .on("mouseout", function(d) {
+              d3.select(this)
+                  .style("fill", "steelblue");
+                tooltip.transition()
+                     .duration(500)
+                     .style("opacity", 0);
+            })
+          .transition()
+            .duration(500)
+            .attr("r", function(d) {
+            return (d.length==0) ? 0 : radius; });
+console.log(dots)
+
+    },
+    init: function() {
+        // Build the data set we pass to the chart.
+        for ( var i = 0; i < this.len; i ++ ) {
+            this.d.archive[i].value = Math.floor(Math.random() * 288);
+            this.d.archive[i].value = Math.floor(Math.random() * 8);
+        }
+
+        // Set the dimensions of the graph
+        var margin = {top: 10, right: 30, bottom: 30, left: 30},
+            width = 550 - margin.left - margin.right,
+            height = 480 - margin.top - margin.bottom;
+
+        // Set the ranges
+        this.x = d3.scaleLinear()
+            .rangeRound([0, width])
+            .domain([2, 11]);
+          
+        this.y = d3.scaleLinear()
+            .range([height, 0]);
+
+        // Adds the svg canvas
+        this.svg = d3.select("#" + this.id)
+          .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform",
+                      "translate(" + margin.left + "," + margin.top + ")");
+
+        // add the tooltip area to the webpage
+        this.tooltip = d3.select(this.id).append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        this.svg.append("g")
+          .attr("class", "axis axis--x")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(this.x));
+
+        this.update();
+        this.update();
+    }
+};
+$.getJSON('data/archive.json?' + tracker.rando(), function(data) {
+    charter.d.archive = data;
+    charter.len = data.length;
+    charter.init();
+});
