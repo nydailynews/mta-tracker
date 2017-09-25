@@ -147,28 +147,32 @@ article {
     width: 100%;
     margin: 0 30px;
 }
+}
 /* TABLET-SPECIFIC */
 @media only screen and ( min-width: 728px ) and (max-width:1023px) {
 }
 /* HANDHELD & TABLET */
 @media only screen and ( min-width: 220px ) and (max-width:1023px) {
-h1 {
-    font-size: 30px;
-    line-height: 25px;
-}
-h2#timer-text, h2#yes-no {
-    margin: -60px auto;
-}
-#lead p {
-    margin: auto 10px;
-}
-}
-
-/* IE10+ CSS styles go here */
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    h1 {
+        font-size: 30px;
+        line-height: 25px;
+    }
+    h2#timer-text, h2#yes-no {
+        margin: -60px auto;
+    }
+    #lead p {
+        margin: auto 10px;
+    }
 }
 
 /* CHART STYLES */
+#chart-wrapper {
+    height: 200px;
+    overflow-y: hidden;
+}
+#chart-wrapper figure {
+    margin-top: -800px;
+}
 
 .enter {
   fill: green;
@@ -196,3 +200,8 @@ div.tooltip {
   border-radius: 8px;
   pointer-events: none;
 }
+
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+}
+

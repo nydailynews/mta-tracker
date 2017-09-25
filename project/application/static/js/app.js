@@ -299,15 +299,16 @@ var charter = {
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
         var t = d3.transition()
-          .duration(1000);
+          .duration(2000);
 
-        var data = this.d.archive
+        var data = this.d.archive;
 
         // Scale the range of the data
+        console.log(data.length,this.y(data.length-1));
         this.y.domain([0, data.length]);
 
         // Set up the binning parameters for the histogram
-        var nbins = Math.floor(this.minutes_since_midnight);
+        var nbins = this.minutes_since_midnight;
         console.log("Minutes since midnight: ", nbins)
         var histogram = d3.histogram()
           .domain(this.x.domain())
@@ -319,6 +320,7 @@ var charter = {
 
         // radius dependent of data length
         var radius = this.y(data.length-1)/2.2;
+        console.log(data.length,this.y(data.length-1),radius);
 
         // bins objects
         console.log(bins)
@@ -331,7 +333,6 @@ var charter = {
         // JOIN new data with old elements.
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
-            //return d.map(function(data, i){return {"idx": i, "name": i, "value": 3};})
             return d.map(function(data, i){return {"idx": i, "name": data.line, "value": data.value};})
             });
 
@@ -416,7 +417,7 @@ console.log(dots)
         // Set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = 550 - margin.left - margin.right,
-            height = 480 - margin.top - margin.bottom;
+            height = 1000 - margin.top - margin.bottom;
 
         // Set the ranges
         this.x = d3.scaleLinear()
@@ -436,7 +437,7 @@ console.log(dots)
                       "translate(" + margin.left + "," + margin.top + ")");
 
         // add the tooltip area to the webpage
-        this.tooltip = d3.select(this.id).append("div")
+        this.tooltip = d3.select('#' + this.id).append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
 
