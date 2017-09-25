@@ -356,17 +356,17 @@ var charter = {
           .on("mouseover", function(d) {
               d3.select(this)
                 .style("fill", "red")
-              tooltip.transition()
+              charter.tooltip.transition()
                    .duration(200)
                    .style("opacity", .9);
-              tooltip.html(d.name + "<br/> (" + d.value + ")")
+              charter.tooltip.html(d.name + "<br/> (" + d.value + ")")
                 .style("left", d3.select(this).attr("cx") + "px")
                 .style("top", (d3.select(this).attr("cy")-50) + "px");
             })
             .on("mouseout", function(d) {
               d3.select(this)
                   .style("fill", "steelblue");
-                tooltip.transition()
+                charter.tooltip.transition()
                      .duration(500)
                      .style("opacity", 0);
             })
@@ -408,7 +408,7 @@ console.log(dots)
                 var overlap = Math.max(this.msms[j][0], rec.start_bin) <= Math.min(this.msms[j][1], rec.stop_bin);
                 if ( overlap ) {
                     rec.value = this.msms[j][0];
-                    this.d.archive.push(rec);
+                    this.d.archive.push(Object.assign({}, rec));
                 }
             }
         }
