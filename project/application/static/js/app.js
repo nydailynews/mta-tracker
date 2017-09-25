@@ -271,10 +271,11 @@ var charter = {
     utc_offset: -400,
     nyc_now: new Date(),
     minutes_since_midnight: function() {
+        var seconds_in_minute = 60, ms_in_sec = 1000, minutes_in_bin = 5;
         var now = new Date(),
             then = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0),
             diff = now.getTime() - then.getTime();
-        return diff;
+        return diff/(ms_in_sec*seconds_in_minute*minutes_in_bin);
     },
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
@@ -287,7 +288,7 @@ var charter = {
         this.y.domain([0, data.length]);
 
         // Set up the binning parameters for the histogram
-        var nbins = Math.floor(this.minutes_since_midnight()/(5000*60));
+        var nbins = Math.floor(this.minutes_since_midnight());
         console.log("Minutes since midnight: ", nbins)
         var histogram = d3.histogram()
           .domain(this.x.domain())
@@ -309,7 +310,7 @@ var charter = {
           .attr("transform", d => "translate("+this.x(d.x0)+", 0)");
 
         // JOIN new data with old elements.
-        var dots = bin_container.selectAll("bar")
+        var dots = bin_container.selectAll("circle")
           .data(function(d) {
             //return d.map(function(data, i){return {"idx": i, "name": i, "value": 3};})
             return d.map(function(data, i){return {"idx": i, "name": data.line, "value": data.value};})
@@ -372,7 +373,7 @@ console.log(dots)
         // Set the ranges
         this.x = d3.scaleLinear()
             .rangeRound([0, width])
-            .domain([2, 11]);
+            .domain([0, this.minutes_since_midnight()]);
           
         this.y = d3.scaleLinear()
             .range([height, 0]);
