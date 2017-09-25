@@ -333,7 +333,9 @@ var charter = {
         // JOIN new data with old elements.
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
-            return d.map(function(data, i){return {"idx": i, "name": data.line, "value": data.value};})
+            return d.map(function(data, i){
+                return {"idx": i, "name": data.line, "value": data.value};}
+                )
             });
 
         // EXIT old elements not present in new data.
@@ -348,7 +350,7 @@ var charter = {
 
         // ENTER new elements present in new data.
         dots.enter().append("circle")
-          .attr("class", "enter")
+          .attr("class", function(d) { return "subway" + d.name; })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
               return charter.y(d.idx)-radius; })

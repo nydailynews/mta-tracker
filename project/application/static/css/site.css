@@ -200,6 +200,36 @@ div.tooltip {
   border-radius: 8px;
   pointer-events: none;
 }
+.green, .subway4, .subway5, .subway6 {
+    fill: #00933c;
+}
+.light-green, .subwayG {
+    fill: #6cbe45;
+}
+.red, .subway2, .subway3, .subway1 {
+    fill: #ee352e;
+}
+.purple, .subway7 {
+    fill: #b933ad;
+}
+.blue, .subwayA, .subwayC, .subwayE {
+    fill: #2850ad;
+}
+.orange, .subwayB, .subwayM, .subwayD, .subwayF {
+    fill: #ff6319;
+}
+.yellow, .subwayN, .subwayQ, .subwayW, .subwayR {
+    fill: #fccc0a;
+}
+.brown, .subwayJ, .subwayZ {
+    fill: #996633;
+}
+.dark-grey {
+    fill: #808183;
+}
+.grey, .subwayL {
+    fill: #a7a9ac;
+}
 
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
