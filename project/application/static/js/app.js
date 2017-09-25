@@ -270,7 +270,8 @@ var charter = {
     id: 'day-chart',
     utc_offset: -400,
     nyc_now: new Date(),
-    minutes_since_midnight: function() {
+    minutes_since_midnight: null,
+    get_minutes_since_midnight: function() {
         var seconds_in_minute = 60, ms_in_sec = 1000, minutes_in_bin = 5;
         var now = new Date(),
             then = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0),
@@ -288,7 +289,7 @@ var charter = {
         this.y.domain([0, data.length]);
 
         // Set up the binning parameters for the histogram
-        var nbins = Math.floor(this.minutes_since_midnight());
+        var nbins = Math.floor(this.minutes_since_midnight);
         console.log("Minutes since midnight: ", nbins)
         var histogram = d3.histogram()
           .domain(this.x.domain())
@@ -359,10 +360,19 @@ console.log(dots)
 
     },
     init: function() {
+        this.minutes_since_midnight = this.get_minutes_since_midnight();
         // Build the data set we pass to the chart.
+        // For this data set we need to know how many alerts existed within each five-minute window
+        // from midnight until the current time.
+        // That means we:
+        // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight.
+        // 2. Do the same for the record's stop time, if the stop time is available.
+        //  2a. If the stop time is not available we assign it the value of now.
+        // 3. Loop through each five-minute span.
+        // 4. In each loop, compare the delay's start and stop.
+        //    If the start or the stop are greater than the five-minute-span's start or stop, add that delay item to a new array.
         for ( var i = 0; i < this.len; i ++ ) {
-            this.d.archive[i].value = Math.floor(Math.random() * 288);
-            this.d.archive[i].value = Math.floor(Math.random() * 8);
+            this.d.archive[i].value = Math.floor(Math.random() * this.minutes_since_midnight);
         }
 
         // Set the dimensions of the graph
@@ -373,7 +383,7 @@ console.log(dots)
         // Set the ranges
         this.x = d3.scaleLinear()
             .rangeRound([0, width])
-            .domain([0, this.minutes_since_midnight()]);
+            .domain([0, this.minutes_since_midnight]);
           
         this.y = d3.scaleLinear()
             .range([height, 0]);
