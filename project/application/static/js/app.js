@@ -264,6 +264,18 @@ $.getJSON('data/current.json?' + tracker.rando(), function(data) {
     tracker.init();
 });
 
+var utils = {
+    parse_time: function(time) {
+        // time is a datetime-looking string such as "2017-07-25 11:32:00"
+        // returns a Date object.
+        console.log(typeof time, time);
+        if ( typeof time !== 'string' ) return Date.now();
+        var t = time.replace(' ', 'T');
+        //console.log(time, Date.parse(t), t);
+        return Date.parse(t);
+    }
+}
+
 var charter = {
     d: {},
     p: {},
@@ -272,16 +284,17 @@ var charter = {
     nyc_now: new Date(),
     minutes_since_midnight: null,
     get_minutes_since_midnight: function(time) {
+        // time is a datetime-looking string such as "2017-07-25 11:32:00" *it's also optional*
         // Gets the number of minutes from now to this morning's midnight,
         // unless an argument is given, in which case it delivers the number
         // of minutes between midnight and that time.
         // Note that it's not actual minutes, it's a five-minute bin of minutes.
+        var now = new Date().getTime();
         var seconds_in_minute = 60, ms_in_sec = 1000, minutes_in_bin = 5;
-        if ( time !== null ) now = time;
-        var now = new Date(),
-            then = new Date( now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0),
-            diff = now.getTime() - then.getTime();
-        return diff/(ms_in_sec*seconds_in_minute*minutes_in_bin);
+        if ( time !== undefined ) now = utils.parse_time(time);
+        var then = new Date( this.nyc_now.getFullYear(), this.nyc_now.getMonth(), this.nyc_now.getDate(), 0,0,0),
+            diff = now - then.getTime();
+        return Math.floor(diff/(ms_in_sec*seconds_in_minute*minutes_in_bin));
     },
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
@@ -384,8 +397,10 @@ console.log(dots)
         //    If the ranges overlap, add the delay to the processed delays.
         //    overlap = max(start1, start2) <= min(end1, end2)
         for ( var i = 0; i < this.len; i ++ ) {
-            
-            this.d.archive[i].value = Math.floor(Math.random() * this.minutes_since_midnight);
+            this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
+            this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
+            var rec = this.d.archive_raw[i];
+            console.log(rec)
         }
 
         // Set the dimensions of the graph
