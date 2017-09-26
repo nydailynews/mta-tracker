@@ -296,7 +296,7 @@ var charter = {
             diff = now - then.getTime();
         return Math.floor(diff/(ms_in_sec*seconds_in_minute*minutes_in_bin));
     },
-    circle_radius: 8,
+    circle_radius: 10,
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
         var t = d3.transition()
@@ -333,7 +333,8 @@ var charter = {
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
             return d.map(function(data, i){
-                return {"idx": i, "name": data.line, "value": data.value};}
+                if ( i == 0 ) console.log(data);
+                return {"idx": i, "name": data.line, "value": data.value, "cause": data.cause};}
                 )
             });
 
@@ -362,9 +363,10 @@ var charter = {
               charter.tooltip.transition()
                    .duration(200)
                    .style("opacity", .9);
+              console.log(d);
               charter.tooltip.html(d.name + "<br/> (" + d.value + ")")
-                .style("left", d3.select(this).attr("cx") + "px")
-                .style("top", (d3.select(this).attr("cy")-50) + "px");
+                .style("left", "200px")
+                .style("top", "50px");
             })
             .on("mouseout", function(d) {
               d3.select(this)
@@ -423,13 +425,13 @@ console.log(dots)
         // Set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = 1050 - margin.left - margin.right,
-            height = 200 - margin.top - margin.bottom;
+            height = 300 - margin.top - margin.bottom;
 
         // Set the ranges
         this.x = d3.scaleLinear()
             .rangeRound([0, width])
             .domain([0, this.minutes_since_midnight]);
-          
+
         this.y = d3.scaleLinear()
             .range([height, 0]);
 
