@@ -167,11 +167,15 @@ article {
 
 /* CHART STYLES */
 #chart-wrapper {
+/*
     height: 200px;
     overflow-y: hidden;
+*/
 }
 #chart-wrapper figure {
+/*
     margin-top: -800px;
+*/
 }
 
 .enter {

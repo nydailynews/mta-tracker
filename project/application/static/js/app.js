@@ -296,6 +296,7 @@ var charter = {
             diff = now - then.getTime();
         return Math.floor(diff/(ms_in_sec*seconds_in_minute*minutes_in_bin));
     },
+    circle_radius: 8,
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
         var t = d3.transition()
@@ -318,12 +319,10 @@ var charter = {
         // Compute the histogram
         var bins = histogram(data);
 
-        // radius dependent of data length
-        var radius = this.y(data.length-1)/2.2;
-        console.log(data.length,this.y(data.length-1),radius);
+        radius = this.circle_radius;
+        //console.log(data.length,this.y(data.length-1),radius);
 
         // bins objects
-        console.log(bins)
         var bin_container = this.svg.selectAll("g")
           .data(bins);
 
@@ -353,7 +352,8 @@ var charter = {
           .attr("class", function(d) { return "subway" + d.name; })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
-              return charter.y(d.idx)-radius; })
+                //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
+              return charter.y(d.idx)-((radius*2)*d.idx)-radius; })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) {
@@ -384,10 +384,11 @@ console.log(dots)
         this.minutes_since_midnight = this.get_minutes_since_midnight();
         this.msms = [];
         var lower = 0;
+        var bucket_size = 4; // Each whole integer equals a five minute span. So a bucket_size of 4 means each circle represents twenty minutes.
         for ( var i = 0; lower <= this.minutes_since_midnight; i ++ ) {
             // Assign the upper and lower bound for each five-minute block
-            lower = i * 5;
-            this.msms.push([lower, lower+4]);
+            lower = i * bucket_size;
+            this.msms.push([lower, lower+(bucket_size-1)]);
         }
         // Build the data set we pass to the chart.
         // For this data set we need to know how many alerts existed within each five-minute window
@@ -396,21 +397,24 @@ console.log(dots)
         // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight, then divide it by five, rounding down.
         // 2. Do the same for the record's stop time, if the stop time is available.
         //  2a. If the stop time is not available we assign it the value of now.
-        // 3. Loop through each five-minute span.
-        // 4. In each loop, compare the delay's start and stop.
-        //    If the ranges overlap, add the delay to the processed delays.
+        // 3. Loop through the number of five-minute bins since midnight
+        // 4. In each loop, compare the bin against the delay's start and stop.
+        //    If the bin is within the start and stop add it to the archive array.
         //    overlap = max(start1, start2) <= min(end1, end2)
         for ( var i = 0; i < this.len; i ++ ) {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
             var rec = this.d.archive_raw[i];
 
-            // Loop through each five-minute span.
+            // Loop through each minute-bin
             var len = this.msms.length;
             for ( var j = 0; j < len; j ++ ) {
                 var overlap = Math.max(this.msms[j][0], rec.start_bin) <= Math.min(this.msms[j][1], rec.stop_bin);
+                //var overlap = rec.start_bin <= j && j <= rec.stop_bin;
+                //console.log(overlap, rec.start_bin, j, rec.stop_bin);
                 if ( overlap ) {
                     rec.value = this.msms[j][0];
+                    //rec.value = j;
                     this.d.archive.push(Object.assign({}, rec));
                 }
             }
@@ -418,8 +422,8 @@ console.log(dots)
 
         // Set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = 550 - margin.left - margin.right,
-            height = 1000 - margin.top - margin.bottom;
+            width = 1050 - margin.left - margin.right,
+            height = 200 - margin.top - margin.bottom;
 
         // Set the ranges
         this.x = d3.scaleLinear()
