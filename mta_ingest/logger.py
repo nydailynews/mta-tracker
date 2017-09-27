@@ -219,7 +219,7 @@ class Logger:
                 # Then we ....
                 #print dir(item), item.last_alert
                 if prev_record['start'] == 0:
-                    self.new[item.transit_type]['starts'][line].extend(item.datetimes)
+                    self.new[item.transit_type]['starts'][line].extend(item.cause)
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
                 else:
@@ -361,7 +361,7 @@ def main(args):
     for line in log.new['subway']['stops'].keys():
         for item in log.new['subway']['stops'][line]:
             for prev in log.previous:
-                if prev['line'] == line and prev['start'] == item:
+                if prev['line'] == line and prev['cause'] == item:
                     # Calculate the length of the delay
                     prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
                     log.commit_archive_stop(line, prev)
