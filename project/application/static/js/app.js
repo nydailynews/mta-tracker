@@ -422,9 +422,10 @@ console.log(dots)
             }
         }
 
-        // Set the dimensions of the graph
+        // Calculate the width (20 times the number of bins set in this.msms above),
+        // set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = 1050 - margin.left - margin.right,
+            width = (len*20) - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
 
         // Set the ranges
