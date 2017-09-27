@@ -80,7 +80,11 @@ class Logger:
         self.db = Storage('mta')
         self.mta = ParseMTA(args[0])
         self.double_check = { 'in_text': 0, 'objects': 0 }
-        self.new = { 'subway': { 'starts': [], 'stops': [] } }
+        self.new = { 'subway': {
+            'starts': dict(zip(dicts.lines['subway'], ([] for i in range(len(dicts.lines['subway']))))),
+            'stops': dict(zip(dicts.lines['subway'], ([] for i in range(len(dicts.lines['subway'])))))
+            }
+        }
         self.transit_type = 'subway'
         if hasattr(self.args, 'transit_type') and self.args.transit_type:
             self.transit_type = self.args.transit_type
@@ -140,7 +144,7 @@ class Logger:
             transit_type = self.args.transit_type
 
         # TODO: Make this flexible to handle the other modes of transit
-        self.stop_check = dicts.lines
+        self.stop_check = { 'subway': [] }
         items, lines = [], {}
         entries = self.mta.parse_file(fn, transit_type)
         for l in entries:
@@ -213,8 +217,9 @@ class Logger:
                         prev_record = prev
                         break
                 # Then we ....
+                #print dir(item), item.last_alert
                 if prev_record['start'] == 0:
-                    self.new[item.transit_type]['starts'].append(line)
+                    self.new[item.transit_type]['starts'][line].extend(item.datetimes)
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
                 else:
@@ -229,8 +234,8 @@ class Logger:
             self.db.q.update_current(**params)
 
             # Remove the line from the list of lines we check to see if there's a finished alert.
-            if line in self.stop_check['subway']:
-                self.stop_check['subway'].remove(line)
+            #if line not in self.stop_check['subway']:
+            self.stop_check['subway'].append(line)
 
         return count
 
@@ -259,10 +264,10 @@ class Logger:
                 # Any line with a current alert *will not* be in the stop_check list.
                 # The stop_check lists exists for this purpose: To check if an alert for a line has stopped.
                 # ***HC
-                if prev['start'] != 0 and prev['line'] in self.stop_check['subway']:
+                if prev['start'] != 0 and prev['line'] not in self.stop_check['subway']:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
-                    self.new['subway']['stops'].append(prev['line'])
+                    self.new['subway']['stops'][prev['line']].append(prev['start'])
                     # ***HC
                     params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
@@ -362,19 +367,22 @@ def main(args):
 
     if args.verbose:
         print "NOTICE: ", log.double_check
-        print "NOTICE: ", log.new['subway']
+        print "NOTICE: ", log.new['subway']['starts'].values()
+        print "NOTICE: ", log.new['subway']['stops'].values()
 
 
     # Update the archive table with the new items
-    new_len = len(log.new['subway']['starts']) + len(log.new['subway']['stops'])
-    for item in log.new['subway']['starts']:
-        log.commit_archive_start(item, lines[item])
-    for item in log.new['subway']['stops']:
-        for prev in log.previous:
-            if prev['line'] == item:
-                # Calculate the length of the delay
-                prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
-                log.commit_archive_stop(item, prev)
+    new_len = sum(len(v) for v in log.new['subway']['starts'].itervalues()) + sum(len(v) for v in log.new['subway']['stops'].itervalues())
+    for line in log.new['subway']['starts'].keys():
+        for item in log.new['subway']['starts'][line]:
+            log.commit_archive_start(line, lines[line])
+    for line in log.new['subway']['stops'].keys():
+        for item in log.new['subway']['stops'][line]:
+            for prev in log.previous:
+                if prev['line'] == line and prev['start'] == item:
+                    # Calculate the length of the delay
+                    prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
+                    log.commit_archive_stop(line, prev)
     if new_len > 0:
         log.db.conn.commit()
     params = { 'date': datetime.now().date().__str__() }
