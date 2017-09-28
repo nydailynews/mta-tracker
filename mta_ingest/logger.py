@@ -233,9 +233,9 @@ class Logger:
             params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
             self.db.q.update_current(**params)
 
-            # Remove the line from the list of lines we check to see if there's a finished alert.
-            #if line not in self.stop_check['subway']:
-            self.stop_check['subway'].append(line)
+            # Log the cause -- we use this list of causes when comparing the previous
+            # version of data json against this version to see if any lines have stopped alerts.
+            self.stop_check['subway'].append(item.cause)
 
         return count
 
@@ -261,13 +261,16 @@ class Logger:
             # self.previous is a dict taken from the json written by the last time we ran this script.
             for prev in self.previous:
                 # We only want to check for the stoppage of current alerts.
-                # Any line with a current alert *will not* be in the stop_check list.
-                # The stop_check lists exists for this purpose: To check if an alert for a line has stopped.
+                # Any line with a current alert *will be* in the stop_check list of alert causes.
+                # The stop_check list exists for this purpose: To check if an alert for a line has stopped.
                 # ***HC
-                if prev['start'] != 0 and prev['line'] not in self.stop_check['subway']:
+                if prev['start'] != 0 and prev['cause'] not in self.stop_check['subway']:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
-                    self.new['subway']['stops'][prev['line']].append(prev['start'])
+                    # ARCHIVE HOOK
+                    # This is what's hooked into at the end of script execution
+                    # and used to update the archive table in the database 
+                    self.new['subway']['stops'][prev['line']].append(prev['cause'])
                     # ***HC
                     params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_current(**params)
