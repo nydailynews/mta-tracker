@@ -403,6 +403,7 @@ console.log(dots)
         // 4. In each loop, compare the bin against the delay's start and stop.
         //    If the bin is within the start and stop add it to the archive array.
         //    overlap = max(start1, start2) <= min(end1, end2)
+        var bin_lens = {};  // For counting the most number of items we'll have in any bin
         for ( var i = 0; i < this.len; i ++ ) {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
@@ -416,17 +417,22 @@ console.log(dots)
                 //console.log(overlap, rec.start_bin, j, rec.stop_bin);
                 if ( overlap ) {
                     rec.value = this.msms[j][0];
+                    if ( typeof bin_lens[this.msms[j][0]] === 'undefined' ) bin_lens[this.msms[j][0]] = 1;
+                    else bin_lens[this.msms[j][0]] += 1;
                     //rec.value = j;
                     this.d.archive.push(Object.assign({}, rec));
                 }
             }
         }
+        // Get the most number of items in any of the bins:
+        var max_count = Object.keys(bin_lens).reduce(function(a, b){ return bin_lens[a] > bin_lens[b] ? a : b });
 
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            height = (bin_lens[max_count]*30) - margin.top - margin.bottom;
+        //console.log("HEIGHT", height, max_count, bin_lens)
 
         // Set the ranges
         this.x = d3.scaleLinear()

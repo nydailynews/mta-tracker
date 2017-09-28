@@ -235,7 +235,7 @@ div.tooltip {
     fill: #a7a9ac;
 }
 .hover {
-    fill: white;
+    fill: black;
 }
 
 /* IE10+ CSS styles go here */
