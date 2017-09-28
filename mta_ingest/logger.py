@@ -344,7 +344,6 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
-    print "AAAA: ", lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     log.db.conn.commit()
