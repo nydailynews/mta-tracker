@@ -219,23 +219,23 @@ class Logger:
                 # Then we ....
                 #print dir(item), item.last_alert
                 if prev_record['start'] == 0:
+                    # ARCHIVE HOOK
                     self.new[item.transit_type]['starts'][line].extend(item.cause)
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
+                    # Update the current table in the database
+                    # ***HC
+                    params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+                    self.db.q.update_current(**params)
                 else:
                     #print prev_record
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
-                    # DOUBLE-CHECK
-                    count += 1
-
-            # Update the current table in the database
-            # ***HC
-            params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
-            self.db.q.update_current(**params)
+                # DOUBLE-CHECK
+                count += 1
 
             # Log the cause -- we use this list of causes when comparing the previous
             # version of data json against this version to see if any lines have stopped alerts.
-            self.stop_check['subway'].append(item.cause)
+            self.stop_check['subway'].extend(item.cause)
 
         return count
 
@@ -344,6 +344,7 @@ def main(args):
     for fn in files:
         lines = log.parse_file(fn)
 
+    print "AAAA: ", lines
     commit_count = log.commit_starts(lines)
     commit_count += log.commit_stops()
     log.db.conn.commit()
