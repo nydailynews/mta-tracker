@@ -103,7 +103,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
-    <script src="http://interactive.nydailynews.com/library/vendor-nav/vendor-include.js" defer></script>
+    <script src="//interactive.nydailynews.com/library/vendor-nav/vendor-include.js" defer></script>
     <link rel="stylesheet" type="text/css" href="css/site.css">
     <script>
 </script>
@@ -151,7 +151,6 @@
         </section>
     
         <div class="ad center">
-            <span>ADVERTISEMENT</span>
             <div id='div-gpt-ad-1423507761396-1'>
               <script>
                 googletag.cmd.push(function() { googletag.display('div-gpt-ad-1423507761396-1'); });
