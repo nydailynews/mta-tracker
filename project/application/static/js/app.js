@@ -268,7 +268,7 @@ var utils = {
     parse_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         // returns a Date object.
-        console.log(typeof time, time);
+        //console.log(typeof time, time);
         if ( typeof time !== 'string' ) return Date.now();
         var t = time.replace(' ', 'T');
         //console.log(time, Date.parse(t), t);
@@ -311,7 +311,7 @@ var charter = {
         var data = this.d.archive;
 
         // Scale the range of the data
-        console.log(data.length,this.y(data.length-1));
+        //console.log(data.length,this.y(data.length-1));
         this.y.domain([0, data.length]);
 
         // Set up the binning parameters for the histogram
@@ -463,10 +463,20 @@ console.log(dots)
             .attr("class", "tooltip")
             .style("opacity", 0);
 
+        var ticks = this.x.ticks(this.hours_since_midnight + 1),
+            tickFormat = this.x.tickFormat(this.hours_since_midnight + 1, "+%");
+        //ticks.map(tickFormat);
+
         this.svg.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(this.x).ticks(this.hours_since_midnight + 1));
+          .call(d3.axisBottom(this.x)
+                .ticks(this.hours_since_midnight + 1)
+                .tickFormat(tickFormat)
+                //.ticks(this.hours_since_midnight + 1)
+                //.tickFormat('+%')
+                //.tickFormat(d3.format("d"))
+            );
 
         this.update();
         this.update();
