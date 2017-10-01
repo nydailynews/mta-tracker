@@ -279,10 +279,17 @@ var utils = {
 var charter = {
     d: {},
     p: {},
+    log: {},
+    dev: 0,
+    config: {
+        circle_radius: 10,
+        utc_offset: -400,
+        minutes_per_bin: 20,
+    },
     id: 'day-chart',
-    utc_offset: -400,
     nyc_now: new Date(),
     minutes_since_midnight: null,
+    hours_since_midnight: null,
     get_minutes_since_midnight: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00" *it's also optional*
         // Gets the number of minutes from now to this morning's midnight,
@@ -296,7 +303,6 @@ var charter = {
             diff = now - then.getTime();
         return Math.floor(diff/(ms_in_sec*seconds_in_minute*minutes_in_bin));
     },
-    circle_radius: 10,
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
         var t = d3.transition()
@@ -310,7 +316,7 @@ var charter = {
 
         // Set up the binning parameters for the histogram
         var nbins = this.minutes_since_midnight;
-        console.log("Minutes since midnight: ", nbins)
+        //console.log("Minutes since midnight: ", nbins)
         var histogram = d3.histogram()
           .domain(this.x.domain())
           .thresholds(this.x.ticks(nbins))
@@ -319,8 +325,7 @@ var charter = {
         // Compute the histogram
         var bins = histogram(data);
 
-        radius = this.circle_radius;
-        //console.log(data.length,this.y(data.length-1),radius);
+        radius = this.config.circle_radius;
 
         // bins objects
         var bin_container = this.svg.selectAll("g")
@@ -333,8 +338,8 @@ var charter = {
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
             return d.map(function(data, i){
-                if ( i == 0 ) console.log(data);
-                return {"idx": i, "name": data.line, "value": data.value, "cause": data.cause};}
+                //if ( i == 0 ) console.log(data);
+                return {"idx": i, "name": data.line, "value": data.value, "cause": data.cause, "start": data.start};}
                 )
             });
 
@@ -365,6 +370,7 @@ var charter = {
                    .style("opacity", .9);
               console.log(d);
               charter.tooltip.html(d.name + "<br/> (" + d.value + ")")
+                .style("border", "3px solid red")
                 .style("left", "200px")
                 .style("top", "50px");
             })
@@ -384,9 +390,10 @@ console.log(dots)
     },
     init: function() {
         this.minutes_since_midnight = this.get_minutes_since_midnight();
+        this.hours_since_midnight = Math.floor(this.get_minutes_since_midnight()/(60/5));
         this.msms = [];
         var lower = 0;
-        var bucket_size = 4; // Each whole integer equals a five minute span. So a bucket_size of 4 means each circle represents twenty minutes.
+        var bucket_size = Math.floor(this.config.minutes_per_bin/5);
         for ( var i = 0; lower <= this.minutes_since_midnight; i ++ ) {
             // Assign the upper and lower bound for each five-minute block
             lower = i * bucket_size;
@@ -425,14 +432,14 @@ console.log(dots)
             }
         }
         // Get the most number of items in any of the bins:
-        var max_count = Object.keys(bin_lens).reduce(function(a, b){ return bin_lens[a] > bin_lens[b] ? a : b });
+        this.log.max_count = Object.keys(bin_lens).reduce(function(a, b){ return bin_lens[a] > bin_lens[b] ? a : b });
 
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (bin_lens[max_count]*30) - margin.top - margin.bottom;
-        //console.log("HEIGHT", height, max_count, bin_lens)
+            height = (bin_lens[this.log.max_count]*35) - 200 - margin.top - margin.bottom;
+        console.log("HEIGHT", height, this.log.max_count, bin_lens)
 
         // Set the ranges
         this.x = d3.scaleLinear()
@@ -459,7 +466,7 @@ console.log(dots)
         this.svg.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(this.x));
+          .call(d3.axisBottom(this.x).ticks(this.hours_since_midnight + 1));
 
         this.update();
         this.update();
