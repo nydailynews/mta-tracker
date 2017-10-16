@@ -280,7 +280,7 @@ var charter = {
     d: {},
     p: {},
     log: {},
-    dev: 0,
+    in_dev: 0,
     config: {
         circle_radius: 10,
         utc_offset: -400,
@@ -389,8 +389,9 @@ console.log(dots)
 
     },
     init: function() {
+        // The work we need to do to load the chart.
         this.minutes_since_midnight = this.get_minutes_since_midnight();
-        this.hours_since_midnight = Math.floor(this.get_minutes_since_midnight()/(60/5));
+        this.hours_since_midnight = Math.floor(this.minutes_since_midnight/(60/5));
         this.msms = [];
         var lower = 0;
         var bucket_size = Math.floor(this.config.minutes_per_bin/5);
@@ -423,6 +424,7 @@ console.log(dots)
                 //var overlap = rec.start_bin <= j && j <= rec.stop_bin;
                 //console.log(overlap, rec.start_bin, j, rec.stop_bin);
                 if ( overlap ) {
+                    rec.minutes_since_bin = this.msms[j][0];
                     rec.value = this.msms[j][0];
                     if ( typeof bin_lens[this.msms[j][0]] === 'undefined' ) bin_lens[this.msms[j][0]] = 1;
                     else bin_lens[this.msms[j][0]] += 1;
@@ -438,7 +440,7 @@ console.log(dots)
         // set the dimensions of the graph
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (bin_lens[this.log.max_count]*35) - 200 - margin.top - margin.bottom;
+            height = (bin_lens[this.log.max_count]*35) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, bin_lens)
 
         // Set the ranges
@@ -463,15 +465,15 @@ console.log(dots)
             .attr("class", "tooltip")
             .style("opacity", 0);
 
-        var ticks = this.x.ticks(this.hours_since_midnight + 1),
-            tickFormat = this.x.tickFormat(this.hours_since_midnight + 1, "+%");
+        var tick_count = this.hours_since_midnight;
+        var tickFormat = this.x.tickFormat(tick_count, "s");
         //ticks.map(tickFormat);
 
         this.svg.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(this.x)
-                .ticks(this.hours_since_midnight + 1)
+                .ticks(tick_count)
                 .tickFormat(tickFormat)
                 //.ticks(this.hours_since_midnight + 1)
                 //.tickFormat('+%')
