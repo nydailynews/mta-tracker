@@ -317,10 +317,11 @@ var charter = {
         // Set up the binning parameters for the histogram
         var nbins = this.minutes_since_midnight;
         //console.log("Minutes since midnight: ", nbins)
+        
         var histogram = d3.histogram()
           .domain(this.x.domain())
           .thresholds(this.x.ticks(nbins))
-          .value(function(d) { return d.value;} )
+          .value(function(d) { return d.time; } )
 
         // Compute the histogram
         var bins = histogram(data);
@@ -338,8 +339,8 @@ var charter = {
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
             return d.map(function(data, i){
-                //if ( i == 0 ) console.log(data);
-                return {"idx": i, "name": data.line, "value": data.value, "cause": data.cause, "start": data.start};}
+                if ( i == 0 ) console.log('DATA', data);
+                return {"idx": i, "name": data.line, "value": data.time, "cause": data.cause, "start": data.start};}
                 )
             });
 
@@ -392,6 +393,7 @@ console.log(dots)
         // The work we need to do to load the chart.
         this.minutes_since_midnight = this.get_minutes_since_midnight();
         this.hours_since_midnight = Math.floor(this.minutes_since_midnight/(60/5));
+        this.midnight = new Date().setHours(0, 0, 0, 0);
         this.msms = [];
         var lower = 0;
         var bucket_size = Math.floor(this.config.minutes_per_bin/5);
@@ -406,7 +408,7 @@ console.log(dots)
         // That means we:
         // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight, then divide it by five, rounding down.
         // 2. Do the same for the record's stop time, if the stop time is available.
-        //  2a. If the stop time is not available we assign it the value of now.
+        //    2a. If the stop time is not available we assign it the value of now.
         // 3. Loop through the number of five-minute bins since midnight
         // 4. In each loop, compare the bin against the delay's start and stop.
         //    If the bin is within the start and stop add it to the archive array.
@@ -426,6 +428,9 @@ console.log(dots)
                 if ( overlap ) {
                     rec.minutes_since_bin = this.msms[j][0];
                     rec.value = this.msms[j][0];
+                    rec.time = new Date();
+                    rec.time.setTime(this.midnight + this.msms[j][0] * 5 * 60 * 1000 ); // Convert the five-minute bin number to milliseconds.
+                    //console.log(rec)
                     if ( typeof bin_lens[this.msms[j][0]] === 'undefined' ) bin_lens[this.msms[j][0]] = 1;
                     else bin_lens[this.msms[j][0]] += 1;
                     //rec.value = j;
@@ -444,9 +449,12 @@ console.log(dots)
         console.log("HEIGHT", height, this.log.max_count, bin_lens)
 
         // Set the ranges
-        this.x = d3.scaleLinear()
-            .rangeRound([0, width])
-            .domain([0, this.minutes_since_midnight]);
+        //this.x = d3.scaleLinear()
+        //    .rangeRound([0, width])
+        //    .domain([0, this.minutes_since_midnight]);
+        this.x = d3.scaleTime()
+            .domain([new Date(2017,9,17), new Date(2017,9,18)])
+            .range([0, this.minutes_since_midnight*5])
 
         this.y = d3.scaleLinear()
             .range([height, 0]);
@@ -473,10 +481,10 @@ console.log(dots)
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(this.x)
-                .ticks(tick_count)
-                .tickFormat(tickFormat)
-                //.ticks(this.hours_since_midnight + 1)
-                //.tickFormat('+%')
+                //.ticks(tick_count)
+                //.tickFormat(tickFormat)
+                .ticks(this.hours_since_midnight + 1)
+                //.tickFormat('+%I')
                 //.tickFormat(d3.format("d"))
             );
 
