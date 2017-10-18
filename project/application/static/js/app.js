@@ -277,11 +277,12 @@ var utils = {
     human_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         // returns a human-readable string, "11:32 a.m."
-        var bits = time.split(' ');
-        var time_bits  = bits[1].split(':');
+        if ( time === null ) return 'now';
+
+        var time_bits  = time.split(' ')[1].split(':');
+        var ampm = 'a.m.';
         // Remove the seconds
         time_bits.pop();
-        var ampm = 'a.m.';
         if ( +time_bits[0] > 11 )
         {
             ampm = 'p.m.'
@@ -297,6 +298,7 @@ var charter = {
     p: {},
     log: {},
     in_dev: 0,
+    next_check: 0,
     config: {
         circle_radius: 10,
         utc_offset: -400,
@@ -404,11 +406,10 @@ var charter = {
 console.log(dots)
 
     },
-    init: function() {
-        // The work we need to do to load the chart.
+    update_data: function() {
+        // Assuming the d.archive data is current, update the data the chart uses to publish.
         this.minutes_since_midnight = this.get_minutes_since_midnight();
         this.hours_since_midnight = Math.floor(this.minutes_since_midnight/(60/5));
-        this.midnight = new Date().setHours(0, 0, 0, 0);
         this.msms = [];
         var lower = 0;
         var bucket_size = Math.floor(this.config.minutes_per_bin/5);
@@ -428,7 +429,7 @@ console.log(dots)
         // 4. In each loop, compare the bin against the delay's start and stop.
         //    If the bin is within the start and stop add it to the archive array.
         //    overlap = max(start1, start2) <= min(end1, end2)
-        var bin_lens = {};  // For counting the most number of items we'll have in any bin
+        this.bin_lens = {};  // For counting the most number of items we'll have in any bin
         for ( var i = 0; i < this.len; i ++ ) {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
@@ -446,22 +447,28 @@ console.log(dots)
                     rec.time = new Date();
                     rec.time.setTime(this.midnight + this.msms[j][0] * 5 * 60 * 1000 ); // Convert the five-minute bin number to milliseconds.
                     //console.log(rec)
-                    if ( typeof bin_lens[this.msms[j][0]] === 'undefined' ) bin_lens[this.msms[j][0]] = 1;
-                    else bin_lens[this.msms[j][0]] += 1;
+                    if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 1;
+                    else this.bin_lens[this.msms[j][0]] += 1;
                     //rec.value = j;
                     this.d.archive.push(Object.assign({}, rec));
                 }
             }
         }
         // Get the most number of items in any of the bins:
-        this.log.max_count = Object.keys(bin_lens).reduce(function(a, b){ return bin_lens[a] > bin_lens[b] ? a : b });
+        this.log.max_count = Object.keys(this.bin_lens).reduce(function(a, b){ return charter.bin_lens[a] > charter.bin_lens[b] ? a : b });
+    },
+    init: function() {
+        // The work we need to do to load the chart.
+        this.midnight = new Date().setHours(0, 0, 0, 0);
+        this.update_data();
 
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
+        var len = this.msms.length;
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (bin_lens[this.log.max_count]*35) - 46 - margin.top - margin.bottom;
-        console.log("HEIGHT", height, this.log.max_count, bin_lens)
+            height = (this.bin_lens[this.log.max_count]*35) - 46 - margin.top - margin.bottom;
+        console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges
         //this.x = d3.scaleLinear()
@@ -503,6 +510,8 @@ console.log(dots)
 
         this.update();
         this.update();
+
+        // Set the timer to run every minute
     }
 };
 $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
