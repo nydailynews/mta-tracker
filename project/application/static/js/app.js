@@ -386,7 +386,9 @@ var charter = {
                    .duration(200)
                    .style("opacity", .9);
               console.log(d);
-              charter.tooltip.html(d.name + " line alert from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + "")
+              charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
+                    from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
+                    <br>Cause: " + d.cause);
             })
             .on("mouseout", function(d) {
               d3.select(this)

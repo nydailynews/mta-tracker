@@ -137,7 +137,7 @@
             <p><em>Chart updates automatically every minute</em></p>
             <div id="chart-wrapper">
 				<figure id="day-chart"></figure>
-				<div id="tooltip"></div>
+				<p id="tooltip"></p>
 <!--
                 <img src="static/img/day-chart.png" alt="">
 -->
