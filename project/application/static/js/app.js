@@ -303,6 +303,7 @@ var charter = {
         circle_radius: 10,
         utc_offset: -400,
         minutes_per_bin: 20,
+        radius_factor: 1.25,
     },
     id: 'day-chart',
     nyc_now: new Date(),
@@ -377,8 +378,8 @@ var charter = {
           .attr("class", function(d) { return "subway" + d.name; })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
-                //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
-              return charter.y(d.idx)-((radius*2)*d.idx)-radius; })
+              //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
+              return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) {
@@ -403,8 +404,19 @@ var charter = {
             .duration(500)
             .attr("r", function(d) {
             return (d.length==0) ? 0 : radius; });
-console.log(dots)
 
+    },
+    update_check: function() {
+        // See if there's anything new to get.
+        $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
+            var prev_len = charter.len;
+            if ( prev_len !== data.length ) {
+                charter.d.archive_raw = data;
+                charter.d.archive = [];
+                charter.len = data.length;
+                charter.update_data();
+            }
+        });
     },
     update_data: function() {
         // Assuming the d.archive data is current, update the data the chart uses to publish.
@@ -447,8 +459,8 @@ console.log(dots)
                     rec.time = new Date();
                     rec.time.setTime(this.midnight + this.msms[j][0] * 5 * 60 * 1000 ); // Convert the five-minute bin number to milliseconds.
                     //console.log(rec)
-                    if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 1;
-                    else this.bin_lens[this.msms[j][0]] += 1;
+                    if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
+                    this.bin_lens[this.msms[j][0]] += 1;
                     //rec.value = j;
                     this.d.archive.push(Object.assign({}, rec));
                 }
@@ -467,7 +479,7 @@ console.log(dots)
         var len = this.msms.length;
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (this.bin_lens[this.log.max_count]*35) - 46 - margin.top - margin.bottom;
+            height = (this.bin_lens[this.log.max_count]*33) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges
