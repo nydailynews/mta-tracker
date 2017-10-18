@@ -468,7 +468,7 @@ console.log(dots)
         //    .rangeRound([0, width])
         //    .domain([0, this.minutes_since_midnight]);
         this.x = d3.scaleTime()
-            .domain([new Date(2017,9,17), new Date(2017,9,18)])
+            .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, this.minutes_since_midnight*5])
 
         this.y = d3.scaleLinear()
