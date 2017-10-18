@@ -204,38 +204,59 @@ div.tooltip {
   border-radius: 8px;
   pointer-events: none;
 }
+.green:hover, .subway4:hover, .subway5:hover, .subway6:hover,
 .green, .subway4, .subway5, .subway6 {
     fill: #00933c;
+    stroke: #00933c;
 }
+.light-green:hover, .subwayG:hover,
 .light-green, .subwayG {
     fill: #6cbe45;
+    stroke: #6cbe45;
 }
+.red:hover, .subway2:hover, .subway3:hover, .subway1:hover,
 .red, .subway2, .subway3, .subway1 {
     fill: #ee352e;
+    stroke: #ee352e;
 }
+.purple:hover, .subway7:hover,
 .purple, .subway7 {
     fill: #b933ad;
+    stroke: #b933ad;
 }
+.blue:hover, .subwayA:hover, .subwayC:hover, .subwayE:hover,
 .blue, .subwayA, .subwayC, .subwayE {
     fill: #2850ad;
+    stroke: #2850ad;
 }
+.orange:hover, .subwayB:hover, .subwayM:hover, .subwayD:hover, .subwayF:hover,
 .orange, .subwayB, .subwayM, .subwayD, .subwayF {
     fill: #ff6319;
+    stroke: #ff6319;
 }
+.yellow:hover, .subwayN:hover, .subwayQ:hover, .subwayW:hover, .subwayR:hover,
 .yellow, .subwayN, .subwayQ, .subwayW, .subwayR {
     fill: #fccc0a;
+    stroke: #fccc0a;
 }
+.brown:hover, .subwayJ:hover, .subwayZ:hover,
 .brown, .subwayJ, .subwayZ {
     fill: #996633;
+    stroke: #996633;
 }
+.dark-grey:hover, 
 .dark-grey {
     fill: #808183;
+    stroke: #808183;
 }
+.grey:hover, .subwayL:hover,
 .grey, .subwayL {
     fill: #a7a9ac;
+    stroke: #a7a9ac;
 }
-.hover {
-    fill: black;
+circle:hover {
+    fill: white!important;
+    stroke-width: 5;
 }
 
 /* IE10+ CSS styles go here */
