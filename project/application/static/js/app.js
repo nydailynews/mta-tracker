@@ -273,7 +273,23 @@ var utils = {
         var t = time.replace(' ', 'T');
         //console.log(time, Date.parse(t), t);
         return Date.parse(t);
-    }
+    },
+    human_time: function(time) {
+        // time is a datetime-looking string such as "2017-07-25 11:32:00"
+        // returns a human-readable string, "11:32 a.m."
+        var bits = time.split(' ');
+        var time_bits  = bits[1].split(':');
+        // Remove the seconds
+        time_bits.pop();
+        var ampm = 'a.m.';
+        if ( +time_bits[0] > 11 )
+        {
+            ampm = 'p.m.'
+            time_bits[0] = +time_bits[0] - 12;
+            if ( time_bits[0] === 0 ) time_bits[0] = 12;
+        }
+        return time_bits.join(':') + ' ' + ampm;
+    },
 }
 
 var charter = {
@@ -339,8 +355,8 @@ var charter = {
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
             return d.map(function(data, i){
-                if ( i == 0 ) console.log('DATA', data);
-                return {"idx": i, "name": data.line, "value": data.time, "cause": data.cause, "start": data.start};}
+                //if ( i == 0 ) console.log('DATA', data);
+                return {"idx": i, "name": data.line, "value": data.time, "cause": data.cause, "start": data.start, "stop": data.stop};}
                 )
             });
 
@@ -370,10 +386,7 @@ var charter = {
                    .duration(200)
                    .style("opacity", .9);
               console.log(d);
-              charter.tooltip.html(d.name + "<br/> (" + d.value + ")")
-                .style("border", "3px solid red")
-                .style("left", "200px")
-                .style("top", "50px");
+              charter.tooltip.html(d.name + " line alert from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + "")
             })
             .on("mouseout", function(d) {
               d3.select(this)
@@ -469,9 +482,7 @@ console.log(dots)
                       "translate(" + margin.left + "," + margin.top + ")");
 
         // add the tooltip area to the webpage
-        this.tooltip = d3.select('#' + this.id).append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+        this.tooltip = d3.select('#tooltip')
 
         var tick_count = this.hours_since_midnight;
         var tickFormat = this.x.tickFormat(tick_count, "s");

@@ -137,6 +137,7 @@
             <p><em>Chart updates automatically every minute</em></p>
             <div id="chart-wrapper">
 				<figure id="day-chart"></figure>
+				<div id="tooltip"></div>
 <!--
                 <img src="static/img/day-chart.png" alt="">
 -->
@@ -144,7 +145,7 @@
         </section>
 
         <section class="recent" id="recent">
-            <h2>Recent MTA alerts</h2>
+            <h2>Recent MTA service alerts</h2>
             <div>
                 <dl></dl>
             </div>
