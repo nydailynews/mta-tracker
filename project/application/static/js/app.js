@@ -303,6 +303,7 @@ var charter = {
         circle_radius: 10,
         utc_offset: -400,
         minutes_per_bin: 20,
+        seconds_between_checks: 20,
         radius_factor: 1.25,
     },
     id: 'day-chart',
@@ -409,11 +410,13 @@ var charter = {
         // See if there's anything new to get.
         $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
             var prev_len = charter.len;
+            console.log("DATA UPDATE CHECK:", prev_len, data.length);
             if ( prev_len !== data.length ) {
                 charter.d.archive_raw = data;
                 charter.d.archive = [];
                 charter.len = data.length;
                 charter.update_data();
+                charter.update();
             }
         });
     },
@@ -515,7 +518,8 @@ var charter = {
         this.update();
         this.update();
 
-        // Set the timer to run every minute
+        // Set the timer to check for updated data
+        this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
     }
 };
 $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
