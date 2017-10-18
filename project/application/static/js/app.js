@@ -378,8 +378,8 @@ var charter = {
           .attr("class", function(d) { return "subway" + d.name; })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
-              //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
-              return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
+                //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
+                return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) {
@@ -504,19 +504,12 @@ var charter = {
         // add the tooltip area to the webpage
         this.tooltip = d3.select('#tooltip')
 
-        var tick_count = this.hours_since_midnight;
-        var tickFormat = this.x.tickFormat(tick_count, "s");
-        //ticks.map(tickFormat);
-
         this.svg.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(this.x)
-                //.ticks(tick_count)
-                //.tickFormat(tickFormat)
                 .ticks(this.hours_since_midnight + 1)
-                //.tickFormat('+%I')
-                //.tickFormat(d3.format("d"))
+                .tickFormat(d3.timeFormat("%-I %p"))
             );
 
         this.update();
