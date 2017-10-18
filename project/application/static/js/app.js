@@ -306,6 +306,18 @@ var charter = {
         seconds_between_checks: 20,
         radius_factor: 1.25,
     },
+    rundown: {
+        alerts: 0,
+        lines: [],
+        seconds: 0,
+    },
+    update_rundown: function() {
+        // Write the rundown graf.
+        var r = this.rundown;
+        graf = 'Today there have been ' + r.alerts + ' service alerts on ' + r.lines_len + ' different lines \n\
+            totalling ' + r.hours + ' hours and ' + r.minutes + ' minutes of alert-time.';
+        document.getElementById('rundown').innerHTML = graf;
+    },
     id: 'day-chart',
     nyc_now: new Date(),
     minutes_since_midnight: null,
@@ -449,6 +461,10 @@ var charter = {
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
             var rec = this.d.archive_raw[i];
 
+            // Add the line and second-length of delay to the rundown
+            if ( this.rundown.lines.indexOf(rec['line']) === -1 ) this.rundown.lines.push(rec['line']);
+            this.rundown.seconds += rec['length'];
+
             // Loop through each minute-bin
             var len = this.msms.length;
             for ( var j = 0; j < len; j ++ ) {
@@ -470,6 +486,13 @@ var charter = {
         }
         // Get the most number of items in any of the bins:
         this.log.max_count = Object.keys(this.bin_lens).reduce(function(a, b){ return charter.bin_lens[a] > charter.bin_lens[b] ? a : b });
+
+        // Populate the numbers we use in the day's rundown.
+        this.rundown.alerts = this.d.archive_raw.length;
+        this.rundown.lines_len = this.rundown.lines.length;
+        this.rundown.hours = Math.floor(this.rundown.seconds / 3600);
+        this.rundown.minutes = Math.floor(this.rundown.seconds / 60) % 60;
+        this.update_rundown();
     },
     init: function() {
         // The work we need to do to load the chart.

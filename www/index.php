@@ -136,13 +136,11 @@
 
         <section class="chart" id="chart">
             <h2>Today in MTA alerts</h2>
+            <p id="rundown"></p>
             <p><em>Chart updates automatically every minute</em></p>
             <div id="chart-wrapper">
 				<figure id="day-chart"></figure>
 				<p id="tooltip"></p>
-<!--
-                <img src="static/img/day-chart.png" alt="">
--->
             </div>
         </section>
 
