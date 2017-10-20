@@ -304,7 +304,8 @@ var charter = {
         utc_offset: -400,
         minutes_per_bin: 20,
         seconds_between_checks: 20,
-        radius_factor: 1.25,
+        radius_factor: 1.9,
+        height_factor: 27,
     },
     rundown: {
         alerts: 0,
@@ -479,7 +480,6 @@ var charter = {
                     //console.log(rec)
                     if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
                     this.bin_lens[this.msms[j][0]] += 1;
-                    //rec.value = j;
                     this.d.archive.push(Object.assign({}, rec));
                 }
             }
@@ -494,17 +494,13 @@ var charter = {
         this.rundown.minutes = Math.floor(this.rundown.seconds / 60) % 60;
         this.update_rundown();
     },
-    init: function() {
-        // The work we need to do to load the chart.
-        this.midnight = new Date().setHours(0, 0, 0, 0);
-        this.update_data();
-
+    draw_chart: function() {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
         var len = this.msms.length;
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (this.bin_lens[this.log.max_count]*23) - 46 - margin.top - margin.bottom;
+            height = (this.bin_lens[this.log.max_count]*this.config.height_factor) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges
@@ -527,9 +523,6 @@ var charter = {
             .attr("transform",
                       "translate(" + margin.left + "," + margin.top + ")");
 
-        // add the tooltip area to the webpage
-        this.tooltip = d3.select('#tooltip')
-
         this.svg.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
@@ -537,7 +530,14 @@ var charter = {
                 .ticks(this.hours_since_midnight + 1)
                 .tickFormat(d3.timeFormat("%-I %p"))
             );
+    },
+    init: function() {
+        // The work we need to do to load the chart.
+        this.midnight = new Date().setHours(0, 0, 0, 0);
+        this.tooltip = d3.select('#tooltip')
 
+        this.update_data();
+        this.draw_chart();
         this.update();
         this.update();
 
