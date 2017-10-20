@@ -320,6 +320,7 @@ var charter = {
         document.getElementById('rundown').innerHTML = graf;
     },
     id: 'day-chart',
+    midnight: new Date().setHours(0, 0, 0, 0),
     nyc_now: new Date(),
     minutes_since_midnight: null,
     hours_since_midnight: null,
@@ -329,12 +330,13 @@ var charter = {
         // unless an argument is given, in which case it delivers the number
         // of minutes between midnight and that time.
         // Note that it's not actual minutes, it's a five-minute bin of minutes.
+        var seconds_in_minute = 60, ms_in_sec = 1000;
         var now = new Date().getTime();
-        var seconds_in_minute = 60, ms_in_sec = 1000, minutes_in_bin = 5;
         if ( time !== undefined ) now = utils.parse_time(time);
-        var then = new Date( this.nyc_now.getFullYear(), this.nyc_now.getMonth(), this.nyc_now.getDate(), 0,0,0),
-            diff = now - then.getTime();
-        return Math.floor(diff/(ms_in_sec*seconds_in_minute*minutes_in_bin));
+
+        var diff = now - this.midnight,
+            min = Math.floor(diff/(ms_in_sec*seconds_in_minute));
+        return min;
     },
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
@@ -436,20 +438,22 @@ var charter = {
     update_data: function() {
         // Assuming the d.archive data is current, update the data the chart uses to publish.
         this.minutes_since_midnight = this.get_minutes_since_midnight();
-        this.hours_since_midnight = Math.floor(this.minutes_since_midnight/(60/5));
+        this.hours_since_midnight = Math.floor(this.minutes_since_midnight/60);
         this.msms = [];
         var lower = 0;
-        var bucket_size = Math.floor(this.config.minutes_per_bin/5);
-        for ( var i = 0; lower <= this.minutes_since_midnight; i ++ ) {
-            // Assign the upper and lower bound for each five-minute block
+        var bucket_size = Math.floor(this.config.minutes_per_bin);
+        // Assign the upper and lower bound for each X-minute block
+        var ceiling = Math.floor(this.minutes_since_midnight/1);
+        for ( var i = 0; lower <= ceiling; i ++ ) {
             lower = i * bucket_size;
             this.msms.push([lower, lower+(bucket_size-1)]);
         }
-        // Build the data set we pass to the chart.
-        // For this data set we need to know how many alerts existed within each five-minute window
-        // from midnight until the current time.
+        // Build the dataset we pass to the chart.
+        // For this dataset we need to know how many alerts existed within each
+        // X-minute window from midnight until the current time.
         // That means we:
-        // 1. Convert the record's start time to milliseconds, then to seconds, then to number of seconds since midnight, then divide it by five, rounding down.
+        // 1. Convert the record's start time to milliseconds, then to seconds,
+        //    then to minutes, then to number of minutes since midnight, then divide it by X, rounding down.
         // 2. Do the same for the record's stop time, if the stop time is available.
         //    2a. If the stop time is not available we assign it the value of now.
         // 3. Loop through the number of five-minute bins since midnight
@@ -460,6 +464,7 @@ var charter = {
         for ( var i = 0; i < this.len; i ++ ) {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
+            //console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
             // Add the line and second-length of delay to the rundown
@@ -476,7 +481,7 @@ var charter = {
                     rec.minutes_since_bin = this.msms[j][0];
                     rec.value = this.msms[j][0];
                     rec.time = new Date();
-                    rec.time.setTime(this.midnight + this.msms[j][0] * 5 * 60 * 1000 ); // Convert the five-minute bin number to milliseconds.
+                    rec.time.setTime(this.midnight + this.msms[j][0] * 60 * 1000 ); // Convert the X-minute bin number to milliseconds.
                     //console.log(rec)
                     if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
                     this.bin_lens[this.msms[j][0]] += 1;
@@ -509,7 +514,7 @@ var charter = {
         //    .domain([0, this.minutes_since_midnight]);
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
-            .range([0, this.minutes_since_midnight*5])
+            .range([0, this.minutes_since_midnight])
 
         this.y = d3.scaleLinear()
             .range([height, 0]);
@@ -533,7 +538,6 @@ var charter = {
     },
     init: function() {
         // The work we need to do to load the chart.
-        this.midnight = new Date().setHours(0, 0, 0, 0);
         this.tooltip = d3.select('#tooltip')
 
         this.update_data();
