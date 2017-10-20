@@ -543,7 +543,10 @@ var charter = {
         this.update();
 
         // Set the timer to check for updated data
-        this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
+        //this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
+
+        // Scroll the chart (it scrolls on handheld) all the way to the right on handheld.
+        if ( is_mobile ) document.getElementById('chart-wrapper').scrollLeft = 10000;
     }
 };
 $.getJSON('data/archive.json?' + tracker.rando(), function(data) {

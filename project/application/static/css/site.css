@@ -164,28 +164,22 @@ article {
     #lead p {
         margin: auto 10px;
     }
+    #chart-wrapper {
+        width: 100vw;
+        overflow-x: scroll;
+    }
 }
 
 /* CHART STYLES */
-#chart-wrapper {
-/*
-    height: 200px;
-    overflow-y: hidden;
-*/
-}
+#chart-wrapper {}
 #chart-wrapper figure {
-/*
-    margin-top: -800px;
-*/
 }
 
 .enter {
   fill: green;
 }
 
-.update {
-  fill: steelblue;
-}
+.update {}
 
 .exit {
   fill: brown;
