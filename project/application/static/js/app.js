@@ -54,12 +54,8 @@ var tracker = {
     calc_time_since: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         if ( time <= 0 ) return 0;
-        var t = time.replace(' ', 'T');
-        //var t = time
-        window.t = Date.parse(t)
-        //var t = time.replace(' ', 'T') + "-0400";
-        //console.log(time, Date.parse(t), t);
-        return Math.floor((Date.now() - Date.parse(t))/1000);
+        var t = utils.parse_time(time);
+        return Math.floor((Date.now() - t)/1000);
     },
     convert_seconds: function(sec) {
         // Turns an integer into the representative number of minutes and hours.

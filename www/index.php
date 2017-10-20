@@ -101,9 +101,7 @@
 
     <script src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/rh.css">
-<!--
     <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/ra.css">
--->
     <link rel="stylesheet" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
