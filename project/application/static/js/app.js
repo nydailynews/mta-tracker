@@ -54,7 +54,6 @@ var tracker = {
     calc_time_since: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         if ( time <= 0 ) return 0;
-        //console.log(time);
         var t = time.replace(' ', 'T');
         //var t = time
         window.t = Date.parse(t)
@@ -268,7 +267,6 @@ var utils = {
     parse_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         // returns a Date object.
-        //console.log(typeof time, time);
         if ( typeof time !== 'string' ) return Date.now();
         var t = time.replace(' ', 'T');
         //console.log(time, Date.parse(t), t);
@@ -346,12 +344,10 @@ var charter = {
         var data = this.d.archive;
 
         // Scale the range of the data
-        //console.log(data.length,this.y(data.length-1));
         this.y.domain([0, data.length]);
 
         // Set up the binning parameters for the histogram
         var nbins = this.minutes_since_midnight;
-        //console.log("Minutes since midnight: ", nbins)
         
         var histogram = d3.histogram()
           .domain(this.x.domain())
@@ -394,7 +390,6 @@ var charter = {
           .attr("class", function(d) { return "subway" + d.name; })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
-                //console.log(charter.y(d.idx), charter.y(data.length-1)/2.2, radius,  charter.y(d.idx)-radius, charter.y(d.idx)-charter.y(data.length-1)/2.2);
                 return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
@@ -464,7 +459,6 @@ var charter = {
         for ( var i = 0; i < this.len; i ++ ) {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
-            //console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
             // Add the line and second-length of delay to the rundown
