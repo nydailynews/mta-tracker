@@ -268,11 +268,11 @@ var utils = {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         // returns a unixtime integer.
         if ( typeof time !== 'string' ) return Date.now();
+
         var time_bits = time.split(' ')[1].split(':');
         var date_bits = time.split(' ')[0].split('-');
         // We do that "+date_bits[1] - 1" because months are zero-indexed.
         var d = new Date(date_bits[0], +date_bits[1] - 1, date_bits[2], time_bits[0], time_bits[1], time_bits[2]);
-        console.log(d);
         return d.getTime();
     },
     human_time: function(time) {

@@ -76,7 +76,7 @@
 -->
 
     <link href='https://fonts.googleapis.com/css?family=Open%20Sans|Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet' type='text/css'>
-    <script data-main="http://assets.nydailynews.com/nydn/js/rh.js?r=20170405001" src="http://assets.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
+    <script data-main="//assets.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//assets.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
         var nydn = nydn || {
@@ -96,17 +96,19 @@
     </script>
     
     <!-- ADS-START -->
-    <script onload="nydn_ads('mta-delays');" src="http://interactive.nydailynews.com/includes/ads/ads.js"></script>
+    <script onload="nydn_ads('mta-delays');" src="//interactive.nydailynews.com/includes/ads/ads.js"></script>
     <!-- ADS-END -->
 
     <script src="/js/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="http://assets.nydailynews.com/nydn/c/rh.css">
-    <link rel="stylesheet" type="text/css" href="http://assets.nydailynews.com/nydn/c/ra.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/rh.css">
+<!--
+    <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/ra.css">
+-->
+    <link rel="stylesheet" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
     <script src="//interactive.nydailynews.com/library/vendor-nav/vendor-include.js" defer></script>
-    <link rel="stylesheet" type="text/css" href="css/site.css">
+    <link rel="stylesheet" href="css/site.css">
     <script>
 </script>
 </head>
@@ -136,8 +138,11 @@
 
         <section class="chart" id="chart">
             <h2>Today in MTA alerts</h2>
-            <p id="rundown"></p>
+			<p><em>This chart measures the number of service alerts per twenty-minute span and is color coded to the subway line.</em></p>
+            <p id="rundown" style="display:none;"></p>
+<!--
             <p><em>Chart updates automatically every minute</em></p>
+-->
             <div id="chart-wrapper">
 				<figure id="day-chart"></figure>
 				<p id="tooltip"></p>
