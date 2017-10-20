@@ -2,6 +2,7 @@ body {
     width: 100%;
     margin: 0;
     background-color: #fafafa;
+    font-variant-numeric: oldstyle-nums;
 }
 
 #rh-subnav {

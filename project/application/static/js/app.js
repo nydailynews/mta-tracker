@@ -384,7 +384,7 @@ var charter = {
             .remove();
 
         // UPDATE old elements present in new data.
-        dots.attr("class", "update");
+        dots.attr("class", function(d) { return "update subway" + d.name; });
 
         // ENTER new elements present in new data.
         dots.enter().append("circle")
@@ -504,7 +504,7 @@ var charter = {
         var len = this.msms.length;
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (this.bin_lens[this.log.max_count]*33) - 46 - margin.top - margin.bottom;
+            height = (this.bin_lens[this.log.max_count]*23) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges

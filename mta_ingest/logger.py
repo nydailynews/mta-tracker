@@ -308,6 +308,8 @@ class Logger:
             fields = self.db.q.get_table_fields(table)
             rows = self.db.q.select_archive(**kwargs)
             json.dump(self.db.q.make_dict(fields, rows), fh)
+        elif table == 'archive_info':
+            pass
         fh.close()
         return True
 
