@@ -266,11 +266,14 @@ $.getJSON('data/current.json?' + tracker.rando(), function(data) {
 var utils = {
     parse_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
-        // returns a Date object.
+        // returns a unixtime integer.
         if ( typeof time !== 'string' ) return Date.now();
-        var t = time.replace(' ', 'T');
-        //console.log(time, Date.parse(t), t);
-        return Date.parse(t);
+        var time_bits = time.split(' ')[1].split(':');
+        var date_bits = time.split(' ')[0].split('-');
+        // We do that "+date_bits[1] - 1" because months are zero-indexed.
+        var d = new Date(date_bits[0], +date_bits[1] - 1, date_bits[2], time_bits[0], time_bits[1], time_bits[2]);
+        console.log(d);
+        return d.getTime();
     },
     human_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
@@ -333,8 +336,8 @@ var charter = {
         if ( time !== undefined ) now = utils.parse_time(time);
 
         var diff = now - this.midnight,
-            min = Math.floor(diff/(ms_in_sec*seconds_in_minute));
-        return min;
+            minutes = Math.floor(diff/(ms_in_sec*seconds_in_minute));
+        return minutes;
     },
     update: function() {
         // Adapted from https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
@@ -447,25 +450,29 @@ var charter = {
         // For this dataset we need to know how many alerts existed within each
         // X-minute window from midnight until the current time.
         // That means we:
-        // 1. Convert the record's start time to milliseconds, then to seconds,
-        //    then to minutes, then to number of minutes since midnight, then divide it by X, rounding down.
-        // 2. Do the same for the record's stop time, if the stop time is available.
-        //    2a. If the stop time is not available we assign it the value of now.
-        // 3. Loop through the number of five-minute bins since midnight
-        // 4. In each loop, compare the bin against the delay's start and stop.
-        //    If the bin is within the start and stop add it to the archive array.
+        // 1. Loop through each record.
+        // 2. Convert each record's start time to milliseconds, then to seconds,
+        //    then to minutes, then to number of minutes since midnight.
+        // 3. Do the same for the record's stop time, if the stop time is available.
+        //    3a. If the stop time is not available we assign it the value of now.
+        // 4. Loop through the number of X-minute bins.
+        // 5. In the loop, compare the bin against the delay's start and stop.
+        //    If the bin is within the start and stop add a copy of the record to the archive array.
         //    overlap = max(start1, start2) <= min(end1, end2)
         this.bin_lens = {};  // For counting the most number of items we'll have in any bin
+        // Step 1. Loop through each record.
         for ( var i = 0; i < this.len; i ++ ) {
+            // Steps 2 and 3.
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
+            console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
             // Add the line and second-length of delay to the rundown
             if ( this.rundown.lines.indexOf(rec['line']) === -1 ) this.rundown.lines.push(rec['line']);
             this.rundown.seconds += rec['length'];
 
-            // Loop through each minute-bin
+            // Step 4. Loop through each minute-bin
             var len = this.msms.length;
             for ( var j = 0; j < len; j ++ ) {
                 var overlap = Math.max(this.msms[j][0], rec.start_bin) <= Math.min(this.msms[j][1], rec.stop_bin);
