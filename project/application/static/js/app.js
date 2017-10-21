@@ -302,7 +302,7 @@ var charter = {
         minutes_per_bin: 20,
         seconds_between_checks: 20,
         radius_factor: 1.9,
-        height_factor: 27,
+        height_factor: 28,
     },
     rundown: {
         alerts: 0,
@@ -461,7 +461,7 @@ var charter = {
             // Steps 2 and 3.
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
-            console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
+            //console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
             // Add the line and second-length of delay to the rundown
@@ -506,9 +506,6 @@ var charter = {
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges
-        //this.x = d3.scaleLinear()
-        //    .rangeRound([0, width])
-        //    .domain([0, this.minutes_since_midnight]);
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, this.minutes_since_midnight])
