@@ -261,6 +261,17 @@ class Query:
         fields = [tup[1] for tup in self.c.fetchall()]
         return fields
 
+    def query_all(self, table, **params):
+        """ Basic query, returns all rows.
+            """
+        clause = '*'
+        if 'clause' in params:
+            clause = params['clause']
+        sql = 'SELECT %s FROM %s' % (clause, table)
+        self.c.execute(sql)
+        rows = self.c.fetchall()
+        return rows
+
     def select_current(self):
         """ Select the contents of the current table, return a list.
             >>> s = Storage('test')
@@ -270,10 +281,7 @@ class Query:
             >>> print rows[0][2:]
             (u'ALL', u'subway', 0, 0, u'')
             """
-        sql = 'SELECT * FROM current'
-        self.c.execute(sql)
-        rows = self.c.fetchall()
-        return rows
+        return self.query_all('current')
 
     def select_archive(self, **params):
         """ Select from the archive table.
