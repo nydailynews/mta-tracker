@@ -1,8 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 
 def mode_index(request):
-    return HttpResponse('hi')    
+    return HttpResponseRedirect('/project/mta-delays/mta/')
 
 def mode_detail(request, mode):
     return HttpResponse('hi')    
