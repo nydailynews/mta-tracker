@@ -507,6 +507,10 @@ var charter = {
 
         var max_count = this.bin_lens[this.log.max_count];
         if ( max_count <= 10 ) this.config.height_factor += 6;
+        else if ( max_count >= 25 ) {
+            this.config.height_factor -= 3;
+            this.config.radius_factor -= .4;
+        }
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
