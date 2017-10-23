@@ -1,8 +1,11 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
 var tracker = {
     d: {},
+    config: {
+        tz_offset: -5,
+        utc_offset: -500,
+    },
     now: Date.now(),
-    tz_offset: -6,
     rando: function()
     {
         // Generate a random ascii string, useful for busting caches.
@@ -297,8 +300,8 @@ var charter = {
     in_dev: 0,
     next_check: 0,
     config: {
+        utc_offset: -500,
         circle_radius: 10,
-        utc_offset: -400,
         minutes_per_bin: 20,
         seconds_between_checks: 20,
         radius_factor: 1.9,
@@ -500,9 +503,14 @@ var charter = {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
         var len = this.msms.length;
+        console.log("ASDAS", this.bin_lens[this.log.max_count]);
+
+        var max_count = this.bin_lens[this.log.max_count];
+        if ( max_count <= 10 ) this.config.height_factor += 6;
+
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
-            height = (this.bin_lens[this.log.max_count]*this.config.height_factor) - 46 - margin.top - margin.bottom;
+            height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
 
         // Set the ranges
