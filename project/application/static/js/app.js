@@ -503,11 +503,16 @@ var charter = {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
         var len = this.msms.length;
-        console.log("ASDAS", this.bin_lens[this.log.max_count]);
+        //console.log("ASDAS", this.bin_lens[this.log.max_count]);
 
         var max_count = this.bin_lens[this.log.max_count];
-        if ( max_count <= 10 ) this.config.height_factor += 6;
-        else if ( max_count >= 25 ) {
+        if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
+
+        if ( max_count <= 10 ) {
+            this.config.height_factor += 6;
+            this.config.radius_factor -= .4;
+        }
+        else if ( max_count >= 20 ) {
             this.config.height_factor -= 3;
             this.config.radius_factor -= .4;
         }
@@ -516,6 +521,7 @@ var charter = {
             width = (len*20) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
+        if ( height < 120 ) height = 120;
 
         // Set the ranges
         this.x = d3.scaleTime()
