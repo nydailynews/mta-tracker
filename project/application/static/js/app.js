@@ -148,7 +148,9 @@ var tracker = {
         // The worst time will be the first item in the sorted array
         //$('#lead h1').text('MTA Tracker');
         this.update_timer('yes-no', 'NO');
-        this.update_timer('timer-text', this.convert_seconds(this.sorted[0]['ago']));
+        var latest = this.sorted[0];
+        if ( latest['line'] === 'ALL' ) latest = this.sorted[1];
+        this.update_timer('timer-text', this.convert_seconds(latest['ago']));
         // Update the p text
         var s = '', were = 'was';
         if ( this.lines.subway.worsts.length > 1 ) {
