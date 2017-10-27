@@ -8,11 +8,11 @@ def mode_index(request):
 def mode_detail(request, mode):
     return HttpResponse('hi')    
 
-def mode_archive_year(request):
+def mode_year_archive(request, mode, year):
+    return HttpResponseRedirect('/project/mta-delays/mta/')
+
+def mode_archive_month(request, mode, year, month):
     return HttpResponse('hi')    
 
-def mode_archive_month(request):
-    return HttpResponse('hi')    
-
-def mode_archive_day(request):
+def mode_archive_day(request, mode, year, month, day):
     return HttpResponse('hi')    

@@ -55,6 +55,8 @@ var utils = {
     },
 }
 
+// TRACKER OBJECT
+// Manages the lead graf, the list of recent alerts at the bottom
 var tracker = {
     d: {},
     config: {
@@ -287,12 +289,13 @@ var tracker = {
     }
 };
 
-
 $.getJSON('data/current.json?' + utils.rando(), function(data) {
     tracker.d.current = data;
     tracker.init();
 });
 
+// CHARTER OBJECT
+// Manages the chart of today's alerts in the middle of the page.
 var charter = {
     d: {},
     p: {},
@@ -305,7 +308,7 @@ var charter = {
         minutes_per_bin: 20,
         seconds_between_checks: 20,
         radius_factor: 1.9,
-        height_factor: 28,
+        height_factor: 30,
     },
     rundown: {
         alerts: 0,

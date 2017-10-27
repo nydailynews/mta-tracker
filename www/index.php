@@ -135,7 +135,7 @@
 </div>
 
         <section class="chart" id="chart">
-            <h2>Today in MTA alerts</h2>
+            <h2>Today in MTA service alerts</h2>
 			<p><em>This chart measures the number of service alerts per twenty-minute span and is color coded to the subway line.</em></p>
             <p id="rundown" style="display:none;"></p>
 <!--
@@ -148,7 +148,7 @@
         </section>
 
         <section class="recent" id="recent">
-            <h2>Recent MTA service alerts</h2>
+            <h2>Recent MTA alerts</h2>
             <div>
                 <dl></dl>
             </div>
