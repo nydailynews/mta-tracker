@@ -1,4 +1,60 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
+var utils = {
+    rando: function()
+    {
+        // Generate a random ascii string, useful for busting caches.
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 20; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    },
+    slugify: function (text) {
+        // from https://gist.github.com/mathewbyrne/1280286
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+    },
+    add_zero: function(i) {
+        // For values less than 10, return a zero-prefixed version of that value.
+        if ( i < 10 ) return "0" + i;
+        return i;
+    },
+    parse_time: function(time) {
+        // time is a datetime-looking string such as "2017-07-25 11:32:00"
+        // returns a unixtime integer.
+        if ( typeof time !== 'string' ) return Date.now();
+
+        var time_bits = time.split(' ')[1].split(':');
+        var date_bits = time.split(' ')[0].split('-');
+        // We do that "+date_bits[1] - 1" because months are zero-indexed.
+        var d = new Date(date_bits[0], +date_bits[1] - 1, date_bits[2], time_bits[0], time_bits[1], time_bits[2]);
+        return d.getTime();
+    },
+    human_time: function(time) {
+        // time is a datetime-looking string such as "2017-07-25 11:32:00"
+        // returns a human-readable string, "11:32 a.m."
+        if ( time === null ) return 'now';
+
+        var time_bits  = time.split(' ')[1].split(':');
+        var ampm = 'a.m.';
+        // Remove the seconds
+        time_bits.pop();
+        if ( +time_bits[0] > 11 )
+        {
+            ampm = 'p.m.'
+            time_bits[0] = +time_bits[0] - 12;
+            if ( time_bits[0] === 0 ) time_bits[0] = 12;
+        }
+        return time_bits.join(':') + ' ' + ampm;
+    },
+}
+
 var tracker = {
     d: {},
     config: {
@@ -236,62 +292,6 @@ $.getJSON('data/current.json?' + utils.rando(), function(data) {
     tracker.d.current = data;
     tracker.init();
 });
-
-var utils = {
-    rando: function()
-    {
-        // Generate a random ascii string, useful for busting caches.
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-        for( var i=0; i < 20; i++ )
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
-    },
-    slugify: function (text) {
-        // from https://gist.github.com/mathewbyrne/1280286
-        return text.toString().toLowerCase()
-            .replace(/\s+/g, '-')           // Replace spaces with -
-            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-            .replace(/^-+/, '')             // Trim - from start of text
-            .replace(/-+$/, '');            // Trim - from end of text
-    },
-    add_zero: function(i) {
-        // For values less than 10, return a zero-prefixed version of that value.
-        if ( i < 10 ) return "0" + i;
-        return i;
-    },
-    parse_time: function(time) {
-        // time is a datetime-looking string such as "2017-07-25 11:32:00"
-        // returns a unixtime integer.
-        if ( typeof time !== 'string' ) return Date.now();
-
-        var time_bits = time.split(' ')[1].split(':');
-        var date_bits = time.split(' ')[0].split('-');
-        // We do that "+date_bits[1] - 1" because months are zero-indexed.
-        var d = new Date(date_bits[0], +date_bits[1] - 1, date_bits[2], time_bits[0], time_bits[1], time_bits[2]);
-        return d.getTime();
-    },
-    human_time: function(time) {
-        // time is a datetime-looking string such as "2017-07-25 11:32:00"
-        // returns a human-readable string, "11:32 a.m."
-        if ( time === null ) return 'now';
-
-        var time_bits  = time.split(' ')[1].split(':');
-        var ampm = 'a.m.';
-        // Remove the seconds
-        time_bits.pop();
-        if ( +time_bits[0] > 11 )
-        {
-            ampm = 'p.m.'
-            time_bits[0] = +time_bits[0] - 12;
-            if ( time_bits[0] === 0 ) time_bits[0] = 12;
-        }
-        return time_bits.join(':') + ' ' + ampm;
-    },
-}
 
 var charter = {
     d: {},
