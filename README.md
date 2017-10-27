@@ -43,4 +43,5 @@ https://github.com/zmln/subway-tracker
 https://github.com/dr-rodriguez/MTA-Notifier/blob/f0732a90a9fb71a5e560855b96b83f56ef21d7be/notifier.py #uses mailgun api to send email
 https://github.com/mikeprevette/mprevdailyshow/blob/8588f9e838713db030cee47541acb86626454c63/app.py
 
-
+### Search terms
+https://trends.google.com/trends/explore?date=all&q=MTA%20service,MTA%20delays,%22MTA%20delays%22,MTA%20delay%20verification,%22MTA%20service%22
