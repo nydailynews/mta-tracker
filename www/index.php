@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <title>TITLE</title>
+    <title>MTA Delay Tracker</title>
     <link rel="icon" type="image/png" href="http://interactive.nydailynews.com/favicons.png">
     <!-- DEFAULT -->
     <meta charset="utf-8" />
@@ -13,13 +13,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
     <!-- Titles -->
-    <meta property="og:title" content='TITLE' />
-    <meta name="twitter:title" content='TITLE' />
+    <meta property="og:title" content='MTA Delay Tracker' />
+    <meta name="twitter:title" content='MTA Delay Tracker' />
 
-    <!-- DESCRIPTION -->
-    <meta name="description" content="DESC" />
-    <meta property="og:description" content="DESC" />
-    <meta name="twitter:description" content="DESC" />
+    <!-- Description -->
+    <meta name="description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
+    <meta property="og:description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
+    <meta name="twitter:description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
 
     <!-- KEYWORD -->
     <meta name="keywords" content="TAGS" />
@@ -31,8 +31,8 @@
     <meta name="twitter:url" content="CANONICAL" />
 
     <!-- THUMBNAIL IMAGE-->
-    <meta property="og:image" content="static/img/share.png" />
-    <meta name="twitter:image" content="static/img/share.png" />
+    <meta property="og:image" content="CANONICALstatic/img/share.png" />
+    <meta name="twitter:image" content="CANONICALstatic/img/share.png" />
     <meta name="twitter:image:alt" content="A description of the twitter image" />
     <meta property="og:image:width" content="1024" />
     <meta property="og:image:height" content="512" />
@@ -42,13 +42,13 @@
         {
             "@context": "http://schema.org",
             "@type": "NewsArticle",
-            "headline": "TITLE",
+            "headline": "MTA Delay Tracker",
             "url": "CANONICAL",
-            "thumbnailUrl": "static/img/share.png",
-            "dateCreated": "2017-07-12T06:00:00Z",
+            "thumbnailUrl": "CANONICALstatic/img/share.png",
+            "dateCreated": "2017-11-12T06:00:00Z",
             "articleSection": "Interactive",
             "creator": ["Joe Murphy", "Kelli R. Parker", "Interactive Project"],
-            "keywords": ["interactive project","interactive"]
+            "keywords": ["interactive project","interactive", "mta"]
         }
     </script>
 
@@ -56,7 +56,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:domain" content="http://interactive.nydailynews.com"/>
     <meta name="twitter:site" content="@nydailynews">
-    <meta name="twitter:creator" content="@nydailynews">
+    <meta name="twitter:creator" content="@nydni">
     <meta name="decorator" content="responsive" />
     <meta name="nydn_section" content="NY Daily News" />
     <meta name="msvalidate.01" content="02916AAC0DA8B068EFE01D721E03ED7E" />
@@ -75,8 +75,8 @@
     <script src="//assets.adobedtm.com/4fc527d6fda921c80e462d11a29deae2e4cf7514/satelliteLib-c91fdc6ac624c6cbcd50250f79786de339793801.js"></script>
 -->
 
-    <link href='https://fonts.googleapis.com/css?family=Open%20Sans|Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet' type='text/css'>
-    <script data-main="//assets.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//assets.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet' type='text/css'>
+    <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
         var nydn = nydn || {
@@ -88,7 +88,7 @@
             "targetPath": document.location.pathname
         };
         var nydnDO = [ { 
-            'title':'xxxTITLExxx', 
+            'title':'xxxMTA Delay Trackerxxx', 
             'link':'CANONICAL', 
             'p_type':'interactive', 
             'section':'interactive' 
@@ -96,16 +96,16 @@
     </script>
     
     <!-- ADS-START -->
-    <script onload="nydn_ads('mta-delays');" src="//interactive.nydailynews.com/includes/ads/ads.js"></script>
+    <script onload="nydn_ads('mta-delays');" src="/includes/ads/ads.js"></script>
     <!-- ADS-END -->
 
     <script src="/js/jquery.min.js"></script>
-    <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/rh.css">
-    <link rel="stylesheet" href="//assets.nydailynews.com/nydn/c/ra.css">
+    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css">
+    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
-    <script src="//interactive.nydailynews.com/library/vendor-nav/vendor-include.js" defer></script>
+    <script src="/library/vendor-nav/vendor-include.js" defer></script>
     <link rel="stylesheet" href="css/site.css">
     <script>
 </script>
@@ -168,6 +168,12 @@
             <?php echo file_get_contents('tag-mta-10.html'); ?>
             </ul>
         </section>
+
+
+        <section id="footer">
+			<p><a href="about/">About the MTA Delay Tracker</a></p>
+			<p class="byline">Interactive by Joe Murphy</p>
+		</section>
     </article>
 </main>
 
