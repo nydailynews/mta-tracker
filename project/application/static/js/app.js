@@ -137,7 +137,7 @@ var tracker = {
             shown += 1;
             if ( item['ago'] > 100332086 ) return false;
 
-            var markup = '<dt><img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon"></dt>\n\
+            var markup = '<dt><img src="static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
                 <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });

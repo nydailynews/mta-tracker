@@ -2,6 +2,8 @@ body {
     width: 100%;
     margin: 0;
     background-color: #fafafa;
+}
+article {
     font-variant-numeric: oldstyle-nums;
 }
 
@@ -112,12 +114,16 @@ article dd {
     line-height: 22px;
 }
 
+#lead {
+    margin-bottom: 10px;
+}
+
 #lead dl {
     margin: auto;
     max-width: 800px;
     overflow: visible;
 }
-dl dd {
+article dl dd {
     float: none;
 }
 
