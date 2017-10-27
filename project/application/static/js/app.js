@@ -6,28 +6,12 @@ var tracker = {
         utc_offset: -500,
     },
     now: Date.now(),
-    rando: function()
-    {
-        // Generate a random ascii string, useful for busting caches.
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-        for( var i=0; i < 20; i++ )
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return text;
-    },
     calc_time_zone: function(offset) {
         // Get the current time in a different timezone. Must know the tz offset,
         // i.e. the number of hours ahead or behind GMT.
         var d = new Date();
         var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
         return new Date(utc + (3600000*offset));
-    },
-    add_zero: function(i) {
-        // For values less than 10, return a zero-prefixed version of that value.
-        if ( i < 10 ) return "0" + i;
-        return i;
     },
     count_up: function() {
         // Handle the parsing and passage of time.
@@ -49,8 +33,8 @@ var tracker = {
                     hours += 1;
                 }
             }
-            if ( hours > 0 ) time = hours + ':' + tracker.add_zero(mins) + ':' + tracker.add_zero(secs);
-            else time = tracker.add_zero(mins) + ':' + tracker.add_zero(secs);
+            if ( hours > 0 ) time = hours + ':' + utils.add_zero(mins) + ':' + utils.add_zero(secs);
+            else time = utils.add_zero(mins) + ':' + utils.add_zero(secs);
             $(this).text(time);
         });
     },
@@ -119,15 +103,6 @@ var tracker = {
     parse_cause: function(value) {
         return value;
     },
-    slugify: function (text) {
-        // from https://gist.github.com/mathewbyrne/1280286
-        return text.toString().toLowerCase()
-            .replace(/\s+/g, '-')           // Replace spaces with -
-            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-            .replace(/^-+/, '')             // Trim - from start of text
-            .replace(/-+$/, '');            // Trim - from end of text
-    },
     update_lead_alert: function() {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
@@ -178,7 +153,7 @@ var tracker = {
                     var causes = record.cause.split(' *** ')
                     var jlen = causes.length;
                     for ( var j = 0; j < jlen; j ++ ) {
-                        var slug = this.slugify(causes[j]);
+                        var slug = utils.slugify(causes[j]);
                         var dt = $('#' + slug);
                         if ( dt.length ) {
                             dt.append(img);
@@ -190,7 +165,7 @@ var tracker = {
                     }
                 }
                 else {
-                    var slug = this.slugify(record.cause);
+                    var slug = utils.slugify(record.cause);
                     var dt = $('#' + slug);
                     if ( dt.length ) {
                         dt.append(img);
@@ -214,9 +189,9 @@ var tracker = {
         //
         // If a line has a value of -1 in its stop field, that means it's a current alert
         // and the timer should be zero and stay at zero.
-        is_zero = 0;
-        worst = { stop: '' };
-        worsts = [];
+        var is_zero = 0;
+        var worst = { stop: '' };
+        var worsts = [];
         Array.prototype.forEach.call(this.d.current, function(item, i) {
 
             // Add the time since to each item
@@ -257,12 +232,37 @@ var tracker = {
 };
 
 
-$.getJSON('data/current.json?' + tracker.rando(), function(data) {
+$.getJSON('data/current.json?' + utils.rando(), function(data) {
     tracker.d.current = data;
     tracker.init();
 });
 
 var utils = {
+    rando: function()
+    {
+        // Generate a random ascii string, useful for busting caches.
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 20; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+    },
+    slugify: function (text) {
+        // from https://gist.github.com/mathewbyrne/1280286
+        return text.toString().toLowerCase()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+            .replace(/^-+/, '')             // Trim - from start of text
+            .replace(/-+$/, '');            // Trim - from end of text
+    },
+    add_zero: function(i) {
+        // For values less than 10, return a zero-prefixed version of that value.
+        if ( i < 10 ) return "0" + i;
+        return i;
+    },
     parse_time: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         // returns a unixtime integer.
@@ -420,7 +420,7 @@ var charter = {
     },
     update_check: function() {
         // See if there's anything new to get.
-        $.getJSON('data/archive.json?' + tracker.rando(), function(data) {
+        $.getJSON('data/archive.json?' + utils.rando(), function(data) {
             var prev_len = charter.len;
             console.log("DATA UPDATE CHECK:", prev_len, data.length);
             if ( prev_len !== data.length ) {
@@ -564,7 +564,7 @@ var charter = {
         if ( is_mobile ) document.getElementById('chart-wrapper').scrollLeft = 10000;
     }
 };
-$.getJSON('data/archive.json?' + tracker.rando(), function(data) {
+$.getJSON('data/archive.json?' + utils.rando(), function(data) {
     charter.d.archive_raw = data;
     charter.d.archive = [];
     charter.len = data.length;
