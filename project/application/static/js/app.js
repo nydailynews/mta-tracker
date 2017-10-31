@@ -511,6 +511,7 @@ var charter = {
         //console.log("ASDAS", this.bin_lens[this.log.max_count]);
 
         var max_count = this.bin_lens[this.log.max_count];
+        // DEV-SPECIFIC
         if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
 
         if ( max_count <= 10 ) {
@@ -525,8 +526,9 @@ var charter = {
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (len*20) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
-        console.log("HEIGHT", height, this.log.max_count, this.bin_lens)
+        console.log("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
         if ( height < 120 ) height = 120;
+        if ( height > 800 ) height = 800;
 
         // Set the ranges
         this.x = d3.scaleTime()

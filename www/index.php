@@ -134,21 +134,9 @@
     </div>
 </div>
 
-        <section class="chart" id="chart">
-            <h2>Today in MTA service alerts</h2>
-			<p><em>This chart measures the number of service alerts per twenty-minute span and is color coded to the subway line.</em></p>
-            <p id="rundown" style="display:none;"></p>
-<!--
-            <p><em>Chart updates automatically every minute</em></p>
--->
-            <div id="chart-wrapper">
-				<figure id="day-chart"></figure>
-				<p id="tooltip"></p>
-            </div>
-        </section>
-
         <section class="recent" id="recent">
             <h2>Recent MTA alerts</h2>
+			<p>The most-recent alerts per line, in the previous six hours.</p>
             <div>
                 <dl></dl>
             </div>
@@ -161,6 +149,19 @@
               </script>
             </div>
         </div>
+
+        <section class="chart" id="chart">
+            <h2>Today in MTA service alerts</h2>
+			<p><em>This chart measures the number of service alerts per twenty-minute span and is color coded to the subway line.</em></p>
+            <p id="rundown" style="display:none;"></p>
+<!--
+            <p><em>Chart updates automatically every minute</em></p>
+-->
+            <div id="chart-wrapper">
+				<figure id="day-chart"></figure>
+				<p id="tooltip"></p>
+            </div>
+        </section>
 
         <section id="news" class="recent">
             <h2>Recent MTA news</h2>
