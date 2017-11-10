@@ -92,7 +92,7 @@ var tracker = {
                 }
             }
             if ( hours > 0 ) time = hours + ':' + utils.add_zero(mins) + ':' + utils.add_zero(secs);
-            else time = utils.add_zero(mins) + ':' + utils.add_zero(secs);
+            else time = mins + ':' + utils.add_zero(secs);
             $(this).text(time);
         });
     },
@@ -107,7 +107,7 @@ var tracker = {
         var hours = Math.floor(sec/3600);
         var minutes = Math.floor((sec-hours*3600)/60);
         var secs = sec%60;
-        if ( minutes < 10 ) minutes = "0" + minutes;
+        //if ( minutes < 10 ) minutes = "0" + minutes;
         if ( secs < 10 ) secs = "0" + secs;
         if ( hours > 0 ) return hours + ':' + minutes + ':' + secs;
         return minutes + ':' + secs;
