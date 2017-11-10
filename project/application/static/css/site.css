@@ -39,7 +39,6 @@ h2#timer-text + p, h2#yes-no + p, h2 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: bold;
     font-size: 31px;
-    letter-spacing: 1px;
     color: #333;
     margin: auto;
     max-width: 800px;
@@ -81,8 +80,12 @@ hr {
 }
 
 .recent {
-    width: 300px;
+    width: 350px;
     margin: auto;
+}
+.recent dl {
+    width: 300px;
+    margin: 10px auto;
 }
 #news {
     width: 600px;
