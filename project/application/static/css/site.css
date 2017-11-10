@@ -141,6 +141,12 @@ article dl dd {
     margin: auto;
     text-align: center;
 }
+.hide, .cutoff {
+    display: none;
+}
+.unhide {
+    display: block;
+}
 div.center > span {
     font-size:10px;
     color:#999;

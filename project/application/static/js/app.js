@@ -62,6 +62,7 @@ var tracker = {
     config: {
         tz_offset: -5,
         utc_offset: -500,
+        seconds_cutoff: 6 * 60 * 60,
     },
     now: Date.now(),
     calc_time_zone: function(offset) {
@@ -130,6 +131,7 @@ var tracker = {
     update_recent: function() {
         // Write the list of recent alerts
         shown = 0;
+        cutoff = 0;
         Array.prototype.forEach.call(this.sorted, function(item, i) {
             var l = item['line'];
             if ( l == 'ALL' ) return false;
@@ -137,11 +139,27 @@ var tracker = {
             shown += 1;
             if ( item['ago'] > 100332086 ) return false;
 
-            var markup = '<dt><img src="static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
-                <dd><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
+            // We define the cutoff for display in the config.
+            // If the seconds are greater than the config we add a class to the item.
+            var class_attr = '';
+            if ( shown > 6 && +item['ago'] > tracker.config.seconds_cutoff ) {
+                class_attr = ' class="cutoff"';
+                // This var helps us place the "More+" link
+                if ( cutoff === 0 ) {
+                    cutoff = shown;
+                    $('#recent dl').append('<dt class="more"></dt><dd class="more"><a href="javascript:tracker.toggle_cutoff();">More</a></dd>');
+                }
+            }
+
+            var markup = '<dt' + class_attr + '><img src="static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
+                <dd' + class_attr + '><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });
         w = window.setInterval("tracker.count_up()", 1000);
+    },
+    toggle_cutoff: function() {
+            $('.recent .cutoff').toggleClass('unhide');
+            $('.recent .more').toggleClass('hide');
     },
     update_lead_no_alert: function() {
         // Write the lead and start the timer.
