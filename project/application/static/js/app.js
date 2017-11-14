@@ -6,7 +6,7 @@ var utils = {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        for( var i=0; i < 20; i++ )
+        for( var i = 0; i < 20; i++ )
             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
         return text;
@@ -70,7 +70,7 @@ var tracker = {
         // i.e. the number of hours ahead or behind GMT.
         var d = new Date();
         var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
-        return new Date(utc + (3600000*offset));
+        return new Date(utc + (3600000 * offset));
     },
     count_up: function() {
         // Handle the parsing and passage of time.
@@ -101,13 +101,13 @@ var tracker = {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
         if ( time <= 0 ) return 0;
         var t = utils.parse_time(time);
-        return Math.floor((Date.now() - t)/1000);
+        return Math.floor((Date.now() - t) / 1000);
     },
     convert_seconds: function(sec) {
         // Turns an integer into the representative number of minutes and hours.
         var hours = Math.floor(sec/3600);
-        var minutes = Math.floor((sec-hours*3600)/60);
-        var secs = sec%60;
+        var minutes = Math.floor((sec-hours * 3600) / 60);
+        var secs = sec % 60;
         //if ( minutes < 10 ) minutes = "0" + minutes;
         if ( secs < 10 ) secs = "0" + secs;
         if ( hours > 0 ) return hours + ':' + minutes + ':' + secs;
@@ -142,12 +142,13 @@ var tracker = {
             // We define the cutoff for display in the config.
             // If the seconds are greater than the config we add a class to the item.
             var class_attr = '';
-            if ( shown > 6 && +item['ago'] > tracker.config.seconds_cutoff ) {
+            //if ( shown > 6 && +item['ago'] > tracker.config.seconds_cutoff ) {
+            if ( +item['ago'] > tracker.config.seconds_cutoff ) {
                 class_attr = ' class="cutoff"';
                 // This var helps us place the "More+" link
                 if ( cutoff === 0 ) {
                     cutoff = shown;
-                    $('#recent dl').append('<dt class="more"></dt><dd class="more"><a href="javascript:tracker.toggle_cutoff();">More</a></dd>');
+                    $('#recent dl').append('<dt class="more"></dt><dd class="more"><a href="javascript:tracker.toggle_cutoff();">See all the lines</a></dd>');
                 }
             }
 
