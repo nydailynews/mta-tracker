@@ -14,7 +14,7 @@ class Mode(models.Model):
 class Line(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, blank=True, null=True)
-    mode = models.ForeignKey(mode)
+    mode = models.ForeignKey(Mode)
 
     def get_absolute_url(self):
         return self
@@ -24,9 +24,13 @@ class Line(models.Model):
 
 class Alert(models.Model):
     cause = models.TextField()
-    line = models.ForeignKey(line)
+    line = models.ForeignKey(Line)
     start = models.DateTimeField()
     stop = models.DateTimeField(blank=True, null=True)
+    is_rush = models.NullBooleanField(blank=True, null=True)
+    is_weekend = models.NullBooleanField(blank=True, null=True)
+    length = models.PositiveIntegerField(blank=True, null=True)
+    active = models.BooleanField(default=True)
 
 class DelayAlert(Alert):
     pass
