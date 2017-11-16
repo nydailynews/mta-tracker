@@ -16,19 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 import app
-import mta
 import views 
 import os
-try:
-        user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
-except KeyError:
-        user_paths = []
-print(dir(mta))
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.mode_index),
-    url(r'^(?P<mode>subway)/', mta.views.mode_detail.as_view(), name='mode_detail'),
-    url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', mta.views.mode_year_archive.as_view(), name='mode_year_archive'),
-    #url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', mta.views.mode_year_archive.as_view(), name='mode_year_archive'),
+    url(r'^(?P<mode>subway)/', views.mode_detail.as_view(), name='mode_detail'),
+    url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', views.mode_year_archive.as_view(), name='mode_year_archive'),
+    #url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', views.mode_year_archive.as_view(), name='mode_year_archive'),
 ]
