@@ -15,14 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-import app
 import views 
 import os
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.mode_index),
-    url(r'^(?P<mode>subway)/', views.mode_detail.as_view(), name='mode_detail'),
-    url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', views.mode_year_archive.as_view(), name='mode_year_archive'),
+    url(r'^$', views.ModeIndex.as_view()),
+    url(r'^(?P<mode>subway)/', views.ModeDetail.as_view(), name='mode_detail'),
+    url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', views.ModeArchiveYear.as_view(), name='mode-archive-year'),
     #url(r'^(?P<mode>subway)/(?P<year>[0-9]{4})', views.mode_year_archive.as_view(), name='mode_year_archive'),
 ]
