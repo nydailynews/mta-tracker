@@ -329,7 +329,7 @@ var charter = {
         minutes_per_bin: 20,
         seconds_between_checks: 20,
         radius_factor: 1.9,
-        height_factor: 30,
+        height_factor: 29,
     },
     rundown: {
         alerts: 0,
@@ -531,6 +531,7 @@ var charter = {
 
         var max_count = this.bin_lens[this.log.max_count];
         // DEV-SPECIFIC
+        console.log(max_count);
         if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
 
         if ( max_count <= 10 ) {
@@ -540,6 +541,9 @@ var charter = {
         else if ( max_count >= 20 ) {
             this.config.height_factor -= 3;
             this.config.radius_factor -= .4;
+        }
+        else {
+            this.config.radius_factor -= max_count*0.1-0.5;
         }
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
