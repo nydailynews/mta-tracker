@@ -152,13 +152,14 @@
 
         <section class="chart" id="chart">
             <h2>Today in MTA service alerts</h2>
-			<p><em>This chart measures the number of service alerts per twenty-minute span and is color coded to the subway line.</em></p>
             <p id="rundown" style="display:none;"></p>
 <!--
             <p><em>Chart updates automatically every minute</em></p>
 -->
             <div id="chart-wrapper">
-				<figure id="day-chart"></figure>
+				<figure id="day-chart">
+					<figcaption>This chart shows the quantity of alerts today. This chart measures the number of service alerts per twenty-minute span. Each circle means "an alert for a particular line happened within this 20-minute period." The circle color matches the line it corresponds with.</figcaption>
+				</figure>
 				<p id="tooltip"></p>
             </div>
         </section>

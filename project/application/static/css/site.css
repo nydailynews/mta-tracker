@@ -46,7 +46,7 @@ h2#timer-text + p, h2#yes-no + p, h2 {
     text-align: center;
 }
 
-article p {
+article p, article figcaption {
     text-align: center;
     max-width: 800px;
     margin: auto;
@@ -264,9 +264,9 @@ div.tooltip {
     fill: #a7a9ac;
     stroke: #a7a9ac;
 }
-circle:hover {
+circle:hover, .circle_hover {
     fill: white!important;
-    stroke-width: 5;
+    stroke-width: 15;
 }
 
 /* IE10+ CSS styles go here */

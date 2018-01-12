@@ -413,7 +413,7 @@ var charter = {
 
         // ENTER new elements present in new data.
         dots.enter().append("circle")
-          .attr("class", function(d) { return "subway" + d.name; })
+          .attr("class", function(d) { return "subway" + d.name + " cause" + utils.slugify(d.cause); })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
                 return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
@@ -425,16 +425,22 @@ var charter = {
                    .duration(200)
                    .style("opacity", .9);
               console.log(d);
+              // TODO: Highlight the other delays of this alert.
               charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
                     from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
                     <br>Cause: " + d.cause);
+              $('circle').attr('opacity', '.2');
+              $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '5' });
+              $('.cause' + utils.slugify(d.cause)).attr('opacity', '1');
             })
             .on("mouseout", function(d) {
               d3.select(this)
-                  .attr("class", "subway" + d.name);
+                  .attr("class", "subway" + d.name + " cause" + utils.slugify(d.cause));
                 charter.tooltip.transition()
                      .duration(500)
                      .style("opacity", 0);
+              $('circle').attr('opacity', '1');
+              $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
             })
           .transition()
             .duration(500)
@@ -531,7 +537,6 @@ var charter = {
 
         var max_count = this.bin_lens[this.log.max_count];
         // DEV-SPECIFIC
-        console.log(max_count);
         if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
 
         if ( max_count <= 10 ) {
@@ -543,7 +548,7 @@ var charter = {
             this.config.radius_factor -= .4;
         }
         else {
-            this.config.radius_factor -= max_count*0.1-0.5;
+            this.config.radius_factor -= max_count*0.1-0.4;
         }
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
@@ -569,6 +574,8 @@ var charter = {
           .append("g")
             .attr("transform",
                       "translate(" + margin.left + "," + margin.top + ")");
+
+        this.svg.append("title")
 
         this.svg.append("g")
           .attr("class", "axis axis--x")
