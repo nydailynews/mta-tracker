@@ -265,10 +265,8 @@ div.tooltip {
     stroke: #a7a9ac;
 }
 circle {
-    /*
     -webkit-transition: all 100ms ease-out;
     transition: all 100ms ease-out;
-    */
 }
 circle:hover, .circle_hover {
     fill: white!important;
