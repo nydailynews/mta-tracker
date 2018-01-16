@@ -429,12 +429,13 @@ var charter = {
           .attr("class", function(d) { return "subway" + d.name + " cause" + utils.slugify(d.cause); })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
+              // TODO: Write what's actually happening here.
                 return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) { charter.on_circle_mouseover(d) } )
           .on("mouseout", function(d) {
-                //charter.on_circle_mouseout(d);
+                charter.on_circle_mouseout(d);
                 d3.select(this)
                   .attr("class", "subway" + d.name + " cause" + utils.slugify(d.cause));
             })
@@ -620,6 +621,10 @@ var charter = {
         this.update();
         this.update();
 
+        // When scrolled into view, trigger the mouseover for the latest alert.
+        var nodes = charter.svg.selectAll('g').selectAll('circle').nodes();
+        var len = nodes.length;
+        var n = nodes[len - 1];
         // Set the timer to check for updated data
         //this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
 
