@@ -426,14 +426,15 @@ var charter = {
         // ENTER new elements present in new data.
         dots.enter().append("circle")
           .attr("id", function(d) { console.log(d); return d.idx + "-subway" + d.name + "-cause-" + utils.slugify(d.cause); })
-          .attr("class", function(d) { return "subway" + d.name + " cause-" + utils.slugify(d.cause); })
+          .attr("class", function(d) { return "subway" + d.name + " cause" + utils.slugify(d.cause); })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
                 return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) { charter.on_circle_mouseover(d) } )
-          .on("mouseout", function(d) { charter.on_circle_mouseout(d);
+          .on("mouseout", function(d) {
+                //charter.on_circle_mouseout(d);
                 d3.select(this)
                   .attr("class", "subway" + d.name + " cause" + utils.slugify(d.cause));
             })
