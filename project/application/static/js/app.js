@@ -385,7 +385,9 @@ var charter = {
 
         radius = this.config.circle_radius;
 
-        // bins objects
+        // bins objects:
+        // each "g" svg element is a column, and in that column are somewhere between zero
+        // and X number of "circle" svg elements.
         var bin_container = this.svg.selectAll("g")
           .data(bins);
 
@@ -423,40 +425,47 @@ var charter = {
 
         // ENTER new elements present in new data.
         dots.enter().append("circle")
-          .attr("class", function(d) { return "subway" + d.name + " cause" + utils.slugify(d.cause); })
+          .attr("id", function(d) { console.log(d); return d.idx + "-subway" + d.name + "-cause-" + utils.slugify(d.cause); })
+          .attr("class", function(d) { return "subway" + d.name + " cause-" + utils.slugify(d.cause); })
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
                 return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
-          .on("mouseover", function(d) {
-              d3.select(this)
-              charter.tooltip.transition()
-                   .duration(200)
-                   .style("opacity", .9);
-              console.log(d);
-              // TODO: Highlight the other delays of this alert.
-              charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
-                    from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
-                    <br>Cause: " + d.cause);
-              $('circle').attr('opacity', '.2');
-              $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '5' });
-              $('.cause' + utils.slugify(d.cause)).attr('opacity', '1');
-            })
-            .on("mouseout", function(d) {
-              d3.select(this)
+          .on("mouseover", function(d) { charter.on_circle_mouseover(d) } )
+          .on("mouseout", function(d) { charter.on_circle_mouseout(d);
+                d3.select(this)
                   .attr("class", "subway" + d.name + " cause" + utils.slugify(d.cause));
-                charter.tooltip.transition()
-                     .duration(500)
-                     .style("opacity", 0);
-              $('circle').attr('opacity', '1');
-              $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
             })
           .transition()
             .duration(500)
             .attr("r", function(d) {
-            return (d.length==0) ? 0 : radius; });
+                return (d.length==0) ? 0 : radius; });
 
+    },
+    on_circle_mouseover: function(d) {
+        // Helper function for the part in update() where we add the circles to the chart
+        // and assign mouseover functionality
+        d3.select(this)
+        charter.tooltip.transition()
+           .duration(200)
+           .style("opacity", .9);
+        console.log(d);
+        charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
+            from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
+            <br>Cause: " + d.cause);
+        $('circle').attr('opacity', '.2');
+        $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '5' });
+        $('.cause' + utils.slugify(d.cause)).attr('opacity', '1');
+    },
+    on_circle_mouseout: function(d) {
+        // Helper function for the part in update() where we add the circles to the chart
+        // and assign mouseout functionality
+        charter.tooltip.transition()
+             .duration(500)
+             .style("opacity", 0);
+        $('circle').attr('opacity', '1');
+        $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
     },
     update_check: function() {
         // See if there's anything new to get.
