@@ -395,9 +395,19 @@ var charter = {
         // JOIN new data with old elements.
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
-            return d.map(function(data, i){
+            return d.map(function(data, i) {
                 //if ( i == 0 ) console.log('DATA', data);
-                return {"idx": i, "name": data.line, "value": data.time, "cause": data.cause, "start": data.start, "stop": data.stop};}
+                return {
+                    "idx": i,
+                    "minutes": data.minutes,
+                    "order": data.order,
+                    "name": data.line,
+                    "value": data.time,
+                    "cause": data.cause,
+                    "start": data.start,
+                    "stop": data.stop,
+                    };
+                }
                 )
             });
 
@@ -494,6 +504,7 @@ var charter = {
             // Steps 2 and 3.
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
+            this.d.archive_raw[i].minutes = this.d.archive_raw[i].stop_bin - this.d.archive_raw[i].start_bin;
             //console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
@@ -512,6 +523,8 @@ var charter = {
                     rec.value = this.msms[j][0];
                     rec.time = new Date();
                     rec.time.setTime(this.midnight + this.msms[j][0] * 60 * 1000 ); // Convert the X-minute bin number to milliseconds.
+                    rec.minutes = this.d.archive_raw[i].minutes;
+                    rec.order = i;
                     //console.log(rec)
                     if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
                     this.bin_lens[this.msms[j][0]] += 1;
@@ -519,6 +532,9 @@ var charter = {
                 }
             }
         }
+        this.d.archive.sort(function(a, b) { if ( a.minutes > b.minutes ) return 0; return 1; } );
+        //this.d.archive.sort(function(a, b) { if ( a.order > b.order ) return 0; return 1; } );
+
         // Get the most number of items in any of the bins:
         this.log.max_count = Object.keys(this.bin_lens).reduce(function(a, b){ return charter.bin_lens[a] > charter.bin_lens[b] ? a : b });
 
