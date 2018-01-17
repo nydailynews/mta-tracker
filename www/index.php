@@ -158,7 +158,11 @@
 -->
             <div id="chart-wrapper">
 				<figure id="day-chart">
-					<figcaption>This chart shows the quantity of alerts today. This chart measures the number of service alerts per twenty-minute span. Each circle means "an alert for a particular line happened within this 20-minute period." The circle color matches the line it corresponds with.</figcaption>
+					<figcaption>
+						This chart measures the number of service alerts per half hour.
+						<strong>Each&nbsp;circle means "an alert for a particular line happened within this half hour."</strong> The circle color matches the line it corresponds with.
+						<span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
+					</figcaption>
 				</figure>
 				<p id="tooltip"></p>
             </div>
