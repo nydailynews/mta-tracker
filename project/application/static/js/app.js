@@ -326,7 +326,7 @@ var charter = {
     config: {
         utc_offset: -500,
         circle_radius: 10,
-        minutes_per_bin: 20,
+        minutes_per_bin: 29, /* BINSIZE */
         seconds_between_checks: 20,
         radius_factor: 1.9,
         height_factor: 29,
@@ -559,7 +559,6 @@ var charter = {
     draw_chart: function() {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
-        var len = this.msms.length;
         //console.log("ASDAS", this.bin_lens[this.log.max_count]);
 
         var max_count = this.bin_lens[this.log.max_count];
@@ -579,7 +578,7 @@ var charter = {
         }
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = (len*20) - margin.left - margin.right,
+            width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
         console.log("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
         if ( height < 120 ) height = 120;
@@ -588,7 +587,7 @@ var charter = {
         // Set the ranges
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
-            .range([0, this.minutes_since_midnight])
+            .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
 
         this.y = d3.scaleLinear()
             .range([height, 0]);
