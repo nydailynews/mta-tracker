@@ -326,10 +326,10 @@ var charter = {
     config: {
         utc_offset: -500,
         circle_radius: 10,
-        minutes_per_bin: 29, /* BINSIZE */
+        minutes_per_bin: 30,
         seconds_between_checks: 20,
-        radius_factor: 1.9,
-        height_factor: 29,
+        radius_factor: 2.4, // Used for placing the centerpoint of each circle on the chart.
+        height_factor: 29, //
     },
     rundown: {
         alerts: 0,
@@ -430,7 +430,13 @@ var charter = {
           .attr("cx", 0) //g element already at correct x pos
           .attr("cy", function(d) {
               // TODO: Write what's actually happening here.
-                return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
+                console.log(d.idx, radius);
+                // return d.idx * (radius*2);   // <-- In case we want the circles on the ceiling
+                // That "10" below id the bottom margin
+                return charter.height - (d.idx * (radius*2)) - 10;
+          })
+                //return charter.y(d.idx)-((radius*1.5)*d.idx) - 10; })
+                //return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) { charter.on_circle_mouseover(d) } )
@@ -576,10 +582,11 @@ var charter = {
         else {
             this.config.radius_factor -= max_count*0.1-0.4;
         }
-
+        console.log("Max count", max_count, this.config.height_factor, this.config.radius_factor);
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
+        this.height = height;
         console.log("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
         if ( height < 120 ) height = 120;
         if ( height > 800 ) height = 800;
