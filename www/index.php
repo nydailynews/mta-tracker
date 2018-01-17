@@ -201,6 +201,7 @@
 
 <script src="/js/d3/d3.v4.min.js"></script>
 <script src="js/app.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
 <!-- CONTENT-END -->
 
 <!-- FOOTER-START -->

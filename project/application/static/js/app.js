@@ -594,6 +594,7 @@ var charter = {
         // Adds the svg canvas
         this.svg = d3.select("#" + this.id)
           .append("svg")
+            .attr("id", "day-chart-svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
           .append("g")
@@ -622,7 +623,21 @@ var charter = {
         // When scrolled into view, trigger the mouseover for the latest alert.
         var nodes = charter.svg.selectAll('g').selectAll('circle').nodes();
         var len = nodes.length;
-        var n = nodes[len - 1];
+        n = nodes[len - 1];
+		var waypoint = new Waypoint({
+		  element: document.getElementById('day-chart-svg'),
+		  handler: function(direction) {
+			$.fn.triggerSVGEvent = function(eventName) {
+				 var event = document.createEvent('SVGEvents');
+				 event.initEvent(eventName,true,true);
+				 this[0].dispatchEvent(event);
+				 return $(this);
+			};
+			$('#' + n.id).triggerSVGEvent('mouseover');
+		  },
+		  offset: window.innerHeight - 200
+		})
+
         // Set the timer to check for updated data
         //this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
 
