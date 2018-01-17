@@ -167,12 +167,6 @@
 				<p id="tooltip"></p>
             </div>
         </section>
-        <section id="alerts" class="recent">
-            <h2>Today's MTA alerts</h2>
-			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
-            <ol>
-            </ol>
-        </section>
 
         <section id="news" class="recent">
             <h2>Recent MTA news</h2>
@@ -181,9 +175,17 @@
             </ul>
         </section>
 
+        <section id="alerts" class="recent">
+            <h2>Today's MTA alerts</h2>
+			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
+            <ol>
+            </ol>
+        </section>
 
         <section id="footer">
+<!--
 			<p><a href="about/">About the MTA Delay Tracker</a></p>
+-->
 			<p class="byline">Interactive by Joe Murphy</p>
 		</section>
     </article>
