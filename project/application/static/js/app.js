@@ -1,4 +1,5 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
+console.log = function() {}; 
 var utils = {
     rando: function()
     {
@@ -274,7 +275,7 @@ var tracker = {
         Array.prototype.forEach.call(this.d.current, function(item, i) {
 
             // Add the time since to each item
-            //console.log(item, item['stop'], tracker.calc_time_since(item['stop']));
+            //console.info(item, item['stop'], tracker.calc_time_since(item['stop']));
             tracker.d.current[i]['ago'] = tracker.calc_time_since(item['stop']);
 
             if ( item['stop'] === -1 ) {
@@ -288,7 +289,7 @@ var tracker = {
             // Log the current worst, in the case there are no active alerts.
             // We use this to populate the lead time when there are no active alerts.
             if ( is_zero == 0 ) {
-                //console.log(item['stop'] > worst['stop'],item['stop'], worst['stop'])
+                //console.info(item['stop'] > worst['stop'],item['stop'], worst['stop'])
                 if ( item['stop'] > worst['stop'] ) {
                     worst = item;
                     worsts = [item['line']];
@@ -296,7 +297,7 @@ var tracker = {
                 // In case we have multiple alerts that ended at the same time
                 if ( item['stop'] == worst['stop'] && worsts.indexOf(item['line']) === -1 ) worsts.push(item['line']);
             }
-            //console.log(i, item['line'], item['stop']);
+            //console.info(i, item['line'], item['stop']);
         });
         // Sort the data
         this.sorted = this.d.current.sort(function(a, b) { return a.ago - b.ago });
@@ -397,7 +398,7 @@ var charter = {
         var dots = bin_container.selectAll("circle")
           .data(function(d) {
             return d.map(function(data, i) {
-                //if ( i == 0 ) console.log('DATA', data);
+                //if ( i == 0 ) console.info('DATA', data);
                 return {
                     "idx": i,
                     "minutes": data.minutes,
@@ -424,13 +425,13 @@ var charter = {
 
         // ENTER new elements present in new data.
         dots.enter().append("circle")
-          .attr("id", function(d) { console.log(d); return d.idx + "-subway" + d.name + "-cause-" + utils.slugify(d.cause); })
+          .attr("id", function(d) { return d.idx + "-subway" + d.name + "-cause-" + utils.slugify(d.cause); })
           .attr("class", function(d) { return "subway" + d.name + " cause" + utils.slugify(d.cause); })
-          .attr("cx", 0) //g element already at correct x pos
+          .attr("cx", 0) // g element already at correct x pos
           .attr("cy", function(d) {
               // TODO: Write what's actually happening here.
-                console.log(d.idx, radius);
                 // return d.idx * (radius*2);   // <-- In case we want the circles on the ceiling
+                //
                 // That "10" below id the bottom margin
                 return charter.height - (d.idx * (radius*2)) - 10;
           })
@@ -455,7 +456,7 @@ var charter = {
         charter.tooltip.transition()
            .duration(200)
            .style("opacity", .9);
-        console.log(d);
+        console.info(d);
         charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
             from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
             <br>Cause: " + d.cause);
@@ -476,7 +477,7 @@ var charter = {
         // See if there's anything new to get.
         $.getJSON('data/archive.json?' + utils.rando(), function(data) {
             var prev_len = charter.len;
-            console.log("DATA UPDATE CHECK:", prev_len, data.length);
+            console.info("DATA UPDATE CHECK:", prev_len, data.length);
             if ( prev_len !== data.length ) {
                 charter.d.archive_raw = data;
                 charter.d.archive = [];
@@ -519,7 +520,7 @@ var charter = {
             this.d.archive_raw[i].start_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].start);
             this.d.archive_raw[i].stop_bin = this.get_minutes_since_midnight(this.d.archive_raw[i].stop);
             this.d.archive_raw[i].minutes = this.d.archive_raw[i].stop_bin - this.d.archive_raw[i].start_bin;
-            //console.log(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
+            //console.info(this.d.archive_raw[i].start, this.d.archive_raw[i].start_bin, this.d.archive_raw[i].stop, this.d.archive_raw[i].stop_bin);
             var rec = this.d.archive_raw[i];
 
             // Add the line and second-length of delay to the rundown
@@ -531,7 +532,7 @@ var charter = {
             for ( var j = 0; j < len; j ++ ) {
                 var overlap = Math.max(this.msms[j][0], rec.start_bin) <= Math.min(this.msms[j][1], rec.stop_bin);
                 //var overlap = rec.start_bin <= j && j <= rec.stop_bin;
-                //console.log(overlap, rec.start_bin, j, rec.stop_bin);
+                //console.info(overlap, rec.start_bin, j, rec.stop_bin);
                 if ( overlap ) {
                     rec.minutes_since_bin = this.msms[j][0];
                     rec.value = this.msms[j][0];
@@ -539,14 +540,14 @@ var charter = {
                     rec.time.setTime(this.midnight + this.msms[j][0] * 60 * 1000 ); // Convert the X-minute bin number to milliseconds.
                     rec.minutes = this.d.archive_raw[i].minutes;
                     rec.order = i;
-                    //console.log(rec)
+                    //console.info(rec)
                     if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
                     this.bin_lens[this.msms[j][0]] += 1;
                     this.d.archive.push(Object.assign({}, rec));
                 }
             }
         }
-        this.d.archive.sort(function(a, b) { if ( a.minutes > b.minutes ) return 0; return 1; } );
+        //this.d.archive.sort(function(a, b) { if ( a.minutes > b.minutes ) return 0; return 1; } );
         //this.d.archive.sort(function(a, b) { if ( a.order > b.order ) return 0; return 1; } );
 
         // Get the most number of items in any of the bins:
@@ -562,7 +563,7 @@ var charter = {
     draw_chart: function() {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
-        //console.log("ASDAS", this.bin_lens[this.log.max_count]);
+        //console.info("ASDAS", this.bin_lens[this.log.max_count]);
 
         var max_count = this.bin_lens[this.log.max_count];
         // DEV-SPECIFIC
@@ -574,12 +575,11 @@ var charter = {
         else if ( max_count >= 20 ) {
             this.config.height_factor -= 3;
         }
-        console.log("Max count", max_count, this.config.height_factor);
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
         this.height = height;
-        console.log("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
+        console.info("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
         if ( height < 120 ) height = 120;
         if ( height > 800 ) height = 800;
 
