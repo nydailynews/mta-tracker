@@ -514,6 +514,7 @@ var charter = {
         //    If the bin is within the start and stop add a copy of the record to the archive array.
         //    overlap = max(start1, start2) <= min(end1, end2)
         this.bin_lens = {};  // For counting the most number of items we'll have in any bin
+
         // Step 1. Loop through each record.
         for ( var i = 0; i < this.len; i ++ ) {
             // Steps 2 and 3.
@@ -643,7 +644,18 @@ var charter = {
 
         // Scroll the chart (it scrolls on handheld) all the way to the right on handheld.
         if ( is_mobile ) document.getElementById('chart-wrapper').scrollLeft = 10000;
-    }
+
+		// Build a list of distinct alerts for the cause-list
+        for ( var i = 0; i < this.len; i ++ ) {
+			var cause = this.d.archive_raw[i].cause;
+			if ( this.causes.indexOf(cause) === -1 ) {
+				this.causes.push(cause);
+				$('#alerts ol').append('<li class="cause' + utils.slugify(cause) + '">' + cause + '</li>');
+			}
+		}
+		$('#alerts-number').text(this.causes.length);
+    },
+	causes: []
 };
 $.getJSON('data/archive.json?' + utils.rando(), function(data) {
     charter.d.archive_raw = data;

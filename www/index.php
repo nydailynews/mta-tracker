@@ -166,15 +166,13 @@
 				</figure>
 				<p id="tooltip"></p>
             </div>
-
-<!--
+        </section>
         <section id="alerts" class="recent">
             <h2>Today's MTA alerts</h2>
-			<p>Here's a list of the alerts that happened today on the MTA's train lines.</p>
-            <ul>
-            </ul>
+			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
+            <ol>
+            </ol>
         </section>
--->
 
         <section id="news" class="recent">
             <h2>Recent MTA news</h2>
