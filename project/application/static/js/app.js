@@ -328,7 +328,6 @@ var charter = {
         circle_radius: 10,
         minutes_per_bin: 30,
         seconds_between_checks: 20,
-        radius_factor: 2.4, // Used for placing the centerpoint of each circle on the chart.
         height_factor: 29, //
     },
     rundown: {
@@ -435,8 +434,6 @@ var charter = {
                 // That "10" below id the bottom margin
                 return charter.height - (d.idx * (radius*2)) - 10;
           })
-                //return charter.y(d.idx)-((radius*1.5)*d.idx) - 10; })
-                //return charter.y(d.idx)-((radius*charter.config.radius_factor)*d.idx)-(radius); })
           .attr("r", 0)
           .merge(dots)
           .on("mouseover", function(d) { charter.on_circle_mouseover(d) } )
@@ -573,16 +570,11 @@ var charter = {
 
         if ( max_count <= 10 ) {
             this.config.height_factor += 6;
-            this.config.radius_factor -= .4;
         }
         else if ( max_count >= 20 ) {
             this.config.height_factor -= 3;
-            this.config.radius_factor -= .4;
         }
-        else {
-            this.config.radius_factor -= max_count*0.1-0.4;
-        }
-        console.log("Max count", max_count, this.config.height_factor, this.config.radius_factor);
+        console.log("Max count", max_count, this.config.height_factor);
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
