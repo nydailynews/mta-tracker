@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <title>MTA Delay Tracker - New York Daily News</title>
+    <title>Recent alerts - MTA Delay Tracker - New York Daily News</title>
     <link rel="icon" type="image/png" href="http://interactive.nydailynews.com/favicons.png">
     <!-- DEFAULT -->
     <meta charset="utf-8" />
@@ -13,8 +13,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
     <!-- Titles -->
-    <meta property="og:title" content='MTA Delay Tracker' />
-    <meta name="twitter:title" content='MTA Delay Tracker' />
+    <meta property="og:title" content='Recent alerts - MTA Delay Tracker' />
+    <meta name="twitter:title" content='Recent alerts - MTA Delay Tracker' />
 
     <!-- Description -->
     <meta name="description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
@@ -42,13 +42,13 @@
         {
             "@context": "http://schema.org",
             "@type": "NewsArticle",
-            "headline": "MTA Delay Tracker",
+            "headline": "Recent alerts - MTA Delay Tracker",
             "url": "CANONICAL",
             "thumbnailUrl": "CANONICALstatic/img/share.png",
             "dateCreated": "2017-11-12T06:00:00Z",
             "articleSection": "Interactive",
             "creator": ["Joe Murphy", "Kelli R. Parker", "Interactive Project"],
-            "keywords": ["interactive project","interactive", "mta"]
+            "keywords": ["interactive project","interactive", "mta","mta delay tracker"]
         }
     </script>
 
@@ -75,7 +75,7 @@
     <script src="//assets.adobedtm.com/4fc527d6fda921c80e462d11a29deae2e4cf7514/satelliteLib-c91fdc6ac624c6cbcd50250f79786de339793801.js"></script>
 -->
 
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet'>
     <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
@@ -88,7 +88,7 @@
             "targetPath": document.location.pathname
         };
         var nydnDO = [ { 
-            'title':'xxxMTA Delay Trackerxxx', 
+            'title':'xxxRecent alerts - MTA Delay Trackerxxx', 
             'link':'CANONICAL', 
             'p_type':'interactive', 
             'section':'interactive' 
@@ -106,7 +106,7 @@
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
     <script src="/library/vendor-nav/vendor-include.js" defer></script>
-    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="../css/site.css">
     <script>
 </script>
 </head>
@@ -119,12 +119,13 @@
 <!-- CONTENT-START -->
 <main>
     <article>
-        <section id="lead">
-            <h1>Is there a current MTA service alert?</h1>
-            <h2 id="yes-no"></h2>
-            <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
-            <dl></dl>
-			<p><a href="recent-alerts/">See a page of the latest MTA alerts</a>.</p>
+
+        <section class="recent" id="recent">
+            <h1>Recent MTA service alerts</h1>
+			<p>The most-recent alerts per line, in the previous six hours.</p>
+            <div>
+                <dl></dl>
+            </div>
         </section>
 
 <div class="ad center">
@@ -134,30 +135,12 @@
       </script>
     </div>
 </div>
-
-        <section class="chart" id="chart">
-            <h2>Today in MTA service alerts</h2>
-            <p id="rundown" style="display:none;"></p>
-<!--
-            <p><em>Chart updates automatically every minute</em></p>
--->
-            <div id="chart-wrapper">
-				<figure id="day-chart">
-					<figcaption>
-						This chart measures the number of service alerts per half hour.
-						<strong>Each&nbsp;circle means "an alert for a particular line happened within this half hour."</strong> The circle color matches the line it corresponds with.
-						<span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
-					</figcaption>
-				</figure>
-				<p id="tooltip"></p>
-            </div>
-        </section>
-
-        <section id="news" class="recent">
-            <h2>Recent MTA news</h2>
-            <ul>
-            <?php echo file_get_contents('tag-mta-10.html'); ?>
-            </ul>
+    
+        <section id="alerts" class="recent">
+            <h2>Today's MTA alerts</h2>
+			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
+            <ol>
+            </ol>
         </section>
 
         <div class="ad center">
@@ -168,19 +151,14 @@
             </div>
         </div>
 
-        <section id="alerts" class="recent">
-            <h2>Today's MTA alerts</h2>
-			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
-            <ol>
-            </ol>
+        <section id="news" class="recent">
+            <h2>Recent MTA news</h2>
+            <ul>
+            <?php echo file_get_contents('../tag-mta-10.html'); ?>
+            </ul>
         </section>
 
-        <section id="footer">
-<!--
-			<p><a href="about/">About the MTA Delay Tracker</a></p>
--->
-			<p class="byline">Interactive by Joe Murphy</p>
-		</section>
+
     </article>
 </main>
 
@@ -192,8 +170,7 @@
     </div>
 </div>
 
-<script src="/js/d3/d3.v4.min.js"></script>
-<script src="js/app.js"></script>
+<script src="../js/app.js"></script>
 <script src="/js/jquery.waypoints.min.js"></script>
 <!-- CONTENT-END -->
 
