@@ -96,7 +96,7 @@
     </script>
     
     <!-- ADS-START -->
-    <script onload="nydn_ads('mta-delays');" src="/includes/ads/ads.js"></script>
+    <script onload="nydn_ads('mta-delays');" src="/includes/template/template.js"></script>
     <!-- ADS-END -->
 
     <script src="/js/jquery.min.js"></script>
