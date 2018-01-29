@@ -115,7 +115,7 @@ var tracker = {
         return minutes + ':' + secs;
     },
     update_timer: function(id, value) {
-        document.getElementById(id).innerHTML = value;
+        if ( document.getElementById(id) != null ) document.getElementById(id).innerHTML = value;
     },
     lines: {
         subway: {
@@ -153,11 +153,11 @@ var tracker = {
                 }
             }
 
-            var markup = '<dt' + class_attr + '><img src="static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
+            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
                 <dd' + class_attr + '><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });
-        w = window.setInterval("tracker.count_up()", 1000);
+        this.w = window.setInterval("tracker.count_up()", 1000);
     },
     toggle_cutoff: function() {
             $('.recent .cutoff').toggleClass('unhide');
@@ -166,7 +166,6 @@ var tracker = {
     update_lead_no_alert: function() {
         // Write the lead and start the timer.
         // The worst time will be the first item in the sorted array
-        //$('#lead h1').text('MTA Tracker');
         this.update_timer('yes-no', 'NO');
         var latest = this.sorted[0];
         if ( latest['line'] === 'ALL' ) latest = this.sorted[1];
@@ -178,7 +177,7 @@ var tracker = {
             were = 'were';
         }
         //$('#lead p').text('since the last MTA subway service alert.');
-        $('#lead p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
+        $('#lead p:first-child').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     parse_cause: function(value) {
         return value;
@@ -260,10 +259,10 @@ var tracker = {
         else {
             $('#lead dl').html('');
         }
-        $('#lead p').html('');
-        $('#lead p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
+        $('#lead p:first-child').html('');
+        $('#lead p:first-child').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
     },
-    init: function() {
+	first_load: function() {
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
         //
@@ -308,13 +307,17 @@ var tracker = {
         else this.update_lead_no_alert();
 
         this.update_recent();
-    }
-};
+    },
+    init: function(pathing) {
+		if ( pathing == null ) pathing = '';
+		this.pathing = pathing;
+		$.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
+			tracker.d.current = data;
+			tracker.first_load();
+		});
+	},
 
-$.getJSON('data/current.json?' + utils.rando(), function(data) {
-    tracker.d.current = data;
-    tracker.init();
-});
+};
 
 // CHARTER OBJECT
 // Manages the chart of today's alerts in the middle of the page.
@@ -341,7 +344,7 @@ var charter = {
         var r = this.rundown;
         graf = 'Today there have been ' + r.alerts + ' service alerts on ' + r.lines_len + ' different lines \n\
             totalling ' + r.hours + ' hours and ' + r.minutes + ' minutes of alert-time.';
-        document.getElementById('rundown').innerHTML = graf;
+		if ( document.getElementById('rundown') !== null ) document.getElementById('rundown').innerHTML = graf;
     },
     id: 'day-chart',
     midnight: new Date().setHours(0, 0, 0, 0),
@@ -571,14 +574,14 @@ var charter = {
         if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
 
         if ( max_count <= 10 ) {
-            this.config.height_factor += 6;
+            this.config.height_factor += 5;
         }
-        else if ( max_count >= 20 ) {
+        if ( max_count >= 20 ) {
             this.config.height_factor -= 3;
         }
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
-            height = (max_count*this.config.height_factor) - 46 - margin.top - margin.bottom;
+            height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
         this.height = height;
         console.info("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
         if ( height < 120 ) height = 120;
@@ -612,8 +615,8 @@ var charter = {
                 .tickFormat(d3.timeFormat("%-I %p"))
             );
     },
-    init: function() {
-        // The work we need to do to load the chart.
+	// The work we need to do to load the chart.
+    first_load: function() {
         this.tooltip = d3.select('#tooltip')
 
         this.update_data();
@@ -655,11 +658,15 @@ var charter = {
 		}
 		$('#alerts-number').text(this.causes.length);
     },
-	causes: []
+	causes: [],
+    init: function(pathing) {
+		if ( pathing == null ) pathing = '';
+		this.pathing = pathing;
+		$.getJSON(pathing + 'data/archive.json?' + utils.rando(), function(data) {
+			charter.d.archive_raw = data;
+			charter.d.archive = [];
+			charter.len = data.length;
+			charter.first_load();
+		});
+	},
 };
-$.getJSON('data/archive.json?' + utils.rando(), function(data) {
-    charter.d.archive_raw = data;
-    charter.d.archive = [];
-    charter.len = data.length;
-    charter.init();
-});
