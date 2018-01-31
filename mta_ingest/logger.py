@@ -89,6 +89,19 @@ class Logger:
         if hasattr(self.args, 'transit_type') and self.args.transit_type:
             self.transit_type = self.args.transit_type
 
+    def initialize_table(self, table, dbname='mta'):
+        """ Resets database table.
+            >>> args = build_parser([])
+            >>> log = Logger(args)
+            >>> log.initialize_db('test')
+            True
+            >>> log.initialize_table('current')
+            True
+            """
+        self.db = Storage(dbname)
+        self.db.setup(table)
+        return True
+
     def initialize_db(self, dbname='mta'):
         """ Resets database. Also sets the self.db value to the name of the db.
             >>> args = build_parser([])
@@ -281,6 +294,8 @@ class Logger:
     def commit_archive_start(self, line, item):
         """ Insert a record into the archive table.
             """
+        if len(item.cause) > 1:
+            print "MORE THAN ONE CAUSE", " *** ".join(item.cause)
         params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
         self.db.q.update_archive(**params)
         return True

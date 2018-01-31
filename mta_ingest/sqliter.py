@@ -21,6 +21,7 @@ class Storage:
         self.conn = sqlite3.connect('%s.db' % dbname)
         self.c = self.conn.cursor()
         self.q = Query(self.c)
+        self.tables = ['active', 'current', 'raw', 'archive', 'averages']
 
     def setup(self, table=None):
         """ Create the tables.
@@ -30,6 +31,12 @@ class Storage:
             """
         # INDEXNAME, TABLENAME, COLUMNNAME
         # self.c.execute('CREATE INDEX ? ON ?(?)', value)
+        if not table or table == 'active':
+            self.c.execute('DROP TABLE IF EXISTS active')
+            self.c.execute('''CREATE TABLE active 
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, line TEXT, type TEXT, start DATETIME, cause TEXT)''')
+            #self._setup_active()
+
         if not table or table == 'current':
             self.c.execute('DROP TABLE IF EXISTS current')
             self.c.execute('''CREATE TABLE current 
@@ -313,6 +320,7 @@ def build_parser(args):
                                      epilog='Example use: python sqliter.py')
     parser.add_argument("-v", "--verbose", dest="verbose", default=False, action="store_true")
     parser.add_argument("--test", dest="test", default=True, action="store_true")
+    #parser.add_argument("--setup", dest="setup", default=None, help="Run the setup method on a particular table")
     args = parser.parse_args(args)
     return args
 
