@@ -236,10 +236,11 @@ class Logger:
                     self.new[item.transit_type]['starts'][line].extend(item.cause)
                     if self.args.verbose:
                         print "NOTICE: THIS LINE HAS A NEW ALERT", line
-                    # Update the current table in the database
+                    # Update the database
                     # ***HC
-                    params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
-                    self.db.q.update_current(**params)
+                    for cause in item.cause:
+                        params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+                        self.db.q.update_current(**params)
                 else:
                     #print prev_record
                     prev_dt = self.db.q.convert_to_datetime(prev_record['start'])

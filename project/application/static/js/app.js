@@ -577,7 +577,7 @@ var charter = {
             this.config.height_factor += 5;
         }
         if ( max_count >= 20 ) {
-            this.config.height_factor -= 3;
+            this.config.height_factor -= 10;
         }
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,

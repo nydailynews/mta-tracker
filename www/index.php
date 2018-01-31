@@ -100,6 +100,9 @@
     <!-- ADS-END -->
 
     <script src="/js/jquery.min.js"></script>
+<!--
+    <script src="http://assets.nydailynews.com/nydn/js/jquery-2-1-4.js?r=201609014009"></script>
+-->
     <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css">
     <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
