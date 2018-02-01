@@ -1,4 +1,5 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
+console.info("USE console.info() TO LOG");
 console.log = function() {}; 
 var utils = {
     rando: function()
@@ -189,7 +190,7 @@ var tracker = {
         // Update the paragraph
         var s = '';
         var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;
-        var len = this.lines.subway.worsts.length;
+        var len = this.d.active.length;
 
         // If there are multiple delays we list them in a dl
         // If any of the delay causes are identical we group them.
@@ -203,12 +204,12 @@ var tracker = {
             var is_multiple = 0;
             var multiples = [];
             for ( var i = 0; i < len; i ++ ) {
-                var l = this.lines.subway.worsts[i];
-                var cause = this.get_line_data("line", l).cause;
+                var l = this.d.active[i];
+                var cause = l.cause;
                 if ( causes.indexOf(cause) === -1 ) {
                     // Add the cause to the list of causes
                     // so we know if the next cause is new or not.
-                    causes.push(this.get_line_data("line", l).cause);
+                    causes.push(cause);
                     // Also associate the line with the cause so we can later
                     // put all/any lines with the same cause together.
                     groups[cause] = [l];
@@ -218,15 +219,15 @@ var tracker = {
                     is_multiple = 1;
                     // We want to know which cause(s) are multiples.
                     multiples.push(cause);
-                    groups[cause].push(l);
+                    groups[cause].push(l.line);
                 }
             }
 
             // Next we generate and place the markup
             for ( var i = 0; i < len; i ++ ) {
-                var l = this.lines.subway.worsts[i];
-                var record = this.get_line_data("line", l);
-                var img = '<img src="static/img/line_' + l + '.png" alt="MTA ' + l + ' line icon">';
+                var l = this.d.active[i];
+                var record = l;
+                var img = '<img src="static/img/line_' + l.line + '.png" alt="MTA ' + l.line + ' line icon">';
 
                 if ( record.cause.indexOf(' *** ') >= 0 ) {
                     var causes = record.cause.split(' *** ')
@@ -271,6 +272,9 @@ var tracker = {
         var is_zero = 0;
         var worst = { stop: '' };
         var worsts = [];
+        Array.prototype.forEach.call(this.d.active, function(item, i) {
+            console.info(item);
+        });
         Array.prototype.forEach.call(this.d.current, function(item, i) {
 
             // Add the time since to each item
@@ -303,7 +307,7 @@ var tracker = {
 
         // Take the final worsts array and assign that to the object for later.
         this.lines.subway.worsts = worsts;
-        if ( is_zero == 1 ) this.update_lead_alert();
+        if ( this.d.active.length >= 1 ) this.update_lead_alert();
         else this.update_lead_no_alert();
 
         this.update_recent();
@@ -311,6 +315,10 @@ var tracker = {
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
 		this.pathing = pathing;
+		$.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
+			tracker.d.active = data;
+			//tracker.first_load();
+		});
 		$.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
 			tracker.d.current = data;
 			tracker.first_load();

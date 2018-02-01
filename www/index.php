@@ -127,7 +127,7 @@
             <h2 id="yes-no"></h2>
             <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
             <dl></dl>
-			<p><a href="recent-alerts/">See a page of the latest MTA alerts</a>.</p>
+			<p><a href="recent-alerts/">See all today's MTA alerts</a>.</p>
         </section>
 
 <div class="ad center">
