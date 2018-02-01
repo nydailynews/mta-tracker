@@ -260,8 +260,8 @@ var tracker = {
         else {
             $('#lead dl').html('');
         }
-        $('#lead p:first-child').html('');
-        $('#lead p:first-child').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
+        $('h2#yes-no + p').html('');
+        $('h2#yes-no + p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
     },
 	first_load: function() {
         // Loop through the data.
@@ -276,7 +276,6 @@ var tracker = {
             console.info(item);
         });
         Array.prototype.forEach.call(this.d.current, function(item, i) {
-
             // Add the time since to each item
             //console.info(item, item['stop'], tracker.calc_time_since(item['stop']));
             tracker.d.current[i]['ago'] = tracker.calc_time_since(item['stop']);
