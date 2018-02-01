@@ -244,17 +244,19 @@ class Logger:
                 # We only want to update the database with alerts we don't already have in there.
                 if cause in existing_causes:
                     continue
-                # ARCHIVE HOOK
-                self.new[item.transit_type]['starts'][line].extend(item.cause)
+
+                # ARCHIVE TABLE UPDATE
+                self.commit_archive_start(line, lines[line], cause)
+                self.new[item.transit_type]['starts'][line].extend(cause)
                 
                 if self.args.verbose:
                     print "NOTICE: THIS LINE HAS A NEW ALERT", line
 
-                # Update the database
+                # CURRENT TABLE and ACTIVE TABLE UPDATE
                 # ***HC
                 params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
-                self.db.q.update_current(**params)
                 self.db.q.update_active(**params)
+                self.db.q.update_current(**params)
 
                 # DOUBLE-CHECK
                 count += 1
@@ -290,10 +292,12 @@ class Logger:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
 
-                    # ARCHIVE HOOK
-                    # This is what's hooked into at the end of script execution
-                    # and used to update the archive table in the database 
+                    # ARCHIVE TABLE UPDATE
+                    prev['length'] = (datetime.now() - self.db.q.convert_to_datetime(prev['start'])).seconds
+                    self.commit_archive_stop(prev['line'], prev)
                     self.new['subway']['stops'][prev['line']].append(prev['cause'])
+
+                    # CURRENT TABLE and ACTIVE TABLE UPDATE
                     # ***HC
                     params = {'line': prev['line'], 'cause': prev['cause'], 'stop': datetime.now(), 'transit_type': 'subway'}
                     self.db.q.update_active(**params)
@@ -302,12 +306,10 @@ class Logger:
 
         return count
 
-    def commit_archive_start(self, line, item):
+    def commit_archive_start(self, line, item, cause):
         """ Insert a record into the archive table.
             """
-        if len(item.cause) > 1:
-            print "MORE THAN ONE CAUSE", " *** ".join(item.cause)
-        params = {'cause': " *** ".join(item.cause), 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+        params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
         self.db.q.update_archive(**params)
         return True
 
@@ -391,6 +393,7 @@ def main(args):
 
     # Update the archive table with the new items
     new_len = sum(len(v) for v in log.new['subway']['starts'].itervalues()) + sum(len(v) for v in log.new['subway']['stops'].itervalues())
+    """
     for line in log.new['subway']['starts'].keys():
         for item in log.new['subway']['starts'][line]:
             log.commit_archive_start(line, lines[line])
@@ -401,6 +404,7 @@ def main(args):
                     # Calculate the length of the delay
                     prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
                     log.commit_archive_stop(line, prev)
+    """
     if new_len > 0:
         log.db.conn.commit()
     params = { 'date': datetime.now().date().__str__() }
