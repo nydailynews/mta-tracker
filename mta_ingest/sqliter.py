@@ -146,8 +146,13 @@ class Query:
             >>> print s.q.update_active(**d)
             True
             """
-        sql = 'UPDATE current SET start = "%s", cause = "%s" WHERE line = "%s" and type = "%s"' \
-              % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
+        if 'start' in kwargs:
+            sql = 'INSERT INTO active (start, cause, line, type) VALUES ( "%s", "%s", "%s", "%s")' \
+                  % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
+        if 'stop' in kwargs:
+            sql = 'DELETE FROM current WHERE line = "%s" AND cause = "%s" AND type = "%s"' \
+                  % (kwargs['line'], kwargs['cause'], kwargs['transit_type'])
+        print sql
         self.c.execute(sql)
         return True
 

@@ -223,8 +223,8 @@ class Logger:
         existing_causes = []
         if self.previous:
             for prev in self.previous:
-                if prev.cause not in existing_causes:
-                    existing_causes.append(prev.cause)
+                if prev['cause'] not in existing_causes:
+                    existing_causes.append(prev['cause'])
 
         # Loop through the lines that have alerts
         for line, item in lines.iteritems():
@@ -295,7 +295,8 @@ class Logger:
                     # and used to update the archive table in the database 
                     self.new['subway']['stops'][prev['line']].append(prev['cause'])
                     # ***HC
-                    params = {'line': prev['line'], 'stop': datetime.now(), 'transit_type': 'subway'}
+                    params = {'line': prev['line'], 'cause': prev['cause'], 'stop': datetime.now(), 'transit_type': 'subway'}
+                    self.db.q.update_active(**params)
                     self.db.q.update_current(**params)
                     count += 1
 
@@ -380,6 +381,7 @@ def main(args):
     log.db.conn.commit()
 
     log.write_json('current')
+    log.write_json('active')
 
     if args.verbose:
         print "NOTICE: ", log.double_check
