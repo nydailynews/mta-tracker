@@ -233,7 +233,7 @@ class Logger:
             if self.args.verbose:
                 print "NOTICE: Checking line", line
 
-            print dir(item), item.last_alert, item.cause
+            #print dir(item), item.last_alert, item.cause
             for cause in item.cause:
                 # Log the cause -- we use this list of causes when comparing the previous
                 # version of data json against this version to see if any lines have stopped alerts.
@@ -253,7 +253,7 @@ class Logger:
                 # Update the database
                 # ***HC
                 params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
-                #self.db.q.update_current(**params)
+                self.db.q.update_current(**params)
                 self.db.q.update_active(**params)
 
                 # DOUBLE-CHECK
