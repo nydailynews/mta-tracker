@@ -68,7 +68,7 @@ class Logger:
             """
         # Get the results from the last time we ran this.
         try:
-            fh = open('_output/current.json', 'rb')
+            fh = open('_output/active.json', 'rb')
             self.previous = json.load(fh)
             fh.close()
         except:
@@ -214,42 +214,49 @@ class Logger:
             0
             """
         count = 0
+
+        # self.previous is a dict taken from the json written by the last time we ran this script.
+        # The only records in it will be lines with active alerts.
+        # We wantto add an alert if there's an alert we have that isn't in the previous list.
+        #
+        # We build a list of existing causes we can compare the causes we've found against to make sure we're only adding new causes
+        existing_causes = []
+        for prev in self.previous:
+            if prev.cause not in existing_causes:
+                existing_causes.append(prev.cause)
+
         # Loop through the lines that have alerts
         for line, item in lines.iteritems():
             if line not in dicts.lines['subway']:
                 continue
-            # Make sure this is a new record
-            # We only want to update the database with alerts we don't already have in there.
             if self.args.verbose:
                 print "NOTICE: Checking line", line
-            if self.previous:
-                # self.previous is a dict taken from the json written by the last time we ran this script.
-                # First we match the line we're looking up with the line's previous record.
-                for prev in self.previous:
-                    if line == prev['line']:
-                        prev_record = prev
-                        break
-                # Then we ....
-                #print dir(item), item.last_alert
-                if prev_record['start'] == 0:
-                    # ARCHIVE HOOK
-                    self.new[item.transit_type]['starts'][line].extend(item.cause)
-                    if self.args.verbose:
-                        print "NOTICE: THIS LINE HAS A NEW ALERT", line
-                    # Update the database
-                    # ***HC
-                    for cause in item.cause:
-                        params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
-                        self.db.q.update_current(**params)
-                else:
-                    #print prev_record
-                    prev_dt = self.db.q.convert_to_datetime(prev_record['start'])
+
+            #print dir(item), item.last_alert
+            for cause in item.causes:
+                # Log the cause -- we use this list of causes when comparing the previous
+                # version of data json against this version to see if any lines have stopped alerts.
+                if cause not in self.stop_check['subway']:
+                    self.stop_check['subway'].extend(item.cause)
+
+                # Make sure this is a new record
+                # We only want to update the database with alerts we don't already have in there.
+                if cause in existing_causes:
+                    continue
+                # ARCHIVE HOOK
+                self.new[item.transit_type]['starts'][line].extend(item.cause)
+                
+                if self.args.verbose:
+                    print "NOTICE: THIS LINE HAS A NEW ALERT", line
+
+                # Update the database
+                # ***HC
+                params = {'cause': cause, 'line': line, 'start': item.datetimes[0], 'transit_type': 'subway'}
+                #self.db.q.update_current(**params)
+                self.db.q.update_active(**params)
+
                 # DOUBLE-CHECK
                 count += 1
-
-            # Log the cause -- we use this list of causes when comparing the previous
-            # version of data json against this version to see if any lines have stopped alerts.
-            self.stop_check['subway'].extend(item.cause)
 
         return count
 

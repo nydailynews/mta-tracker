@@ -137,6 +137,20 @@ class Query:
             return 1
         return 0
 
+    def update_active(self, **kwargs):
+        """ Update the "current" table with the latest alert datetime.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
+            >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
+            >>> print s.q.update_active(**d)
+            True
+            """
+        sql = 'UPDATE current SET start = "%s", cause = "%s" WHERE line = "%s" and type = "%s"' \
+              % (self.convert_datetime(kwargs['start']), kwargs['cause'], kwargs['line'], kwargs['transit_type'])
+        self.c.execute(sql)
+        return True
+
     def update_current(self, **kwargs):
         """ Update the "current" table with the latest alert datetime.
             >>> s = Storage('test')
