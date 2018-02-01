@@ -221,9 +221,10 @@ class Logger:
         #
         # We build a list of existing causes we can compare the causes we've found against to make sure we're only adding new causes
         existing_causes = []
-        for prev in self.previous:
-            if prev.cause not in existing_causes:
-                existing_causes.append(prev.cause)
+        if self.previous:
+            for prev in self.previous:
+                if prev.cause not in existing_causes:
+                    existing_causes.append(prev.cause)
 
         # Loop through the lines that have alerts
         for line, item in lines.iteritems():
@@ -232,8 +233,8 @@ class Logger:
             if self.args.verbose:
                 print "NOTICE: Checking line", line
 
-            #print dir(item), item.last_alert
-            for cause in item.causes:
+            print dir(item), item.last_alert, item.cause
+            for cause in item.cause:
                 # Log the cause -- we use this list of causes when comparing the previous
                 # version of data json against this version to see if any lines have stopped alerts.
                 if cause not in self.stop_check['subway']:
@@ -285,9 +286,10 @@ class Logger:
                 # Any line with a current alert *will be* in the stop_check list of alert causes.
                 # The stop_check list exists for this purpose: To check if an alert for a line has stopped.
                 # ***HC
-                if prev['start'] != 0 and prev['cause'] not in self.stop_check['subway']:
+                if prev['cause'] not in self.stop_check['subway']:
                     if self.args.verbose:
                         print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
+
                     # ARCHIVE HOOK
                     # This is what's hooked into at the end of script execution
                     # and used to update the archive table in the database 
@@ -326,6 +328,10 @@ class Logger:
         if table == 'current':
             fields = self.db.q.get_table_fields(table)
             rows = self.db.q.select_current()
+            json.dump(self.db.q.make_dict(fields, rows), fh)
+        elif table == 'active':
+            fields = self.db.q.get_table_fields(table)
+            rows = self.db.q.select_active()
             json.dump(self.db.q.make_dict(fields, rows), fh)
         elif table == 'archive':
             fields = self.db.q.get_table_fields(table)

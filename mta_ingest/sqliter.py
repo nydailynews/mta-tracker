@@ -304,6 +304,17 @@ class Query:
             """
         return self.query_all('current')
 
+    def select_active(self):
+        """ Select the contents of the table, return a list.
+            >>> s = Storage('test')
+            >>> s.setup()
+            True
+            >>> rows = s.q.select_active()
+            >>> print rows[0][2:]
+            (u'ALL', u'subway', 0, 0, u'')
+            """
+        return self.query_all('active')
+
     def select_archive(self, **params):
         """ Select from the archive table.
             >>> s = Storage('test')
