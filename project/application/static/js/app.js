@@ -65,6 +65,7 @@ var tracker = {
         tz_offset: -5,
         utc_offset: -500,
         seconds_cutoff: 6 * 60 * 60,
+        seconds_between_checks: 20,
     },
     now: Date.now(),
     calc_time_zone: function(offset) {
@@ -313,11 +314,11 @@ var tracker = {
     },
     update_check: function() {
         // See if there's anything new to get.
-		$.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
-            console.info("DATA UPDATE CHECK:", tracker.d.active.length, data.length);
+		$.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
+            console.info("ACTIVE-ALERTS DATA UPDATE CHECK:", tracker.d.active.length, data.length);
             if ( tracker.d.active.length !== data.length ) {
                 tracker.d.active = data;
-                $.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
+                $.getJSON(tracker.pathing + 'data/current.json?' + utils.rando(), function(data) {
                     // *** NEED TO PUBLISH WHAT HAS CHANGED
                     tracker.d.current = data;
                     tracker.first_load();
@@ -336,6 +337,8 @@ var tracker = {
             $.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
                 tracker.d.current = data;
                 tracker.first_load();
+                // Set the timer to check for updated data
+                tracker.interval = window.setInterval(tracker.update_check, tracker.config.seconds_between_checks * 1000);
             });
 		});
 	},
@@ -503,7 +506,7 @@ var charter = {
         // See if there's anything new to get.
         $.getJSON('data/archive.json?' + utils.rando(), function(data) {
             var prev_len = charter.len;
-            console.info("DATA UPDATE CHECK:", prev_len, data.length);
+            console.info("CHART DATA UPDATE CHECK:", prev_len, data.length);
             if ( prev_len !== data.length ) {
                 charter.d.archive_raw = data;
                 charter.d.archive = [];
