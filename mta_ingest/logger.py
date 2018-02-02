@@ -384,31 +384,15 @@ def main(args):
 
     log.write_json('current')
     log.write_json('active')
+    params = { 'date': datetime.now().date().__str__() }
+    log.write_json('archive', **params)
 
     if args.verbose:
         print "NOTICE: ", log.double_check
         print "NOTICE: ", log.new['subway']['starts'].values()
         print "NOTICE: ", log.new['subway']['stops'].values()
 
-
-    # Update the archive table with the new items
-    new_len = sum(len(v) for v in log.new['subway']['starts'].itervalues()) + sum(len(v) for v in log.new['subway']['stops'].itervalues())
-    """
-    for line in log.new['subway']['starts'].keys():
-        for item in log.new['subway']['starts'][line]:
-            log.commit_archive_start(line, lines[line])
-    for line in log.new['subway']['stops'].keys():
-        for item in log.new['subway']['stops'][line]:
-            for prev in log.previous:
-                if prev['line'] == line and prev['cause'] == item:
-                    # Calculate the length of the delay
-                    prev['length'] = (datetime.now() - log.db.q.convert_to_datetime(prev['start'])).seconds
-                    log.commit_archive_stop(line, prev)
-    """
-    if new_len > 0:
-        log.db.conn.commit()
-    params = { 'date': datetime.now().date().__str__() }
-    log.write_json('archive', **params)
+    #new_len = sum(len(v) for v in log.new['subway']['starts'].itervalues()) + sum(len(v) for v in log.new['subway']['stops'].itervalues())
 
     if commit_count > 0 and log.double_check['in_text'] != log.double_check['objects']:
         log.save_xml()
