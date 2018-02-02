@@ -311,6 +311,22 @@ var tracker = {
 
         this.update_recent();
     },
+    update_check: function() {
+        // See if there's anything new to get.
+		$.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
+            console.info("DATA UPDATE CHECK:", tracker.d.active.length, data.length);
+            if ( tracker.d.active.length !== data.length ) {
+                tracker.d.active = data;
+                $.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
+                    // *** NEED TO PUBLISH WHAT HAS CHANGED
+                    tracker.d.current = data;
+                    tracker.first_load();
+                });
+                //charter.update_data();
+                //charter.update();
+            }
+        });
+    },
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
 		this.pathing = pathing;
@@ -650,7 +666,7 @@ var charter = {
 		})
 
         // Set the timer to check for updated data
-        //this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
+        this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
 
         // Scroll the chart (it scrolls on handheld) all the way to the right on handheld.
         if ( is_mobile ) document.getElementById('chart-wrapper').scrollLeft = 10000;
@@ -677,3 +693,6 @@ var charter = {
 		});
 	},
 };
+
+// Every 15 minutes
+var parpar = window.setInterval(function() { if ( typeof PARSELY !== 'undefined' ) PARSELY.beacon.trackPageView({ url: document.location.href, urlref: document.location.href, js: 1 }) }, 900000);
