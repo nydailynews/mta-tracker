@@ -3,7 +3,6 @@
 <head>
     <title>MTA Delay Tracker - New York Daily News</title>
     <link rel="icon" type="image/png" href="http://interactive.nydailynews.com/favicons.png">
-    <!-- DEFAULT -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -26,13 +25,13 @@
     <meta name="news_keywords" content="TAGS" />
 
     <!-- LINK -->
-    <link rel="canonical" href="CANONICAL">
-    <meta property="og:url" content="CANONICAL" />
-    <meta name="twitter:url" content="CANONICAL" />
+    <link rel="canonical" href="http://interactive.nydailynews.com/project/mta-delays/">
+    <meta property="og:url" content="http://interactive.nydailynews.com/project/mta-delays/" />
+    <meta name="twitter:url" content="http://interactive.nydailynews.com/project/mta-delays/" />
 
     <!-- THUMBNAIL IMAGE-->
-    <meta property="og:image" content="CANONICALstatic/img/share.png" />
-    <meta name="twitter:image" content="CANONICALstatic/img/share.png" />
+    <meta property="og:image" content="http://interactive.nydailynews.com/project/mta-delays/static/img/share.png" />
+    <meta name="twitter:image" content="http://interactive.nydailynews.com/project/mta-delays/static/img/share.png" />
     <meta name="twitter:image:alt" content="A description of the twitter image" />
     <meta property="og:image:width" content="1024" />
     <meta property="og:image:height" content="512" />
@@ -43,9 +42,9 @@
             "@context": "http://schema.org",
             "@type": "NewsArticle",
             "headline": "MTA Delay Tracker",
-            "url": "CANONICAL",
-            "thumbnailUrl": "CANONICALstatic/img/share.png",
-            "dateCreated": "2017-11-12T06:00:00Z",
+            "url": "http://interactive.nydailynews.com/project/mta-delays/",
+            "thumbnailUrl": "http://interactive.nydailynews.com/project/mta-delays/static/img/share.png",
+            "dateCreated": "2018-02-12T06:00:00Z",
             "articleSection": "Interactive",
             "creator": ["Joe Murphy", "Kelli R. Parker", "Interactive Project"],
             "keywords": ["interactive project","interactive", "mta"]
@@ -89,7 +88,7 @@
         };
         var nydnDO = [ { 
             'title':'xxxMTA Delay Trackerxxx', 
-            'link':'CANONICAL', 
+            'link':'http://interactive.nydailynews.com/project/mta-delays/', 
             'p_type':'interactive', 
             'section':'interactive' 
         }];
