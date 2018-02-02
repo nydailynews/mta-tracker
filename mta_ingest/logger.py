@@ -370,8 +370,8 @@ def main(args):
         tables = log.db.q.get_tables()
         if args.verbose:
             print "NOTICE: We are resetting the %s table (amongst %s)" % (args.reset_table, tables.__str__())
-        if args.reset_table in tables:
-            log.db.setup(args.reset_table)
+        #if args.reset_table in tables:
+        log.db.setup(args.reset_table)
 
     files = log.get_files(args.files)
 
