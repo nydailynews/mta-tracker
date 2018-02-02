@@ -162,8 +162,8 @@ var tracker = {
         this.w = window.setInterval("tracker.count_up()", 1000);
     },
     toggle_cutoff: function() {
-            $('.recent .cutoff').toggleClass('unhide');
-            $('.recent .more').toggleClass('hide');
+        $('.recent .cutoff').toggleClass('unhide');
+        $('.recent .more').toggleClass('hide');
     },
     update_lead_no_alert: function() {
         // Write the lead and start the timer.
@@ -171,6 +171,7 @@ var tracker = {
         this.update_timer('yes-no', 'NO');
         var latest = this.sorted[0];
         if ( latest['line'] === 'ALL' ) latest = this.sorted[1];
+        if ( $('h2#yes-no + p').html('') == '' ) $('h2#yes-no + p').html('It’s been <time id="timer-text"></time> since the latest MTA subway service alert');
         this.update_timer('timer-text', this.convert_seconds(latest['ago']));
         // Update the p text
         var s = '', were = 'was';
@@ -179,7 +180,8 @@ var tracker = {
             were = 'were';
         }
         //$('#lead p').text('since the last MTA subway service alert.');
-        $('#lead p:first-child').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
+        if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
+        $('h2#yes-no + p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     parse_cause: function(value) {
         return value;

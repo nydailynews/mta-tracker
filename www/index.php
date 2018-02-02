@@ -124,7 +124,7 @@
         <section id="lead">
             <h1>Is there a current MTA service alert?</h1>
             <h2 id="yes-no"></h2>
-            <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
+            <p id="sincelast">It’s been <time id="timer-text"></time> since the latest MTA subway service alert</p>
             <dl></dl>
 <!--
 			<p><a href="recent-alerts/">See all today's MTA alerts</a>.</p>
