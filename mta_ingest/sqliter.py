@@ -332,7 +332,11 @@ class Query:
             clause = ' WHERE start LIKE ? OR stop LIKE ?'
             date_str = '%s%%' % params['date']
             values = (date_str, date_str)
-        sql = 'SELECT * FROM archive%s' % clause
+
+        if 'select' not in params:
+            params['select'] = '*'
+
+        sql = 'SELECT %s FROM archive%s' % (params['select'], clause)
         self.c.execute(sql, values)
         rows = self.c.fetchall()
         return rows

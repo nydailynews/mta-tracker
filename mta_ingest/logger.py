@@ -9,7 +9,7 @@ import random
 import string
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from filewrapper import FileWrapper
 from parser import ParseMTA
@@ -386,6 +386,24 @@ def main(args):
     log.write_json('active')
     params = { 'date': datetime.now().date().__str__() }
     log.write_json('archive', **params)
+
+    # Write the previous day's archives
+    fields = ['start', 'stop', 'line', 'length']
+    fields_str = ','.join(fields)
+    i = 0
+    archives = {}
+    while i < 10:
+        i += 1
+        d_ = datetime.now() - timedelta(i)
+        d = d_.date().__str__()
+        params = { 'date': d,
+                'select': fields_str
+                }
+        rows = log.db.q.select_archive(**params)
+        archives[d] = log.db.q.make_dict(fields, rows)
+    fh = open('_output/archives-10.json', 'wb')
+    json.dump(archives, fh)
+    fh.close()
 
     if args.verbose:
         print "NOTICE: ", log.double_check
