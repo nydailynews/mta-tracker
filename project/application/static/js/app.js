@@ -193,6 +193,8 @@ var tracker = {
         var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;
         var len = this.d.active.length;
 
+        $('#lead dl').html('');
+
         // If there are multiple delays we list them in a dl
         // If any of the delay causes are identical we group them.
         if ( len > 1 ) {
@@ -262,7 +264,9 @@ var tracker = {
             $('#lead dl').html('');
         }
         $('h2#yes-no + p').html('');
-        $('h2#yes-no + p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
+        var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf;
+        if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html(sentence);
+        else $('h2#yes-no + p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
     },
 	first_load: function() {
         // Loop through the data.
@@ -314,9 +318,12 @@ var tracker = {
     },
     update_check: function() {
         // See if there's anything new to get.
+        this.new_updates = 0;
 		$.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
             console.info("ACTIVE-ALERTS DATA UPDATE CHECK:", tracker.d.active.length, data.length);
             if ( tracker.d.active.length !== data.length ) {
+                console.info("");
+                tracker.new_updates = Math.abs(tracker.d.active.length - data.length);
                 tracker.d.active = data;
                 $.getJSON(tracker.pathing + 'data/current.json?' + utils.rando(), function(data) {
                     // *** NEED TO PUBLISH WHAT HAS CHANGED
@@ -327,6 +334,9 @@ var tracker = {
                 //charter.update();
             }
         });
+        if ( this.new_updates > 0 ) {
+            console.info(this.new_updates + " NEW UPDATES");
+        }
     },
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
