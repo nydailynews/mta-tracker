@@ -317,10 +317,10 @@ var tracker = {
 		$.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
 			tracker.d.active = data;
 			//tracker.first_load();
-		});
-		$.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
-			tracker.d.current = data;
-			tracker.first_load();
+            $.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
+                tracker.d.current = data;
+                tracker.first_load();
+            });
 		});
 	},
 

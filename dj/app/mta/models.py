@@ -14,7 +14,7 @@ class Mode(models.Model):
 class Line(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, blank=True, null=True)
-    mode = models.ForeignKey(Mode)
+    mode = models.ForeignKey(Mode, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return self
@@ -24,7 +24,7 @@ class Line(models.Model):
 
 class Alert(models.Model):
     cause = models.TextField()
-    line = models.ForeignKey(Line)
+    line = models.ForeignKey(Line, on_delete=models.CASCADE)
     start = models.DateTimeField()
     stop = models.DateTimeField(blank=True, null=True)
     is_rush = models.NullBooleanField(blank=True, null=True)

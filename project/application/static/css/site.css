@@ -273,6 +273,8 @@ circle:hover, .circle_hover {
     stroke-width: 15;
 }
 
+p.byline { font-size: 100%; }
+
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 }

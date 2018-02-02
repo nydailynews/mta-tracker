@@ -103,7 +103,7 @@
 <!--
     <script src="http://assets.nydailynews.com/nydn/js/jquery-2-1-4.js?r=201609014009"></script>
 -->
-    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css">
+    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css?2018">
     <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
@@ -127,7 +127,9 @@
             <h2 id="yes-no"></h2>
             <p>It has been <time id="timer-text"></time> since the previous MTA subway service alert</p>
             <dl></dl>
+<!--
 			<p><a href="recent-alerts/">See all today's MTA alerts</a>.</p>
+-->
         </section>
 
 <div class="ad center">
