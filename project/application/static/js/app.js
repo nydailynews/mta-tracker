@@ -58,7 +58,7 @@ var utils = {
 }
 
 // TRACKER OBJECT
-// Manages the lead graf, the list of recent alerts at the bottom
+// Manages the lead graf, the list of recent alerts
 var tracker = {
     d: {},
     config: {
@@ -357,15 +357,116 @@ var tracker = {
 
 };
 
+// CUOMO-CHART OBJECT
+// Manages the Cuomo-oriented bar chart.
+var cuomo = {
+    d: {},
+    p: {},
+    next_check: 0,
+    config: {
+        in_dev: 0,
+        seconds_between_checks: 20,
+    },
+    id: 'weeks-chart',
+    first_load: function() {
+        var margin = {top: 10, right: 30, bottom: 30, left: 30},
+            width = 400 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+        this.height = height;
+
+        // Adds the svg canvas
+        this.svg = d3.select("#" + this.id)
+          .append("svg")
+            .attr("id", "weeks-chart-svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform",
+                      "translate(" + margin.left + "," + margin.top + ")");
+
+        this.svg.append("title")
+
+		var x = d3.scaleBand()
+			.range([5, width], .1);
+		var y = d3.scaleLinear()
+			.range([height, 0]);
+
+		var x_axis = d3.axisBottom(x);
+
+		var y_axis = d3.axisLeft(y)
+			.ticks(6);
+
+		var chart = d3.select(chart)
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		var data = [];
+		for ( var property in this.d.archives ) {
+			if ( this.d.archives.hasOwnProperty(property) ) {
+				data.push([property, this.d.archives[property].length]);
+			}
+		}
+
+		data.map(function (d, index) {
+			console.log(d, index);
+		});
+
+		x.domain(data.map(function(d) { return d[0] }));
+		y.domain([0, d3.max(data, function(d) { return +d[1]; })]);
+
+		chart.append("g")
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + height + ")")
+			.call(x_axis)
+			.append("text")
+			.attr("x", 10)
+			.attr("dy", "2.5em")
+			.style("text-anchor", "start")
+			.text('Day');
+
+		chart.append("g")
+			.attr("class", "y axis")
+			.call(y_axis)
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 6)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text('Cuomos');
+
+		chart.selectAll("bar")
+			.data(data)
+			.enter().append("rect")
+			.attr("class", "bar")
+			.attr("x", function(d) { return x(d[0]);; })
+			.attr("width", x.bandwidth())
+			.attr("y", function(d) { return y(+d[1]); })
+			.attr("height", function(d) { return height - y(+d[1]); });
+    },
+    init: function(pathing) {
+		if ( pathing == null ) pathing = '';
+		this.pathing = pathing;
+		$.getJSON(pathing + 'data/archives-10.json?' + utils.rando(), function(data) {
+			cuomo.d.archives = data;
+			//cuomo.first_load();
+            // Set the timer to check for updated data
+            cuomo.first_load();
+		});
+	}
+};
+
+
+
 // CHARTER OBJECT
 // Manages the chart of today's alerts in the middle of the page.
 var charter = {
     d: {},
     p: {},
     log: {},
-    in_dev: 0,
     next_check: 0,
     config: {
+        in_dev: 0,
         utc_offset: -500,
         circle_radius: 10,
         minutes_per_bin: 30,
@@ -377,6 +478,7 @@ var charter = {
         lines: [],
         seconds: 0,
     },
+    id: 'day-chart',
     update_rundown: function() {
         // Write the rundown graf.
         var r = this.rundown;
@@ -384,7 +486,6 @@ var charter = {
             totalling ' + r.hours + ' hours and ' + r.minutes + ' minutes of alert-time.';
 		if ( document.getElementById('rundown') !== null ) document.getElementById('rundown').innerHTML = graf;
     },
-    id: 'day-chart',
     midnight: new Date().setHours(0, 0, 0, 0),
     nyc_now: new Date(),
     minutes_since_midnight: null,

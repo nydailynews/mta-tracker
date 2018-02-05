@@ -172,6 +172,20 @@
             </div>
         </div>
 
+        <section class="chart" id="another-chart">
+            <h2>This week in MTA service alerts</h2>
+			<p>
+				This chart indexes total hours of delays per day for this and the previous nine days.
+				One Cuomo equals...
+			</p>
+            <div id="weeks-chart-wrapper">
+				<figure id="weeks-chart">
+					<figcaption>
+					</figcaption>
+				</figure>
+			</div>
+		</section>
+
         <section id="alerts" class="recent">
             <h2>Today's MTA alerts</h2>
 			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
