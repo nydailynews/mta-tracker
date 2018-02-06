@@ -172,6 +172,18 @@
             </div>
         </div>
 
+<svg>
+<defs>
+  <pattern id="barbg" patternUnits="userSpaceOnUse" width="40" height="40">
+    <image xlink:href="img/cuomo-circle-large.png" x="0" y="0" width="40" height="40" />
+  </pattern>
+</defs>
+</svg>
+<style>
+.cuomosa {
+	fill: url('#bar-bg');
+}
+</style>
         <section class="chart" id="another-chart">
             <h2>This week in MTA service alerts</h2>
 			<p>

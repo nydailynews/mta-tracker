@@ -370,8 +370,8 @@ var cuomo = {
     id: 'weeks-chart',
     first_load: function() {
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = 400 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
+            width = 460 - margin.left - margin.right,
+            height = 440 - margin.top - margin.bottom;
         this.height = height;
 
         // Adds the svg canvas
@@ -387,7 +387,7 @@ var cuomo = {
         this.svg.append("title")
 
 		var x = d3.scaleBand()
-			.range([5, width], .1);
+			.range([0, width], .1);
 		var y = d3.scaleLinear()
 			.range([height, 0]);
 
@@ -400,6 +400,7 @@ var cuomo = {
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 		var data = [];
 		for ( var property in this.d.archives ) {
 			if ( this.d.archives.hasOwnProperty(property) ) {
@@ -417,8 +418,9 @@ var cuomo = {
 		data.sort(function(a, b) { return +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'')} );
 		console.info(data);
 
+		var ceiling = 10;
 		x.domain(data.map(function(d) { return d['date'] }));
-		y.domain([0, d3.max(data, function(d) { return d['cuomos']; })]);
+		y.domain([0, d3.max(data, function(d) { return ceiling; })]);
 
 		chart.append("g")
 			.attr("class", "x axis")
@@ -443,8 +445,9 @@ var cuomo = {
 		chart.selectAll("bar")
 			.data(data)
 			.enter().append("rect")
-			.attr("class", "bar")
-			.attr("x", function(d) { return x(d['date']);; })
+			.attr("class", "bar cuomos")
+			.attr("fill", "url(#barbg)")
+			.attr("x", function(d) { return x(d['date']); })
 			.attr("width", x.bandwidth())
 			.attr("y", function(d) { return y(d['cuomos']); })
 			.attr("height", function(d) { return height - y(d['cuomos']); });
