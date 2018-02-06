@@ -392,11 +392,10 @@ var cuomo = {
 			.range([height, 0]);
 
 		var x_axis = d3.axisBottom(x);
-
 		var y_axis = d3.axisLeft(y)
 			.ticks(6);
 
-		var chart = d3.select(chart)
+		var chart = d3.select('#weeks-chart-svg')
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
@@ -404,16 +403,25 @@ var cuomo = {
 		var data = [];
 		for ( var property in this.d.archives ) {
 			if ( this.d.archives.hasOwnProperty(property) ) {
-				data.push([property, this.d.archives[property].length]);
+				var seconds = 0;
+				for ( var item in this.d.archives[property] ) {
+					seconds += +this.d.archives[property][item]['length'];
+				}
+				var minutes = Math.floor(seconds / 60);
+				var hours = minutes / 60;
+				var ten_hours = Math.floor(hours / 10);
+				data.push({ 'date': property, 'delays': this.d.archives[property].length, 'hours': hours, 'cuomos': ten_hours});
+
 			}
 		}
+		console.info(data);
 
 		data.map(function (d, index) {
-			console.log(d, index);
+			console.info(d, index);
 		});
 
-		x.domain(data.map(function(d) { return d[0] }));
-		y.domain([0, d3.max(data, function(d) { return +d[1]; })]);
+		x.domain(data.map(function(d) { return d['date'] }));
+		y.domain([0, d3.max(data, function(d) { return d['cuomos']; })]);
 
 		chart.append("g")
 			.attr("class", "x axis")
@@ -439,10 +447,10 @@ var cuomo = {
 			.data(data)
 			.enter().append("rect")
 			.attr("class", "bar")
-			.attr("x", function(d) { return x(d[0]);; })
+			.attr("x", function(d) { return x(d['date']);; })
 			.attr("width", x.bandwidth())
-			.attr("y", function(d) { return y(+d[1]); })
-			.attr("height", function(d) { return height - y(+d[1]); });
+			.attr("y", function(d) { return y(d['cuomos']); })
+			.attr("height", function(d) { return height - y(d['cuomos']); });
     },
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
