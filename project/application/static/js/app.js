@@ -414,11 +414,8 @@ var cuomo = {
 
 			}
 		}
+		data.sort(function(a, b) { return +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'')} );
 		console.info(data);
-
-		data.map(function (d, index) {
-			console.info(d, index);
-		});
 
 		x.domain(data.map(function(d) { return d['date'] }));
 		y.domain([0, d3.max(data, function(d) { return d['cuomos']; })]);

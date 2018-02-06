@@ -176,7 +176,7 @@
             <h2>This week in MTA service alerts</h2>
 			<p>
 				This chart indexes total hours of delays per day for this and the previous nine days.
-				One Cuomo equals...
+				One Cuomo equals ten hours of subway delays due to service alerts. This does not include scheduled maintenance.
 			</p>
             <div id="weeks-chart-wrapper">
 				<figure id="weeks-chart">
