@@ -173,11 +173,11 @@
         </div>
 
 <svg>
-<defs>
-  <pattern id="barbg" patternUnits="userSpaceOnUse" width="40" height="40">
-    <image xlink:href="img/cuomo-circle-large.png" x="0" y="0" width="40" height="40" />
-  </pattern>
-</defs>
+	<defs>
+	  <pattern id="barbg" patternUnits="userSpaceOnUse" >
+		<image xlink:href="img/cuomo-circle-large.png" x="0" y="0" />
+	  </pattern>
+	</defs>
 </svg>
 <style>
 .cuomosa {

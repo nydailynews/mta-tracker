@@ -366,12 +366,26 @@ var cuomo = {
     config: {
         in_dev: 0,
         seconds_between_checks: 20,
+		ceiling: 10,
+		days_to_show: 7,
+		dim: {
+			'10': {
+				image: 40,
+				width: 460,
+				height: 440
+			},
+			'7': {
+				image: 40,
+				width: 460,
+				height: 440
+			},
+		}
     },
     id: 'weeks-chart',
     first_load: function() {
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = 460 - margin.left - margin.right,
-            height = 440 - margin.top - margin.bottom;
+            width = this.config.dim[this.config.days_to_show].width - margin.left - margin.right,
+            height = this.config.dim[this.config.days_to_show].height - margin.top - margin.bottom;
         this.height = height;
 
         // Adds the svg canvas
@@ -416,9 +430,10 @@ var cuomo = {
 			}
 		}
 		data.sort(function(a, b) { return +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'')} );
+		data = data.slice(this.config.days_to_show * -1);
 		console.info(data);
 
-		var ceiling = 10;
+		var ceiling = this.config.ceiling;
 		x.domain(data.map(function(d) { return d['date'] }));
 		y.domain([0, d3.max(data, function(d) { return ceiling; })]);
 
@@ -455,6 +470,10 @@ var cuomo = {
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
 		this.pathing = pathing;
+		$('#barbg').attr('width', this.config.dim[this.config.days_to_show].image);
+		$('#barbg').attr('height', this.config.dim[this.config.days_to_show].image);
+		$('#barbg image').attr('width', this.config.dim[this.config.days_to_show].image);
+		$('#barbg image').attr('height', this.config.dim[this.config.days_to_show].image);
 		$.getJSON(pathing + 'data/archives-10.json?' + utils.rando(), function(data) {
 			cuomo.d.archives = data;
 			//cuomo.first_load();
@@ -463,7 +482,7 @@ var cuomo = {
 		});
 	}
 };
-
+cuomo.init();
 
 
 // CHARTER OBJECT
