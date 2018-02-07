@@ -365,8 +365,9 @@ var cuomo = {
     next_check: 0,
     config: {
         in_dev: 0,
+        hours_per_cuomo: 15,
         seconds_between_checks: 20,
-		ceiling: 10,
+		ceiling: 5,
 		days_to_show: 7,
 		dim: {
 			'10': {
@@ -375,7 +376,7 @@ var cuomo = {
 				height: 440
 			},
 			'7': {
-				image: 40,
+				image: 57.14,
 				width: 460,
 				height: 440
 			},
@@ -424,8 +425,8 @@ var cuomo = {
 				}
 				var minutes = Math.floor(seconds / 60);
 				var hours = minutes / 60;
-				var ten_hours = Math.floor(hours / 10);
-				data.push({ 'date': property, 'delays': this.d.archives[property].length, 'hours': hours, 'cuomos': ten_hours});
+				var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
+				data.push({ 'date': property, 'delays': this.d.archives[property].length, 'hours': hours, 'cuomos': one_cuomo});
 
 			}
 		}
