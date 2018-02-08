@@ -140,7 +140,7 @@
 </div>
 
         <section class="chart" id="chart">
-            <h2>Today in MTA service alerts</h2>
+            <h2>Today in MTA subway service&nbsp;alerts</h2>
             <p id="rundown" style="display:none;"></p>
 <!--
             <p><em>Chart updates automatically every minute</em></p>
@@ -158,8 +158,8 @@
 						<title>A chart measuring today's number of subway service alerts, per half hour</title>
 					</svg>
 				</figure>
-				<p id="tooltip"></p>
             </div>
+			<p id="tooltip"></p>
         </section>
 
         <div class="ad center">
@@ -185,7 +185,7 @@
 }
 </style>
         <section class="chart" id="another-chart">
-            <h2>This week in MTA service alerts</h2>
+            <h2>This week in MTA subway service&nbsp;alerts</h2>
 <!--
 			<p>
 				Here we measure the total hours of stoppages and delays cataloged by the MTA’s subway service alerts.

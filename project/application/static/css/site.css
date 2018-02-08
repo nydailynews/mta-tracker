@@ -21,6 +21,7 @@ article h1, article h2, article h3, article h4 {
 }
 
 article h1 {
+    margin-top: 30px;
     font-size: 50px;
     text-transform: uppercase;
     color: #333;
@@ -176,24 +177,36 @@ article {
     margin: 0 30px;
 }
 }
-/* TABLET-SPECIFIC */
-@media only screen and ( min-width: 728px ) and (max-width:1023px) {
-}
 /* HANDHELD & TABLET */
 @media only screen and ( min-width: 220px ) and (max-width:1023px) {
-    h1 {
+    article h1 {
         font-size: 30px;
         line-height: 25px;
     }
     h2#timer-text, h2#yes-no {
         margin: -60px auto;
     }
+    article h2 {
+        line-height: 30px;
+    }
     #lead p {
         margin: auto 10px;
+    }
+    article p, article figcaption, article dl {
+        margin-left: 10px;
+        margin-right: 10px;
     }
     #chart-wrapper {
         width: 100vw;
         overflow-x: scroll;
+    }
+}
+
+/* TABLET-SPECIFIC */
+@media only screen and ( min-width: 728px ) and (max-width:1023px) {
+    article p, article figcaption, article dl {
+        margin-left: 30px;
+        margin-right: 30px;
     }
 }
 
