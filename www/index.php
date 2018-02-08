@@ -106,7 +106,7 @@
     <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
-    <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>
+    <script>var nav_params = {section: 'MTA Delay Tracker', url: 'http://interactive.nydailynews.com/project/'};</script>
     <script src="/library/vendor-nav/vendor-include.js" defer></script>
     <link rel="stylesheet" href="css/site.css">
     <script>
@@ -145,12 +145,14 @@
 <!--
             <p><em>Chart updates automatically every minute</em></p>
 -->
+			<p class="textleft">
+				This chart measures the number of service alerts per half hour.
+			</p>
             <div id="chart-wrapper">
 				<figure id="day-chart">
-					<figcaption>
-						This chart measures the number of service alerts per half hour.
-						<strong>Each&nbsp;circle means “an alert for a particular line happened within this half hour.”</strong> The circle color matches the line it corresponds with.
-						<span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
+					<figcaption class="textleft">
+						<strong>Each&nbsp;circle means “an alert for a particular line happened within a particular half hour.”</strong> The circle color matches the line it corresponds with.
+						<br><span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
 					</figcaption>
 					<svg id="day-chart-svg">
 						<title>A chart measuring today's number of subway service alerts, per half hour</title>
@@ -184,11 +186,13 @@
 </style>
         <section class="chart" id="another-chart">
             <h2>This week in MTA service alerts</h2>
+<!--
 			<p>
 				Here we measure the total hours of stoppages and delays cataloged by the MTA’s subway service alerts.
 			</p>
+-->
 			<p>
-				We measure them in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" class="cuomo">),
+				We measure in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" class="cuomo">),
 				<strong>one Cuomo equalling <span id="one_cuomo">15</span> hours of alerts on any one particular line.
 				</strong>
 			</p>
@@ -203,7 +207,7 @@
 						<title>Hours of MTA service alerts in the previous seven days</title>
 					</svg>
 					<figcaption>
-						This chart indexes total hours of MTA subway service alerts per day for the previous seven days.
+						This chart shows the total hours of MTA subway service alerts for the previous seven days.
 						Note that this does not include delays and stoppages due to scheduled maintenance.
 					</figcaption>
 				</figure>
@@ -211,18 +215,20 @@
 		</section>
 
         <section id="news" class="recent">
-            <h2>Recent MTA news</h2>
+            <h3>Recent MTA news</h3>
             <ul>
             <?php echo file_get_contents('tag-mta-10.html'); ?>
             </ul>
         </section>
 
+<!--
         <section id="alerts" class="recent">
             <h2>Today's MTA alerts</h2>
 			<p>Here's a list of the <span id="alerts-number"></span> alerts that happened today on the MTA's NYC train lines.</p>
             <ol>
             </ol>
         </section>
+-->
 
         <section id="footer">
 <!--

@@ -15,13 +15,13 @@ article div {
     text-align: center;
 }
 
-h1, h2, h3, h4 {
+article h1, article h2, article h3, article h4 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: bold;
 }
 
-h1 {
-    font-size: 40px;
+article h1 {
+    font-size: 50px;
     text-transform: uppercase;
     color: #333;
     text-align: center;
@@ -35,15 +35,23 @@ h2#timer-text, h2#yes-no {
     text-align: center;
 }
 
-h2#timer-text + p, h2#yes-no + p, h2 {
+h2#timer-text + p, h2#yes-no + p, article h2, article h3 {
     font-family: 'Open Sans Condensed', sans-serif;
     font-weight: bold;
-    font-size: 31px;
+    font-size: 34px;
     color: #333;
     margin: auto;
     max-width: 800px;
     text-transform: uppercase;
     text-align: center;
+}
+
+section.chart h2, section.recent h2, section.recent h3 {
+	margin-top: 25px;
+}
+
+article h3 {
+    font-size: 28px;
 }
 
 article p, article figcaption {
@@ -53,6 +61,10 @@ article p, article figcaption {
     font-family: 'PT Serif', serif;
     font-size: 24px;
     line-height: 30px;
+}
+
+.textleft {
+    text-align: left;
 }
 
 article li {
