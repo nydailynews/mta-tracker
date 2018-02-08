@@ -416,14 +416,11 @@ var cuomo = {
 		var data = [];
 		for ( var property in this.d.archives ) {
 			if ( this.d.archives.hasOwnProperty(property) ) {
-				var seconds = 0;
-				for ( var item in this.d.archives[property] ) {
-					seconds += +this.d.archives[property][item]['length'];
-				}
+				var seconds = this.d.archives[property].seconds;
 				var minutes = Math.floor(seconds / 60);
 				var hours = minutes / 60;
 				var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
-				data.push({ 'date': property, 'delays': this.d.archives[property].length, 'hours': hours, 'cuomos': one_cuomo});
+				data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
 
 			}
 		}

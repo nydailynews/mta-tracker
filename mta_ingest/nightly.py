@@ -35,9 +35,11 @@ if __name__ == '__main__':
 
             results = archives_full[d]
             length = 0
+            delays = 0
             for r in results:
+                delays += 1
                 length += r['length']
-            archives[d] = {'seconds': length}
+            archives[d] = {'delays': delays, 'seconds': length}
         fh = open('_output/archives-full-%d.json' % limit, 'wb')
         json.dump(archives_full, fh)
         fh.close()
