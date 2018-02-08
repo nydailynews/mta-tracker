@@ -190,25 +190,25 @@
         <section class="chart" id="another-chart">
             <h2>This week in MTA service alerts</h2>
 			<p>
-				Here we measure the total hours of stoppages and delays due to MTA subway service alerts.
+				Here we measure the total hours of stoppages and delays cataloged by the MTA’s subway service alerts.
 			</p>
 			<p>
 				We measure them in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" width="30" height="30" style="display:inline-block; margin-top: 10px;">),
-				<strong>one Cuomo equalling <span id="one_cuomo">15</span> hours of subway delays on any one particular line due to service alerts.
+				<strong>one Cuomo equalling <span id="one_cuomo">15</span> hours of alerts on any one particular line.
 				</strong>
 			</p>
 			<p>
 				Note that this does not include delays and stoppages due to scheduled maintenance.
 			</p>
 			<p>
-				On average, in the past 90 days, there are <span id="hours-average"></span> hours,
+				On average weekdays in the past 30 days, there are <span id="hours-average"></span> hours of alerts,
 				or <span id="hours-cuomos"></span> Cuomos,
 				of subway delays and stoppages across the MTA's 22 main lines.
 			</p>
             <div id="weeks-chart-wrapper">
 				<figure id="weeks-chart">
 					<figcaption>
-						This chart indexes total hours of delays per day for the previous seven days.
+						This chart indexes total hours of service alerts per day for the previous seven days.
 					</figcaption>
 				</figure>
 			</div>

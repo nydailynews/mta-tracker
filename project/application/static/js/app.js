@@ -474,8 +474,12 @@ var cuomo = {
 			//cuomo.first_load();
             // Set the timer to check for updated data
             cuomo.first_load();
-            $.getJSON(pathing + 'data/archives-90.json?' + utils.rando(), function(data) {
-                // Write the on-average sentence.
+            $.getJSON(pathing + 'data/archives-average-30.json?' + utils.rando(), function(data) {
+                // Flesh out the on-average sentence.
+                document.getElementById('hours-average').textContent = Math.round( data.average.weekday * 10 ) / 10;
+                var cuomos = Math.round( (data.average.weekday/cuomo.config.hours_per_cuomo) * 10 ) / 10;
+                var cuomos_whole = Math.floor(cuomos);
+                document.getElementById('hours-cuomos').textContent = cuomos;
             });
 		});
 	}
