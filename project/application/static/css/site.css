@@ -196,9 +196,11 @@ article {
         margin-left: 10px;
         margin-right: 10px;
     }
-    #chart-wrapper {
+    .overflower {
         width: 100vw;
         overflow-x: scroll;
+    }
+    .overflower figcaption {
     }
 }
 

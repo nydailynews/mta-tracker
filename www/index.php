@@ -148,7 +148,7 @@
 			<p class="textleft">
 				This chart measures the number of service alerts per half hour.
 			</p>
-            <div id="chart-wrapper">
+            <div id="chart-wrapper" class="overflower">
 				<figure id="day-chart">
 					<figcaption class="textleft">
 						<strong>Each&nbsp;circle means “an alert for a particular line happened within a particular half hour.”</strong> The circle color matches the line it corresponds with.
@@ -201,7 +201,7 @@
 				or <span id="hours-cuomos"></span> Cuomos,
 				of subway delays and stoppages across the MTA's 22 main lines.
 			</p>
-            <div id="weeks-chart-wrapper">
+            <div id="weeks-chart-wrapper" class="overflower">
 				<figure id="weeks-chart">
 					<svg id="weeks-chart-svg">
 						<title>Hours of MTA service alerts in the previous seven days</title>
