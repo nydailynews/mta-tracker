@@ -19,9 +19,10 @@ if __name__ == '__main__':
     log = Logger(args)
     fields = ['start', 'stop', 'line', 'length']
     fields_str = ','.join(fields)
-    for limit in [10, 30, 60, 90]:
+    days = [10, 30, 60, 90]
+    for limit in days:
         i = 0
-        archives = {}
+        archives, archives_full = {}, {}
         while i < limit:
             i += 1
             d_ = datetime.now() - timedelta(i)
@@ -30,7 +31,16 @@ if __name__ == '__main__':
                     'select': fields_str
                     }
             rows = log.db.q.select_archive(**params)
-            archives[d] = log.db.q.make_dict(fields, rows)
+            archives_full[d] = log.db.q.make_dict(fields, rows)
+
+            results = archives_full[d]
+            length = 0
+            for r in results:
+                length += r['length']
+            archives[d] = {'minutes': length}
+        fh = open('_output/archives-full-%d.json' % limit, 'wb')
+        json.dump(archives_full, fh)
+        fh.close()
         fh = open('_output/archives-%d.json' % limit, 'wb')
         json.dump(archives, fh)
         fh.close()
