@@ -186,6 +186,16 @@
 .cuomosa {
 	fill: url('#bar-bg');
 }
+.cuomo {
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	position: relative;
+	top: 7px;
+}
+#another-chart p {
+	text-align: left;
+}
 </style>
         <section class="chart" id="another-chart">
             <h2>This week in MTA service alerts</h2>
@@ -193,7 +203,7 @@
 				Here we measure the total hours of stoppages and delays cataloged by the MTA’s subway service alerts.
 			</p>
 			<p>
-				We measure them in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" width="30" height="30" style="display:inline-block; margin-top: 10px;">),
+				We measure them in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" class="cuomo">),
 				<strong>one Cuomo equalling <span id="one_cuomo">15</span> hours of alerts on any one particular line.
 				</strong>
 			</p>

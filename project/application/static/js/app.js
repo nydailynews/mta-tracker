@@ -479,7 +479,9 @@ var cuomo = {
                 document.getElementById('hours-average').textContent = Math.round( data.average.weekday * 10 ) / 10;
                 var cuomos = Math.round( (data.average.weekday/cuomo.config.hours_per_cuomo) * 10 ) / 10;
                 var cuomos_whole = Math.floor(cuomos);
-                document.getElementById('hours-cuomos').textContent = cuomos;
+                var cuomos_img = '';
+                for ( var i = 0; i < cuomos_whole; i ++ ) cuomos_img += '<img src="img/cuomo-circle-large.png" alt="one Cuomo" class="cuomo">';
+                document.getElementById('hours-cuomos').innerHTML = cuomos_img;
             });
 		});
 	}
