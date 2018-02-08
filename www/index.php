@@ -74,7 +74,7 @@
     <script src="//assets.adobedtm.com/4fc527d6fda921c80e462d11a29deae2e4cf7514/satelliteLib-c91fdc6ac624c6cbcd50250f79786de339793801.js"></script>
 -->
 
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet'>
     <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
@@ -142,11 +142,8 @@
         <section class="chart" id="chart">
             <h2>Today in MTA subway service&nbsp;alerts</h2>
             <p id="rundown" style="display:none;"></p>
-<!--
-            <p><em>Chart updates automatically every minute</em></p>
--->
 			<p class="textleft">
-				This chart measures the number of service alerts per half hour.
+				This chart measures the number of service alerts per half hour and updates automatically.
 			</p>
             <div id="chart-wrapper" class="overflower">
 				<figure id="day-chart">
@@ -170,20 +167,6 @@
             </div>
         </div>
 
-<style>
-.cuomo {
-	width: 30px;
-	height: 30px;
-	display: inline-block;
-	position: relative;
-	top: 7px;
-	margin-top: -10px;
-}
-#another-chart p {
-	text-align: left;
-	margin-bottom: 8px;
-}
-</style>
         <section class="chart" id="another-chart">
             <h2>This week in MTA subway service&nbsp;alerts</h2>
 <!--

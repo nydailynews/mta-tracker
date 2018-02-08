@@ -306,3 +306,15 @@ p.byline { font-size: 100%; }
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
 }
 
+.cuomo {
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+	position: relative;
+	top: 7px;
+	margin-top: -10px;
+}
+#another-chart p {
+	text-align: left;
+	margin-bottom: 8px;
+}
