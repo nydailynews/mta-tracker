@@ -390,13 +390,9 @@ var cuomo = {
         this.height = height;
 
         // Adds the svg canvas
-        this.svg = d3.select("#" + this.id)
-          .append("svg")
-            .attr("id", "weeks-chart-svg")
+        this.svg = d3.select("#" + this.id + ' svg')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .append("title")
-                .text('Hours of MTA delays due to service alerts, the previous seven days')
 
 		var x = d3.scaleBand()
 			.range([0, width], .1);
@@ -442,6 +438,7 @@ var cuomo = {
 			.style("text-anchor", "start")
 			.text('Day');
 
+        /*
 		chart.append("g")
 			.attr("class", "y axis")
 			.call(y_axis)
@@ -451,6 +448,7 @@ var cuomo = {
 			.attr("dy", ".71em")
 			.style("text-anchor", "end")
 			.text('Cuomos');
+            */
 
 		chart.selectAll("bar")
 			.data(data)
@@ -741,7 +739,10 @@ var charter = {
 
         var max_count = this.bin_lens[this.log.max_count];
         // DEV-SPECIFIC
-        if ( document.location.hash !== '' ) max_count = +document.location.hash.substring(1);
+        if ( document.location.hash !== '' ) {
+           var hash = document.location.hash.substring(1);
+           if ( +hash > 0 ) max_count = +document.location.hash.substring(1);
+        }
 
         if ( max_count <= 10 ) {
             this.config.height_factor += 5;

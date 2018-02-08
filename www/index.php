@@ -160,13 +160,6 @@
             </div>
         </section>
 
-        <section id="news" class="recent">
-            <h2>Recent MTA news</h2>
-            <ul>
-            <?php echo file_get_contents('tag-mta-10.html'); ?>
-            </ul>
-        </section>
-
         <div class="ad center">
             <div id='div-gpt-ad-1423507761396-1'>
               <script>
@@ -175,17 +168,7 @@
             </div>
         </div>
 
-<svg>
-	<defs>
-	  <pattern id="barbg" patternUnits="userSpaceOnUse" >
-		<image xlink:href="img/cuomo-circle-large.png" x="0" y="0" />
-	  </pattern>
-	</defs>
-</svg>
 <style>
-.cuomosa {
-	fill: url('#bar-bg');
-}
 .cuomo {
 	width: 30px;
 	height: 30px;
@@ -217,12 +200,22 @@
 			</p>
             <div id="weeks-chart-wrapper">
 				<figure id="weeks-chart">
+					<svg id="weeks-chart-svg">
+						<title>Hours of MTA delays due to service alerts, the previous seven days</title>
+					</svg>
 					<figcaption>
 						This chart indexes total hours of service alerts per day for the previous seven days.
 					</figcaption>
 				</figure>
 			</div>
 		</section>
+
+        <section id="news" class="recent">
+            <h2>Recent MTA news</h2>
+            <ul>
+            <?php echo file_get_contents('tag-mta-10.html'); ?>
+            </ul>
+        </section>
 
         <section id="alerts" class="recent">
             <h2>Today's MTA alerts</h2>
@@ -237,6 +230,13 @@
 -->
 			<p class="byline">Interactive by Joe Murphy</p>
 		</section>
+<svg>
+	<defs>
+	  <pattern id="barbg" patternUnits="userSpaceOnUse" >
+		<image xlink:href="img/cuomo-circle-large.png" x="0" y="0" />
+	  </pattern>
+	</defs>
+</svg>
     </article>
 </main>
 
