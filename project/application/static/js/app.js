@@ -474,6 +474,9 @@ var cuomo = {
 			//cuomo.first_load();
             // Set the timer to check for updated data
             cuomo.first_load();
+            $.getJSON(pathing + 'data/archives-90.json?' + utils.rando(), function(data) {
+                // Write the on-average sentence.
+            });
 		});
 	}
 };
