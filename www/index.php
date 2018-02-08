@@ -149,7 +149,7 @@
 				<figure id="day-chart">
 					<figcaption>
 						This chart measures the number of service alerts per half hour.
-						<strong>Each&nbsp;circle means "an alert for a particular line happened within this half hour."</strong> The circle color matches the line it corresponds with.
+						<strong>Each&nbsp;circle means “an alert for a particular line happened within this half hour.”</strong> The circle color matches the line it corresponds with.
 						<span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
 					</figcaption>
 					<svg id="day-chart-svg">
@@ -175,9 +175,11 @@
 	display: inline-block;
 	position: relative;
 	top: 7px;
+	margin-top: -10px;
 }
 #another-chart p {
 	text-align: left;
+	margin-bottom: 8px;
 }
 </style>
         <section class="chart" id="another-chart">
@@ -191,9 +193,6 @@
 				</strong>
 			</p>
 			<p>
-				Note that this does not include delays and stoppages due to scheduled maintenance.
-			</p>
-			<p>
 				On average weekdays in the past 30 days, there are <span id="hours-average"></span> hours of alerts,
 				or <span id="hours-cuomos"></span> Cuomos,
 				of subway delays and stoppages across the MTA's 22 main lines.
@@ -201,10 +200,11 @@
             <div id="weeks-chart-wrapper">
 				<figure id="weeks-chart">
 					<svg id="weeks-chart-svg">
-						<title>Hours of MTA delays due to service alerts, the previous seven days</title>
+						<title>Hours of MTA service alerts in the previous seven days</title>
 					</svg>
 					<figcaption>
-						This chart indexes total hours of service alerts per day for the previous seven days.
+						This chart indexes total hours of MTA subway service alerts per day for the previous seven days.
+						Note that this does not include delays and stoppages due to scheduled maintenance.
 					</figcaption>
 				</figure>
 			</div>
