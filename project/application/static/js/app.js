@@ -55,6 +55,14 @@ var utils = {
         }
         return time_bits.join(':') + ' ' + ampm;
     },
+    ap_date: function(date) {
+        // Given a date such as "2018-02-03" return an AP style date, sans year.
+        var months = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+        var parts = date.split('-')
+        var day = +parts[2];
+        var month = months[+parts[1] - 1];
+        return month + ' ' + day;
+    }
 }
 
 // TRACKER OBJECT
@@ -324,7 +332,6 @@ var tracker = {
 		$.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
             console.info("ACTIVE-ALERTS DATA UPDATE CHECK:", tracker.d.active.length, data.length);
             if ( tracker.d.active.length !== data.length ) {
-                console.info("");
                 tracker.new_updates = Math.abs(tracker.d.active.length - data.length);
                 tracker.d.active = data;
                 $.getJSON(tracker.pathing + 'data/current.json?' + utils.rando(), function(data) {
@@ -420,12 +427,12 @@ var cuomo = {
 
 			}
 		}
-		data.sort(function(a, b) { return +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'')} );
+		data.sort(function(a, b) { console.info(+a['date'].replace(/-/g,'')); return ( +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'') ) ? 1 : 0 } );
 		data = data.slice(this.config.days_to_show * -1);
 		console.info(data);
 
 		var ceiling = this.config.ceiling;
-		x.domain(data.map(function(d) { return d['date'] }));
+		x.domain(data.map(function(d) { return utils.ap_date(d['date']) }));
 		y.domain([0, d3.max(data, function(d) { return ceiling; })]);
 
 		chart.append("g")
@@ -438,24 +445,12 @@ var cuomo = {
 			.style("text-anchor", "start")
 			.text('Day');
 
-        /*
-		chart.append("g")
-			.attr("class", "y axis")
-			.call(y_axis)
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("y", 6)
-			.attr("dy", ".71em")
-			.style("text-anchor", "end")
-			.text('Cuomos');
-            */
-
 		chart.selectAll("bar")
 			.data(data)
 			.enter().append("rect")
 			.attr("class", "bar cuomos")
 			.attr("fill", "url(#barbg)")
-			.attr("x", function(d) { return x(d['date']); })
+			.attr("x", function(d) { return x(utils.ap_date(d['date'])); })
 			.attr("width", x.bandwidth())
 			.attr("y", function(d) { return y(d['cuomos']); })
 			.attr("height", function(d) { return height - y(d['cuomos']); });
