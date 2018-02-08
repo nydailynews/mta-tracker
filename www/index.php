@@ -131,6 +131,14 @@
 -->
         </section>
 
+        <div>
+            <ul class="ra-share" id="ra-share-top">
+                <li class="rt-share-f"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://interactive.nydailynews.com/project/mta-delays/">facebook</a></li>
+                <li class="ra-share-t"> <a target="_blank" href="https://twitter.com/intent/tweet?text=MTA subway delay tracker&amp;url=http://interactive.nydailynews.com/project/mta-delays/&amp;via=NYDNi&amp;related=NYDailyNews,NYDNi">Tweet</a></li>
+                <li class="ra-share-e"> <a href="mailto:?subject=MTA Delay Tracker&amp;body=http://interactive.nydailynews.com/project/mta-delays/">email</a> </li>
+            </ul>
+        </div>
+
 <div class="ad center">
     <div id='div-gpt-ad-x105'>
       <script>
