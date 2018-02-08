@@ -378,7 +378,7 @@ var cuomo = {
 			'7': {
 				image: 57.14,
 				width: 460,
-				height: 440
+				height: 327
 			},
 		}
     },
@@ -395,11 +395,8 @@ var cuomo = {
             .attr("id", "weeks-chart-svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-            .attr("transform",
-                      "translate(" + margin.left + "," + margin.top + ")");
-
-        this.svg.append("title")
+            .append("title")
+                .text('Hours of MTA delays due to service alerts, the previous seven days')
 
 		var x = d3.scaleBand()
 			.range([0, width], .1);
@@ -763,16 +760,12 @@ var charter = {
             .range([height, 0]);
 
         // Adds the svg canvas
-        this.svg = d3.select("#" + this.id)
-          .append("svg")
-            .attr("id", "day-chart-svg")
+        this.svg = d3.select("#" + this.id + ' svg')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
           .append("g")
             .attr("transform",
                       "translate(" + margin.left + "," + margin.top + ")");
-
-        this.svg.append("title")
 
         this.svg.append("g")
           .attr("class", "axis axis--x")

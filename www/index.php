@@ -152,6 +152,9 @@
 						<strong>Each&nbsp;circle means "an alert for a particular line happened within this half hour."</strong> The circle color matches the line it corresponds with.
 						<span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
 					</figcaption>
+					<svg id="day-chart-svg">
+						<title>A chart measuring today's number of subway service alerts, per half hour</title>
+					</svg>
 				</figure>
 				<p id="tooltip"></p>
             </div>
@@ -188,7 +191,8 @@
             <h2>This week in MTA service alerts</h2>
 			<p>
 				This chart indexes total hours of delays per day for this and the previous nine days.
-				One Cuomo equals ten hours of subway delays due to service alerts. This does not include scheduled maintenance.
+				<strong>One Cuomo equals <span id="one_cuomo">15</span> hours of subway delays due to service alerts.
+				This does not include scheduled maintenance.
 			</p>
             <div id="weeks-chart-wrapper">
 				<figure id="weeks-chart">
