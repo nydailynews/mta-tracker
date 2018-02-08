@@ -17,11 +17,12 @@ if __name__ == '__main__':
     # Write the previous day's archives
     args = build_parser([])
     log = Logger(args)
-    fields = ['start', 'stop', 'line', 'length']
+    fields = ['start', 'stop', 'line', 'length', 'is_weekend']
     fields_str = ','.join(fields)
     days = [10, 30, 60, 90]
     for limit in days:
         i = 0
+        hours = 0
         archives, archives_full = {}, {}
         while i < limit:
             i += 1
@@ -40,6 +41,10 @@ if __name__ == '__main__':
                 delays += 1
                 length += r['length']
             archives[d] = {'delays': delays, 'seconds': length}
+            hours += float(float(length / 60) / 60)
+        fh = open('_output/archives-average-%d.json' % limit, 'wb')
+        json.dump({'days': limit, 'average': hours / limit}, fh)
+        fh.close()
         fh = open('_output/archives-full-%d.json' % limit, 'wb')
         json.dump(archives_full, fh)
         fh.close()
