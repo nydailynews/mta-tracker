@@ -387,7 +387,6 @@ def main(args):
     params = { 'date': datetime.now().date().__str__() }
     log.write_json('archive', **params)
 
-
     if args.verbose:
         print "NOTICE: ", log.double_check
         print "NOTICE: ", log.new['subway']['starts'].values()

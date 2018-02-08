@@ -22,7 +22,16 @@ if __name__ == '__main__':
     days = [10, 30, 60, 90]
     for limit in days:
         i = 0
-        hours = 0
+        hours = {
+                'all': 0,
+                'weekend': 0,
+                'weekday': 0
+                }
+        average = {
+                'all': 0,
+                'weekend': 0,
+                'weekday': 0
+                }
         archives, archives_full = {}, {}
         while i < limit:
             i += 1
@@ -40,10 +49,17 @@ if __name__ == '__main__':
             for r in results:
                 delays += 1
                 length += r['length']
+                hours['all'] += float(float(r['length'] / 60) / 60)
+                if r['is_weekend'] == 1:
+                    hours['weekend'] += float(float(r['length'] / 60) / 60)
+                else:
+                    hours['weekday'] += float(float(r['length'] / 60) / 60)
             archives[d] = {'delays': delays, 'seconds': length}
-            hours += float(float(length / 60) / 60)
+        average['all'] = hours['all'] / limit
+        average['weekend'] = hours['weekend'] / limit
+        average['weekday'] = hours['weekday'] / limit
         fh = open('_output/archives-average-%d.json' % limit, 'wb')
-        json.dump({'days': limit, 'average': hours / limit}, fh)
+        json.dump({'days': limit, 'hours': hours, 'average': average}, fh)
         fh.close()
         fh = open('_output/archives-full-%d.json' % limit, 'wb')
         json.dump(archives_full, fh)
