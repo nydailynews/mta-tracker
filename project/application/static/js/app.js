@@ -755,7 +755,6 @@ var charter = {
         if ( height < 120 ) height = 120;
         if ( height > 800 ) height = 800;
 
-        // Set the ranges
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
@@ -763,7 +762,6 @@ var charter = {
         this.y = d3.scaleLinear()
             .range([height, 0]);
 
-        // Adds the svg canvas
         this.svg = d3.select("#" + this.id + ' svg')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
@@ -772,6 +770,7 @@ var charter = {
                       "translate(" + margin.left + "," + margin.top + ")");
 
         this.svg.append("g")
+          .attr("id", "x-hourly")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
           .call(d3.axisBottom(this.x)
@@ -779,8 +778,19 @@ var charter = {
                 .tickFormat(d3.timeFormat("%-I %p"))
             );
     },
-	// The work we need to do to load the chart.
+    redraw_x: function() {
+        // The parts that go into updating the x axis as time passes
+        this.x = d3.scaleTime()
+            .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
+            .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
+        var ax = d3.select('#x-hourly')
+          .call(d3.axisBottom(this.x)
+                .ticks(this.hours_since_midnight + 1)
+                .tickFormat(d3.timeFormat("%-I %p"))
+            );
+    },
     first_load: function() {
+        // The work we need to do to load the chart.
         this.tooltip = d3.select('#tooltip')
 
         this.update_data();
