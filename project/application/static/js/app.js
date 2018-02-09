@@ -730,8 +730,6 @@ var charter = {
     draw_chart: function() {
         // Calculate the width (20 times the number of bins set in this.msms above),
         // set the dimensions of the graph
-        //console.info("ASDAS", this.bin_lens[this.log.max_count]);
-
         var max_count = this.bin_lens[this.log.max_count];
         // DEV-SPECIFIC
         if ( document.location.hash !== '' ) {
@@ -739,12 +737,16 @@ var charter = {
            if ( +hash > 0 ) max_count = +document.location.hash.substring(1);
         }
 
+        // MYSTIC MUMBO-JUMBO
+        if ( max_count <= 5 ) max_count = 5;
         if ( max_count <= 10 ) {
             this.config.height_factor += 5;
         }
         if ( max_count >= 20 ) {
             this.config.height_factor -= 10;
         }
+        
+        // BACK TO THE NON-MYSTIC STUFF
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
@@ -833,5 +835,4 @@ var charter = {
 	},
 };
 
-// Every 15 minutes
-var parpar = window.setInterval(function() { if ( typeof PARSELY !== 'undefined' ) PARSELY.beacon.trackPageView({ url: document.location.href, urlref: document.location.href, js: 1 }) }, 900000);
+var parpar = window.setInterval(function() { if ( typeof PARSELY !== 'undefined' ) PARSELY.beacon.trackPageView({ url: document.location.href, urlref: document.location.href, js: 1 }) }, 600000);
