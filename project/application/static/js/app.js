@@ -448,12 +448,26 @@ var cuomo = {
 		chart.selectAll("bar")
 			.data(data)
 			.enter().append("rect")
+            .on("mouseover", function(d) {
+                console.info(d);
+                /*
+                chart.append("text").attr({
+                      id: "t" + d.x + "-" + d.y + "-" + i,
+                       x: function() { return xScale(d.x) - 30; },
+                       y: function() { return yScale(d.y) - 15; }
+                   })
+                   .text(function() {
+                        return Math.floor(d['hours']);  // Value of the text
+                      });
+                      */
+            } )
+            .on("mouseout", function(d) { } )
 			.attr("class", "bar cuomos")
 			.attr("fill", "url(#barbg)")
 			.attr("x", function(d) { return x(utils.ap_date(d['date'])); })
 			.attr("width", x.bandwidth())
 			.attr("y", function(d) { return y(d['cuomos']); })
-			.attr("height", function(d) { return height - y(d['cuomos']); });
+			.attr("height", function(d) { return height - y(d['cuomos']); })
     },
     init: function(pathing) {
 		if ( pathing == null ) pathing = '';
@@ -598,7 +612,7 @@ var charter = {
               // TODO: Write what's actually happening here.
                 // return d.idx * (radius*2);   // <-- In case we want the circles on the ceiling
                 //
-                // That "10" below id the bottom margin
+                // That "10" below is the bottom margin
                 return charter.height - (d.idx * (radius*2)) - 10;
           })
           .attr("r", 0)
