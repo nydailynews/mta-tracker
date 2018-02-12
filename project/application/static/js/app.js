@@ -76,13 +76,6 @@ var tracker = {
         seconds_between_checks: 20,
     },
     now: Date.now(),
-    calc_time_zone: function(offset) {
-        // Get the current time in a different timezone. Must know the tz offset,
-        // i.e. the number of hours ahead or behind GMT.
-        var d = new Date();
-        var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
-        return new Date(utc + (3600000 * offset));
-    },
     count_up: function() {
         // Handle the parsing and passage of time.
         // Loop through each of the <time> elements on the page and update them.
@@ -107,6 +100,13 @@ var tracker = {
             else time = mins + ':' + utils.add_zero(secs);
             $(this).text(time);
         });
+    },
+    calc_time_zone: function(offset) {
+        // Get the current time in a different timezone. Must know the tz offset,
+        // i.e. the number of hours ahead or behind GMT.
+        var d = new Date();
+        var utc = d.getTime() - (d.getTimezoneOffset() * 60000);
+        return new Date(utc + (3600000 * offset));
     },
     calc_time_since: function(time) {
         // time is a datetime-looking string such as "2017-07-25 11:32:00"
