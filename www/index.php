@@ -164,7 +164,7 @@
 					</svg>
 				</figure>
             </div>
-			<p id="tooltip"></p>
+			<div id="tooltip"><h3></h3><p></p></div>
         </section>
 
         <div class="ad center">

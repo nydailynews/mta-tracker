@@ -637,9 +637,9 @@ var charter = {
            .duration(200)
            .style("opacity", .9);
         console.info(d);
-        charter.tooltip.html("<span class='line-" + d.name + "'>" + d.name + "</span> line alert\n\
-            from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + ",\n\
-            <br>Cause: " + d.cause);
+        charter.tooltip.html("<h3 class='line-" + d.name + "'><span>" + d.name + " line alert</span>\n\
+            from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + "</h3>\n\
+            <p>" + d.cause + "</p>");
         $('circle').attr('opacity', '.2');
         $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '5' });
         $('.cause' + utils.slugify(d.cause)).attr('opacity', '1');

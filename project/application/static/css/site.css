@@ -227,19 +227,18 @@ article {
   fill: brown;
 }
 
-div.tooltip {
-  color: black;
-  position: absolute;
-  text-align: left;
-  width: auto;
-  height: auto;
-  padding: 5px;
-  font-family: Futura;
-  font: 12px sans-serif ;
-  background: #FCB8C3FF;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
+div#tooltip {
+    max-width: 600px;
+    margin: auto;
+    text-align: left;
+    padding: 5px;
+    background: #FCB8C3FF;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+div#tooltip > h3, div#tooltip > p {
+    text-align: left;
 }
 .green:hover, .subway4:hover, .subway5:hover, .subway6:hover,
 .green, .subway4, .subway5, .subway6 {
