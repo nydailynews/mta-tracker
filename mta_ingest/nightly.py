@@ -33,6 +33,7 @@ if __name__ == '__main__':
                 'weekday': 0
                 }
         archives, archives_full = {}, {}
+        weekdays, weekends = 0, 0
         while i < limit:
             i += 1
             d_ = datetime.now() - timedelta(i)
@@ -52,12 +53,14 @@ if __name__ == '__main__':
                 hours['all'] += float(float(r['length'] / 60) / 60)
                 if r['is_weekend'] == 1:
                     hours['weekend'] += float(float(r['length'] / 60) / 60)
+                    weekends += 1
                 else:
                     hours['weekday'] += float(float(r['length'] / 60) / 60)
+                    weekdays += 1
             archives[d] = {'delays': delays, 'seconds': length}
         average['all'] = hours['all'] / limit
-        average['weekend'] = hours['weekend'] / limit
-        average['weekday'] = hours['weekday'] / limit
+        average['weekend'] = hours['weekend'] / weekends
+        average['weekday'] = hours['weekday'] / weekdays
         fh = open('_output/archives-average-%d.json' % limit, 'wb')
         json.dump({'days': limit, 'hours': hours, 'average': average}, fh)
         fh.close()
