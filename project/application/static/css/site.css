@@ -67,6 +67,12 @@ article p, article figcaption {
 .textleft {
     text-align: left;
 }
+.textleft-except-handheld {
+    text-align: left;
+}
+.textright {
+    text-align: right;
+}
 
 article li {
     font-size: 18px;
@@ -168,14 +174,17 @@ div.center > span {
 
 /* HANDHELD-SPECIFIC */
 @media only screen and ( min-width: 220px ) and ( max-width:727px ) {
-article {
-    margin: auto;
-}
-#news {
-    max-width: 100%;
-    width: 100%;
-    margin: 0 30px;
-}
+    article {
+        margin: auto;
+    }
+    #news {
+        max-width: 100%;
+        width: 100%;
+        margin: 0 30px;
+    }
+    .textleft-except-handheld {
+        text-align: right;
+    }
 }
 /* HANDHELD & TABLET */
 @media only screen and ( min-width: 220px ) and (max-width:1023px) {
@@ -184,7 +193,8 @@ article {
         line-height: 25px;
     }
     h2#timer-text, h2#yes-no {
-        margin: -60px auto;
+        margin: -60px auto 0 auto;
+        line-height: 300px;
     }
     article h2 {
         line-height: 30px;

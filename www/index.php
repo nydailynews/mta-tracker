@@ -153,12 +153,13 @@
 			<p class="textleft">
 				This chart measures the number of service alerts per half hour and updates automatically.
 			</p>
+			<p class="textleft">
+				<strong>Each&nbsp;circle means “an alert for a particular line happened within a particular half hour.”</strong> The circle color matches the line it corresponds with.
+				<br><span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
+			</p>
             <div id="chart-wrapper" class="overflower">
 				<figure id="day-chart">
-					<figcaption class="textleft">
-						<strong>Each&nbsp;circle means “an alert for a particular line happened within a particular half hour.”</strong> The circle color matches the line it corresponds with.
-						<br><span style="color:#aa3333;">Tap&nbsp;or mouseover a circle for more information about the delay.</span>
-					</figcaption>
+					<figcaption class="textleft-except-handheld"></figcaption>
 					<svg id="day-chart-svg">
 						<title>A chart measuring today's number of subway service alerts, per half hour</title>
 					</svg>
