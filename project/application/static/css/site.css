@@ -307,6 +307,7 @@ p.byline { font-size: 100%; }
 div#tooltip {
     max-width: 600px;
     min-height: 148px;
+    height: 200px;
     margin: auto;
     text-align: left;
     padding: 10px 10px 10px 80px;
@@ -318,6 +319,16 @@ div#tooltip {
 }
 div#tooltip > h3, div#tooltip > p {
     text-align: left;
+    position: relative;
+    top: -140px;
+}
+#tooltip-bg {
+    position: relative;
+    left: -120px;
+    top: -10px;
+    min-height:140px;
+    max-height: 200px;
+    width: 200px;
 }
 .bg-line-a {
     background: url('../svg/a.svg') no-repeat;
