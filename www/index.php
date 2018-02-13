@@ -165,7 +165,6 @@
 				</figure>
             </div>
 			<div id="tooltip"><h3></h3><p></p></div>
-			<img src="svg/b.svg" style="width:100px;height:100px; margin:auto;">
         </section>
 
         <div class="ad center">
