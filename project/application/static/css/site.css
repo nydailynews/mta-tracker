@@ -367,6 +367,9 @@ div#tooltip > h3, div#tooltip > p {
 .bg-line-l {
     background: url('../svg/l.svg') no-repeat;
 }
+.bg-line-m {
+    background: url('../svg/m.svg') no-repeat;
+}
 .bg-line-n {
     background: url('../svg/n.svg') no-repeat;
 }
