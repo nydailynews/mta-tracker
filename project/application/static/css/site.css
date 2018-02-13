@@ -227,19 +227,6 @@ article {
   fill: brown;
 }
 
-div#tooltip {
-    max-width: 600px;
-    margin: auto;
-    text-align: left;
-    padding: 5px;
-    background: #FCB8C3FF;
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-}
-div#tooltip > h3, div#tooltip > p {
-    text-align: left;
-}
 .green:hover, .subway4:hover, .subway5:hover, .subway6:hover,
 .green, .subway4, .subway5, .subway6 {
     fill: #00933c;
@@ -316,4 +303,86 @@ p.byline { font-size: 100%; }
 #another-chart p {
 	text-align: left;
 	margin-bottom: 8px;
+}
+div#tooltip {
+    max-width: 600px;
+    min-height: 148px;
+    margin: auto;
+    text-align: left;
+    padding: 10px 10px 10px 80px;
+    background-color: #DDD;
+    border: 0px;
+    border-radius: 0 12px 12px 0;
+    pointer-events: none;
+    background-position-x: -40px;
+}
+div#tooltip > h3, div#tooltip > p {
+    text-align: left;
+}
+.bg-line-a {
+    background: url('../svg/a.svg') no-repeat;
+}
+.bg-line-b {
+    background: url('../svg/b.svg') no-repeat;
+}
+.bg-line-c {
+    background: url('../svg/c.svg') no-repeat;
+}
+.bg-line-d {
+    background: url('../svg/d.svg') no-repeat;
+}
+.bg-line-e {
+    background: url('../svg/e.svg') no-repeat;
+}
+.bg-line-f {
+    background: url('../svg/f.svg') no-repeat;
+}
+.bg-line-g {
+    background: url('../svg/g.svg') no-repeat;
+}
+.bg-line-j {
+    background: url('../svg/j.svg') no-repeat;
+}
+.bg-line-l {
+    background: url('../svg/l.svg') no-repeat;
+}
+.bg-line-n {
+    background: url('../svg/n.svg') no-repeat;
+}
+.bg-line-q {
+    background: url('../svg/q.svg') no-repeat;
+}
+.bg-line-r {
+    background: url('../svg/r.svg') no-repeat;
+}
+.bg-line-w {
+    background: url('../svg/w.svg') no-repeat;
+}
+.bg-line-z {
+    background: url('../svg/z.svg') no-repeat;
+}
+.bg-line-1 {
+    background: url('../svg/1.svg') no-repeat;
+}
+.bg-line-2 {
+    background: url('../svg/2.svg') no-repeat;
+}
+.bg-line-3 {
+    background: url('../svg/3.svg') no-repeat;
+}
+.bg-line-4 {
+    background: url('../svg/4.svg') no-repeat;
+}
+.bg-line-5 {
+    background: url('../svg/5.svg') no-repeat;
+}
+.bg-line-6 {
+    background: url('../svg/6.svg') no-repeat;
+}
+.bg-line-7 {
+    background: url('../svg/7.svg') no-repeat;
+}
+.hidden-but-for-screen-readers, .hidehide, #tooltip h3 span {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
 }

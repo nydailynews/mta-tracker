@@ -640,6 +640,7 @@ var charter = {
         charter.tooltip.html("<h3 class='line-" + d.name + "'><span>" + d.name + " line alert</span>\n\
             from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + "</h3>\n\
             <p>" + d.cause + "</p>");
+        document.getElementById('tooltip').classList.add('bg-line-' + d.name.toLowerCase());
         $('circle').attr('opacity', '.2');
         $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '5' });
         $('.cause' + utils.slugify(d.cause)).attr('opacity', '1');
@@ -650,6 +651,7 @@ var charter = {
         charter.tooltip.transition()
              .duration(500)
              .style("opacity", 0);
+        document.getElementById('tooltip').className = '';
         $('circle').attr('opacity', '1');
         $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
     },

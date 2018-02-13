@@ -45,3 +45,6 @@ https://github.com/mikeprevette/mprevdailyshow/blob/8588f9e838713db030cee47541ac
 
 ### Search terms
 https://trends.google.com/trends/explore?date=all&q=MTA%20service,MTA%20delays,%22MTA%20delays%22,MTA%20delay%20verification,%22MTA%20service%22
+
+## Thanks to
+https://github.com/louh/nyc-subway-icons
