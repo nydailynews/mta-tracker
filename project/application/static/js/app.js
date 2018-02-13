@@ -140,7 +140,10 @@ var tracker = {
         }
     },
     update_recent: function() {
-        // Write the list of recent alerts
+        // Write the list of recent alerts.
+        // Only do this if we have an element to stick 'em in.
+        if ( ! document.getElementById('recent') ) return false;
+
         shown = 0;
         cutoff = 0;
         Array.prototype.forEach.call(this.sorted, function(item, i) {
@@ -288,12 +291,12 @@ var tracker = {
             //console.info(this.d.active[i]);
         }
         this.lines.subway.worsts = worsts;
+
         Array.prototype.forEach.call(this.d.current, function(item, i) {
             // Add the time since to each item
             //console.info(item, item['stop'], tracker.calc_time_since(item['stop']));
             tracker.d.current[i]['ago'] = tracker.calc_time_since(item['stop']);
         });
-        // Sort the data
         this.sorted = this.d.current.sort(function(a, b) { return a.ago - b.ago });
 
         // Take the final worsts array and assign that to the object for later.
