@@ -188,7 +188,7 @@ var tracker = {
             were = 'were';
         }
         //$('#lead p').text('since the last MTA subway service alert.');
-        if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
+        //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
         $('h2#yes-no + p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
     },
     parse_cause: function(value) {
@@ -281,46 +281,22 @@ var tracker = {
 	first_load: function() {
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
-        //
-        // If a line has a value of -1 in its stop field, that means it's a current alert
-        // and the timer should be zero and stay at zero.
-        var is_zero = 0;
-        var worst = { stop: '' };
         var worsts = [];
-        Array.prototype.forEach.call(this.d.active, function(item, i) {
-            console.info(item);
-        });
+        var len = this.d.active.length;
+        for ( var i = 0; i < len; i ++ ) {
+            if ( worsts.indexOf(this.d.active[i]['line']) === -1 ) worsts.push(this.d.active[i]['line']);
+            //console.info(this.d.active[i]);
+        }
+        this.lines.subway.worsts = worsts;
         Array.prototype.forEach.call(this.d.current, function(item, i) {
             // Add the time since to each item
             //console.info(item, item['stop'], tracker.calc_time_since(item['stop']));
             tracker.d.current[i]['ago'] = tracker.calc_time_since(item['stop']);
-
-            if ( item['stop'] === -1 ) {
-                // If this is our first current alert, we reset the worsts array,
-                // just in case there's some older alert already in it.
-                if ( is_zero === 0 ) worsts = [item['line']];
-                else worsts.push(item['line']);
-                is_zero = 1;
-            }
-
-            // Log the current worst, in the case there are no active alerts.
-            // We use this to populate the lead time when there are no active alerts.
-            if ( is_zero == 0 ) {
-                //console.info(item['stop'] > worst['stop'],item['stop'], worst['stop'])
-                if ( item['stop'] > worst['stop'] ) {
-                    worst = item;
-                    worsts = [item['line']];
-                }
-                // In case we have multiple alerts that ended at the same time
-                if ( item['stop'] == worst['stop'] && worsts.indexOf(item['line']) === -1 ) worsts.push(item['line']);
-            }
-            //console.info(i, item['line'], item['stop']);
         });
         // Sort the data
         this.sorted = this.d.current.sort(function(a, b) { return a.ago - b.ago });
 
         // Take the final worsts array and assign that to the object for later.
-        this.lines.subway.worsts = worsts;
         if ( this.d.active.length >= 1 ) this.update_lead_alert();
         else this.update_lead_no_alert();
 
@@ -650,8 +626,9 @@ var charter = {
         // and assign mouseout functionality
         charter.tooltip.transition()
              .duration(500)
-             .style("opacity", 0);
-        document.getElementById('tooltip').className = '';
+             .style("opacity", 0)
+             .attr("class", "");
+        //document.getElementById('tooltip').className = '';
         $('circle').attr('opacity', '1');
         $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
     },
