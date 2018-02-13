@@ -185,6 +185,9 @@ div.center > span {
     .textleft-except-handheld {
         text-align: right;
     }
+    #tooltip h3 mark {
+        content: "-";
+    }
 }
 /* HANDHELD & TABLET */
 @media only screen and ( min-width: 220px ) and (max-width:1023px) {
@@ -326,6 +329,9 @@ div#tooltip {
     border-radius: 0 12px 12px 0;
     pointer-events: none;
     background-position-x: -40px;
+}
+div#tooltip > h3 {
+    line-height: 24px;
 }
 div#tooltip > h3, div#tooltip > p {
     text-align: left;

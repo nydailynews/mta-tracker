@@ -617,7 +617,7 @@ var charter = {
            .style("opacity", .9);
         console.info(d);
         charter.tooltip.html("<div id='tooltip-bg'></div><h3 class='line-" + d.name + "'><span>" + d.name + " line alert</span>\n\
-            from " + utils.human_time(d.start) + " until " + utils.human_time(d.stop) + "</h3>\n\
+            " + utils.human_time(d.start) + " &ndash; " + utils.human_time(d.stop) + "</h3>\n\
             <p>" + d.cause + "</p>");
         document.getElementById('tooltip-bg').classList.add('bg-line-' + d.name.toLowerCase());
         $('circle').attr('opacity', '.2');
