@@ -228,6 +228,90 @@
 -->
 			<p class="byline">Interactive by Joe Murphy</p>
 		</section>
+<!-- Adapted from https://codepen.io/HugoGiraudel/pen/BHEwo -->
+<style>
+.wrapper {
+  position: fixed;
+  top: 0;
+  right: 10px;
+  margin: 40px auto;
+  background: white;
+}
+
+.wrapper, .wrapper div {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.wrapper {
+  width: 25px;
+  height: 25px;
+}
+
+.wrapper .pie {
+  width: 50%;
+  height: 100%;
+  transform-origin: 100% 50%;
+  position: absolute;
+  background: #08C;
+  border: 2px solid rgba(0,0,0,0.5);
+}
+
+.wrapper .spinner {
+  border-radius: 100% 0 0 100% / 50% 0 0 50%;
+  z-index: 200;
+  border-right: none;
+  animation: rota 30s linear infinite;
+}
+
+.wrapper:hover .spinner,
+.wrapper:hover .filler,
+.wrapper:hover .mask {
+  animation-play-state: running;
+}
+
+.wrapper .filler {
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+  left: 50%;
+  opacity: 0;
+  z-index: 100;
+  animation: opa 30s steps(1, end) infinite reverse;
+  border-left: none;
+}
+
+.wrapper .mask {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  background: inherit;
+  opacity: 1;
+  z-index: 300;
+  animation: opa 30s steps(1, end) infinite;
+}
+
+@keyframes rota {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes opa {
+  0% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+</style>
+<div class="wrapper">
+  <div class="pie spinner"></div>
+  <div class="pie filler"></div>
+  <div class="mask"></div>
+</div>
 <svg>
 	<defs>
 	  <pattern id="barbg" patternUnits="userSpaceOnUse" >
