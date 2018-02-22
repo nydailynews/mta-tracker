@@ -24,7 +24,7 @@ var utils = {
     },
     add_zero: function(i) {
         // For values less than 10, return a zero-prefixed version of that value.
-        if ( i < 10 ) return "0" + i;
+        if ( +i < 10 ) return "0" + i;
         return i;
     },
     parse_time: function(time) {
@@ -166,7 +166,7 @@ var tracker = {
                 }
             }
 
-            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'static/img/line_' + l + '.png" alt="Icon of the MTA ' + l + ' line"></dt>\n\
+            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'svg/' + l + '.svg" alt="Icon of the MTA ' + l + ' line"></dt>\n\
                 <dd' + class_attr + '><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });
@@ -243,7 +243,7 @@ var tracker = {
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.d.active[i];
                 var record = l;
-                var img = '<img src="static/img/line_' + l.line + '.png" alt="MTA ' + l.line + ' line icon">';
+                var img = '<img src="svg/' + l.line + '.svg" alt="MTA ' + l.line + ' line icon">';
 
                 if ( record.cause.indexOf(' *** ') >= 0 ) {
                     var causes = record.cause.split(' *** ')

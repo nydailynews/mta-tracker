@@ -124,6 +124,7 @@ article dt {
     height: 50px;
 }
 article dt img {
+    padding: 5px;
     width: 40px;
     height: 40px;
 }
