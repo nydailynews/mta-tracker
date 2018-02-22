@@ -703,7 +703,8 @@ var charter = {
                     //console.info(rec)
                     if ( typeof this.bin_lens[this.msms[j][0]] === 'undefined' ) this.bin_lens[this.msms[j][0]] = 0;
                     this.bin_lens[this.msms[j][0]] += 1;
-                    this.d.archive.push(Object.assign({}, rec));
+                    // Use extend sted Object.assign bc IE 11
+                    this.d.archive.push($.extend({}, rec));
                 }
             }
         }
@@ -798,6 +799,7 @@ var charter = {
 		var waypoint = new Waypoint({
 		  element: document.getElementById('day-chart-svg'),
 		  handler: function(direction) {
+              // TURN OFF IN IE11 ***
 			$.fn.triggerSVGEvent = function(eventName) {
 				 var event = document.createEvent('SVGEvents');
 				 event.initEvent(eventName,true,true);
