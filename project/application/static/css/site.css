@@ -301,6 +301,7 @@ circle:hover, .circle_hover {
 }
 
 p.byline { font-size: 100%; }
+ul.ra-share { display: inline-block; }
 
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
