@@ -192,7 +192,7 @@ var tracker = {
         }
         //$('#lead p').text('since the last MTA subway service alert.');
         //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
-        $('#lead p').text('Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.');
+        $('#lead p').html('Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.');
     },
     parse_cause: function(value) {
         return value;
@@ -402,9 +402,16 @@ var cuomo = {
 				data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
 			}
 		}
-		data.sort(function(a, b) { console.info(+a['date'].replace(/-/g,'')); return ( +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'') ) ? 1 : 0 } );
+		console.info("CUOMOS", data);
+		data.sort(function(a, b) { 
+            var aa = +a['date'].replace(/-/g,'');
+            var bb = +b['date'].replace(/-/g,'');
+            var ab = ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0;
+            console.info("CUOMOS SORT", aa, bb, ab);
+            return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; }
+            );
 		data = data.slice(this.config.days_to_show * -1);
-		console.info(data);
+		console.info("CUOMOS", data);
 
 		var ceiling = this.config.ceiling;
 		x.domain(data.map(function(d) { return utils.ap_date(d['date']) }));
