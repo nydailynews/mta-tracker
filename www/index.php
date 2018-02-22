@@ -189,9 +189,9 @@
 				</strong>
 			</p>
 			<p>
-				On average weekdays in the past 30 days, there are <span id="hours-average"></span> hours of alerts,
-				or <span id="hours-cuomos"></span> Cuomos,
-				of subway delays and stoppages across the MTA's 22 main lines.
+				On weekdays in the previous 30 days, there are an average of <span id="hours-average"></span> hours of alerts 
+				(<span id="hours-cuomos"></span> Cuomo<span id="hours-cuomos-plural">s</span>),
+				for subway delays and stoppages across the MTA's 22 main lines.
 			</p>
             <div id="weeks-chart-wrapper" class="overflower">
 				<figure id="weeks-chart">

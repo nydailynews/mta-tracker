@@ -403,7 +403,6 @@ var cuomo = {
 				var hours = minutes / 60;
 				var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
 				data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
-
 			}
 		}
 		data.sort(function(a, b) { console.info(+a['date'].replace(/-/g,'')); return ( +a['date'].replace(/-/g,'') > +b['date'].replace(/-/g,'') ) ? 1 : 0 } );
@@ -462,9 +461,10 @@ var cuomo = {
             cuomo.first_load();
             $.getJSON(pathing + 'data/archives-average-30.json?' + utils.rando(), function(data) {
                 // Flesh out the on-average sentence.
-                document.getElementById('hours-average').textContent = Math.round( data.average.weekday * 10 ) / 10;
+                document.getElementById('hours-average').textContent = Math.round(data.average.weekday);
                 var cuomos = Math.round( (data.average.weekday/cuomo.config.hours_per_cuomo) * 10 ) / 10;
                 var cuomos_whole = Math.floor(cuomos);
+                if ( cuomos_whole === 1 ) document.getElementById('hours-cuomos-plural').textContent = '';  // de-pluralize the label
                 var cuomos_img = '';
                 for ( var i = 0; i < cuomos_whole; i ++ ) cuomos_img += '<img src="img/cuomo-circle-large.png" alt="one Cuomo" class="cuomo">';
                 document.getElementById('hours-cuomos').innerHTML = cuomos_img;
