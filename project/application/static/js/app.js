@@ -166,7 +166,7 @@ var tracker = {
                 }
             }
 
-            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'svg/' + l + '.svg" alt="Icon of the MTA ' + l + ' line"></dt>\n\
+            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'svg/' + l.toLowerCase() + '.svg" alt="Icon of the MTA ' + l + ' line"></dt>\n\
                 <dd' + class_attr + '><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });
@@ -241,7 +241,7 @@ var tracker = {
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.d.active[i];
                 var record = l;
-                var img = '<img src="svg/' + l.line + '.svg" alt="MTA ' + l.line + ' line icon">';
+                var img = '<img src="svg/' + l.line.toLowerCase() + '.svg" alt="MTA ' + l.line + ' line icon">';
 
                 if ( record.cause.indexOf(' *** ') >= 0 ) {
                     var causes = record.cause.split(' *** ')
@@ -276,7 +276,6 @@ var tracker = {
         }
         $('#lead p').html('');
         var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s;
-        //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html(sentence);
         $('#lead p').html(sentence);
     },
 	first_load: function() {
@@ -549,7 +548,7 @@ var charter = {
           .data(bins);
 
         bin_container.enter().append("g")
-          .attr("transform", d => "translate("+this.x(d.x0)+", 0)");
+          .attr("transform", function(d) { return "translate("+charter.x(d.x0)+", 0)" });
 
         // JOIN new data with old elements.
         var dots = bin_container.selectAll("circle")

@@ -315,7 +315,7 @@
 <svg>
 	<defs>
 	  <pattern id="barbg" patternUnits="userSpaceOnUse" >
-		<image xlink:href="img/cuomo-circle-large.png" x="0" y="0" />
+		<image xlink:href="img/cuomo-circle-large.png" x="0" y="0"></image>
 	  </pattern>
 	</defs>
 </svg>
@@ -339,7 +339,7 @@
 <footer id="templatefooter"></footer>
 <!-- FOOTER-END -->
 <div id="ra-bp">
-      </div> <section id="rao">  <div id="rao-close"></div> <div id="rao-wrap"></div> </section>
+      <section id="rao">  <div id="rao-close"></div> <div id="rao-wrap"></div> </section>
 </div>
 <div id="r-scripts">
     <div id="parsely-root" style="display: none">
