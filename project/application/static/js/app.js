@@ -182,7 +182,7 @@ var tracker = {
         this.update_timer('yes-no', 'NO');
         var latest = this.sorted[0];
         if ( latest['line'] === 'ALL' ) latest = this.sorted[1];
-        if ( $('h2#yes-no + p').html('') == '' ) $('h2#yes-no + p').html('It’s been <time id="timer-text"></time> since the latest MTA subway service alert');
+        //if ( $('#lead p').html('') == '' ) $('h2#yes-no + p').html('It’s been <time id="timer-text"></time> since the latest MTA subway service alert');
         this.update_timer('timer-text', this.convert_seconds(latest['ago']));
         // Update the p text
         var s = '', were = 'was';
@@ -192,7 +192,7 @@ var tracker = {
         }
         //$('#lead p').text('since the last MTA subway service alert.');
         //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
-        $('h2#yes-no + p').after('<p>Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.</p>');
+        $('#lead p').text('Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.');
     },
     parse_cause: function(value) {
         return value;
@@ -201,18 +201,16 @@ var tracker = {
         // Write the lead text and timer.
         $('#lead h1').text('Is there a current MTA service alert?');
         this.update_timer('yes-no', 'YES');
-        // Update the paragraph
-        var s = '';
-        var end_of_graf = ': ' + this.get_line_data("line", this.lines.subway.worsts[0]).cause;
+
         var len = this.d.active.length;
+        var s = '';
+        if ( len !== 1 ) s = 's';
 
         $('#lead dl').html('');
 
         // If there are multiple delays we list them in a dl
         // If any of the delay causes are identical we group them.
-        if ( len > 1 ) {
-            end_of_graf = ':';
-            s = 's';
+        if ( len > 0 ) {
 
             // First we see how many distinct causes there are.
             var causes = [];
@@ -276,10 +274,10 @@ var tracker = {
         else {
             $('#lead dl').html('');
         }
-        $('h2#yes-no + p').html('');
-        var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf;
-        if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html(sentence);
-        else $('h2#yes-no + p').after('<p>Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + end_of_graf + '</p>');
+        $('#lead p').html('');
+        var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s;
+        //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html(sentence);
+        $('#lead p').html(sentence);
     },
 	first_load: function() {
         // Loop through the data.
