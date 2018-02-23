@@ -408,7 +408,9 @@ var cuomo = {
             var bb = +b['date'].replace(/-/g,'');
             var ab = ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0;
             console.info("CUOMOS SORT", aa, bb, ab);
-            return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; }
+            return aa - bb;
+            //return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; 
+            }
             );
 		data = data.slice(this.config.days_to_show * -1);
 		console.info("CUOMOS", data);
