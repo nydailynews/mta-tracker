@@ -274,7 +274,6 @@ var tracker = {
         else {
             $('#lead dl').html('');
         }
-        $('#lead p').html('');
         var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s;
         $('#lead p').html(sentence);
     },
@@ -402,18 +401,15 @@ var cuomo = {
 				data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
 			}
 		}
-		console.info("CUOMOS", data);
 		data.sort(function(a, b) { 
             var aa = +a['date'].replace(/-/g,'');
             var bb = +b['date'].replace(/-/g,'');
             var ab = ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0;
-            console.info("CUOMOS SORT", aa, bb, ab);
             return aa - bb;
             //return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; 
             }
             );
 		data = data.slice(this.config.days_to_show * -1);
-		console.info("CUOMOS", data);
 
 		var ceiling = this.config.ceiling;
 		x.domain(data.map(function(d) { return utils.ap_date(d['date']) }));
@@ -482,7 +478,7 @@ cuomo.init();
 
 
 // CHARTER OBJECT
-// Manages the chart of today's alerts in the middle of the page.
+// Manages the gumball-like chart of today's alerts in the middle of the page.
 var charter = {
     d: {},
     p: {},
@@ -783,6 +779,18 @@ var charter = {
     },
     redraw_x: function() {
         // The parts that go into updating the x axis as time passes
+        // RE-DO ALL THE STUFF WE DID IN draw_chart() BUT NEED TO UPDATE
+        this.minutes_since_midnight = this.get_minutes_since_midnight();
+        this.hours_since_midnight = Math.floor(this.minutes_since_midnight/60);
+        var max_count = this.bin_lens[this.log.max_count];
+        var margin = {top: 10, right: 30, bottom: 30, left: 30},
+            width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
+            height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
+        this.height = height;
+
+        var s = d3.select('#day-chart-svg')
+            .attr("width", width + margin.left + margin.right)
+            //.attr("height", height + margin.top + margin.bottom)
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
