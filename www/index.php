@@ -12,8 +12,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
     <!-- Titles -->
-    <meta property="og:title" content='MTA Delay Tracker' />
-    <meta name="twitter:title" content='MTA Delay Tracker' />
+    <meta property="og:title" content='MTA Alert Tracker' />
+    <meta name="twitter:title" content='MTA Alert Tracker' />
 
     <!-- Description -->
     <meta name="description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
@@ -22,7 +22,6 @@
 
     <!-- KEYWORD -->
     <meta name="keywords" content="TAGS" />
-    <meta name="news_keywords" content="TAGS" />
 
     <!-- LINK -->
     <link rel="canonical" href="http://interactive.nydailynews.com/project/mta-delays/">
@@ -32,7 +31,7 @@
     <!-- THUMBNAIL IMAGE-->
     <meta property="og:image" content="http://interactive.nydailynews.com/project/mta-delays/static/img/share.png" />
     <meta name="twitter:image" content="http://interactive.nydailynews.com/project/mta-delays/static/img/share.png" />
-    <meta name="twitter:image:alt" content="A description of the twitter image" />
+    <meta name="twitter:image:alt" content="A composite image of photos of the NYC subway with the words 'MTA ALERTS' overlaid." />
     <meta property="og:image:width" content="1024" />
     <meta property="og:image:height" content="512" />
 
@@ -70,9 +69,7 @@
     <meta name="localeLanguage" content="en" />
 
     <!-- ADOBE ANALYTICS -->
-<!--
     <script src="//assets.adobedtm.com/4fc527d6fda921c80e462d11a29deae2e4cf7514/satelliteLib-c91fdc6ac624c6cbcd50250f79786de339793801.js"></script>
--->
 
     <link href='//fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet'>
     <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
@@ -126,9 +123,7 @@
             <h2 id="yes-no"></h2>
             <p>How many current NYC subway alerts are there?</p>
             <dl></dl>
-<!--
 			<p><a href="recent-alerts/">See all today's MTA alerts</a>.</p>
--->
         </section>
 
         <div>
@@ -228,7 +223,7 @@
 -->
 			<p class="byline">Interactive by Joe Murphy</p>
 		</section>
-<!-- Adapted from https://codepen.io/HugoGiraudel/pen/BHEwo -->
+<!-- COUNTDOWN CSS Adapted from https://codepen.io/HugoGiraudel/pen/BHEwo -->
 <style>
 .wrapper {
   position: fixed;
