@@ -166,7 +166,7 @@ var tracker = {
                 }
             }
 
-            var markup = '<dt' + class_attr + '><img src="' + this.pathing + 'svg/' + l.toLowerCase() + '.svg" alt="Icon of the MTA ' + l + ' line"></dt>\n\
+            var markup = '<dt' + class_attr + '><img src="' + tracker.pathing + 'svg/' + l.toLowerCase() + '.svg" alt="Icon of the MTA ' + l + ' line"></dt>\n\
                 <dd' + class_attr + '><time id="line-' + l + '">' + tracker.convert_seconds(item['ago']) + '</time> since the last alert</dd>';
             $('#recent dl').append(markup);
         });
@@ -241,7 +241,7 @@ var tracker = {
             for ( var i = 0; i < len; i ++ ) {
                 var l = this.d.active[i];
                 var record = l;
-                var img = '<img src="svg/' + l.line.toLowerCase() + '.svg" alt="MTA ' + l.line + ' line icon">';
+                var img = '<img src="' + this.pathing + 'svg/' + l.line.toLowerCase() + '.svg" alt="MTA ' + l.line + ' line icon">';
 
                 if ( record.cause.indexOf(' *** ') >= 0 ) {
                     var causes = record.cause.split(' *** ')

@@ -120,10 +120,10 @@
 <main>
     <article>
 
-        <section class="recent" id="recent">
+        <section class="lead" id="recent">
             <h1>Recent MTA service alerts</h1>
 			<p>The most-recent alerts per line, in the previous six hours.</p>
-            <div>
+            <div class="recent">
                 <dl></dl>
             </div>
         </section>
@@ -172,7 +172,6 @@
 
 <script src="/js/d3/d3.v4.min.js"></script>
 <script onload="tracker.init('../');" src="../js/app.js"></script>
-<script src="/js/jquery.waypoints.min.js"></script>
 <!-- CONTENT-END -->
 
 <!-- FOOTER-START -->
