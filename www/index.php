@@ -123,7 +123,7 @@
             <h2 id="yes-no"></h2>
             <p>How many current NYC subway alerts are there?</p>
             <dl></dl>
-			<p><a href="recent-alerts/">See all today's MTA alerts</a>.</p>
+			<p><a href="recent-alerts/">See today’s MTA subway alerts.</p>
         </section>
 
         <div>

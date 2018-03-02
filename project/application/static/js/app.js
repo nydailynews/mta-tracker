@@ -190,9 +190,13 @@ var tracker = {
             s = 's';
             were = 'were';
         }
-        //$('#lead p').text('since the last MTA subway service alert.');
-        //if ( $('h2#yes-no + p + p').length )  $('h2#yes-no + p + p').html('');
-        $('#lead p').html('Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.');
+
+        if ( this.lines.subway.worsts.length > 0 ) {
+            $('#lead h2 + p').html('Latest service alert' + s + ' ' + were + ' for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s + '.');
+        }
+        else {
+            $('#lead h2 + p').html('Today there have been alerts on X subway lines.');
+        }
     },
     parse_cause: function(value) {
         return value;
@@ -275,7 +279,7 @@ var tracker = {
             $('#lead dl').html('');
         }
         var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s;
-        $('#lead p').html(sentence);
+        $('#lead h2 + p').html(sentence);
     },
 	first_load: function() {
         // Loop through the data.
@@ -639,6 +643,7 @@ var charter = {
     },
     update_check: function() {
         // See if there's anything new to get.
+        // ALSO, if it's a 30-minute point, we need to redraw to get the latest circles ***
         $.getJSON('data/archive.json?' + utils.rando(), function(data) {
             var prev_len = charter.len;
             console.info("CHART DATA UPDATE CHECK:", prev_len, data.length);
@@ -784,12 +789,12 @@ var charter = {
         this.hours_since_midnight = Math.floor(this.minutes_since_midnight/60);
         var max_count = this.bin_lens[this.log.max_count];
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
+            width = (this.msms.length*(this.config.circle_radius*2) + 2),
             height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
         this.height = height;
 
         var s = d3.select('#day-chart-svg')
-            .attr("width", width + margin.left + margin.right)
+            .attr("width", width)
             //.attr("height", height + margin.top + margin.bottom)
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
@@ -833,16 +838,22 @@ var charter = {
 
         // Scroll the chart (it scrolls on handheld) all the way to the right on handheld.
         if ( is_mobile ) document.getElementById('chart-wrapper').scrollLeft = 10000;
-
-		// Build a list of distinct alerts for the cause-list
-        for ( var i = 0; i < this.len; i ++ ) {
-			var cause = this.d.archive_raw[i].cause;
-			if ( this.causes.indexOf(cause) === -1 ) {
-				this.causes.push(cause);
-				$('#alerts ol').append('<li class="cause' + utils.slugify(cause) + '">' + cause + '</li>');
-			}
-		}
-		$('#alerts-number').text(this.causes.length);
+        this.load_text_list();
+    },
+    load_text_list: function() {
+        // Build a list of distinct alerts for the cause-list.
+        // This assumes that any element with the id of alerts will be a div
+        // with an <ol> in it ready for adding alerts to.
+        if ( document.getElementById('alerts') ) {
+            for ( var i = 0; i < this.len; i ++ ) {
+                var cause = this.d.archive_raw[i].cause;
+                if ( this.causes.indexOf(cause) === -1 ) {
+                    this.causes.push(cause);
+                    $('#alerts ol').append('<li class="cause' + utils.slugify(cause) + '">' + cause + '</li>');
+                }
+            }
+            $('#alerts-number').text(this.causes.length);
+        }
     },
 	causes: [],
     init: function(pathing) {
@@ -852,7 +863,8 @@ var charter = {
 			charter.d.archive_raw = data;
 			charter.d.archive = [];
 			charter.len = data.length;
-			charter.first_load();
+			if ( document.getElementById('tooltip') == null ) charter.load_text_list();
+            else charter.first_load();
 		});
 	},
 };
