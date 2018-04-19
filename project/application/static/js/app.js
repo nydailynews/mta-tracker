@@ -355,7 +355,7 @@ var cuomo = {
         seconds_between_checks: 20,
 		ceiling: 5,
 		days_to_show: 7,
-		dim: {
+		dim: {  // short for "dimensions"
 			'10': {
 				image: 40,
 				width: 460,
@@ -370,11 +370,24 @@ var cuomo = {
     },
     id: 'weeks-chart',
     first_load: function() {
+        // Make sure the chart is tall enough.
+        // It's set up to accommodate 5 Cuomos, but if the day we're publishing has more than five Cuomos then we need it to be higher.
+        var cuomo_in_seconds = this.config.hours_per_cuomo * 60 * 60;
+        var five_cuomos = cuomo_in_seconds * 5;
+        var additional_cuomos = 0;
+        for ( var i = 0; i < 10; i ++ ) {
+            console.log(this.data.archives[i]['seconds']);
+            if ( five_cuomos < this.data.archives[i]['seconds'] ) {
+                var temporary_cuomos = Math.floor((this.data.archives[i]['seconds'] - five_cuomos) / cuomo_in_seconds);
+                if ( temporary_cuomos > additional_cuomos ) additional_cuomos = temporary_cuomos;
+            }
+        }
+
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = this.config.dim[this.config.days_to_show].width - margin.left - margin.right,
             height = this.config.dim[this.config.days_to_show].height - margin.top - margin.bottom;
         this.height = height;
-
+        
         // Adds the svg canvas
         this.svg = d3.select("#" + this.id + ' svg')
             .attr("width", width + margin.left + margin.right)
