@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#from __future__ import print_function
+from __future__ import print_function
 import sys
 import argparse
 import doctest
@@ -14,7 +14,7 @@ class Storage:
     def __init__(self, dbname):
         """
             >>> s = Storage('test')
-            >>> print s.dbname
+            >>> print(s.dbname)
             test
             """
         self.dbname = dbname
@@ -89,7 +89,7 @@ class Query:
         """ This class is dependent on a database connection, which is handed
             to it when the Query object is created.
             >>> s = Storage('test')
-            >>> print s.dbname
+            >>> print(s.dbname)
             test
             """
         self.c = c
@@ -97,7 +97,7 @@ class Query:
     def convert_datetime(self, value):
         """ Turn a datetime object into a string sqlite can handle.
             >>> s = Storage('test')
-            >>> print s.q.convert_datetime(datetime(2017, 1, 1, 0, 0, 0))
+            >>> print(s.q.convert_datetime(datetime(2017, 1, 1, 0, 0, 0)))
             2017-01-01 00:00:00
             """
         return datetime.strftime(value, '%Y-%m-%d %H:%M:00')
@@ -106,7 +106,7 @@ class Query:
     def convert_to_datetime(value):
         """ Turn a string into a datetime object.
             >>> s = Storage('test')
-            >>> print s.q.convert_to_datetime('2017-01-01 00:00:00')
+            >>> print(s.q.convert_to_datetime('2017-01-01 00:00:00'))
             datetime(2017, 1, 1, 0, 0, 0)
             """
         return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
@@ -116,7 +116,7 @@ class Query:
         """ Takes a datetime object and returns whether it happened in rush hour.
             Returns True or False.
             >>> s = Storage('test')
-            >>> print s.q.is_rush(s.q.convert_to_datetime('2017-01-01 00:00:00'))
+            >>> print(s.q.is_rush(s.q.convert_to_datetime('2017-01-01 00:00:00')))
             0
             """
         if 6 <= value.hour < 9 or 16 <= value.hour < 7:
@@ -128,9 +128,9 @@ class Query:
         """ Takes a datetime object and returns whether it happened on a weekend.
             Returns True or False.
             >>> s = Storage('test')
-            >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-01 00:00:00'))
+            >>> print(s.q.is_weekend(s.q.convert_to_datetime('2017-01-01 00:00:00')))
             1
-            >>> print s.q.is_weekend(s.q.convert_to_datetime('2017-01-03 00:00:00'))
+            >>> print(s.q.is_weekend(s.q.convert_to_datetime('2017-01-03 00:00:00')))
             0
             """
         if value.weekday() >= 5:
@@ -143,7 +143,7 @@ class Query:
             >>> s.setup()
             True
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
-            >>> print s.q.update_active(**d)
+            >>> print(s.q.update_active(**d))
             True
             """
         if 'start' in kwargs:
@@ -161,7 +161,7 @@ class Query:
             >>> s.setup()
             True
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
-            >>> print s.q.update_current(**d)
+            >>> print(s.q.update_current(**d))
             True
             """
         if 'start' in kwargs:
@@ -180,7 +180,7 @@ class Query:
             >>> s.setup()
             True
             >>> d = { 'minute': datetime(2017, 1, 1, 0, 0, 0), 'count': 3, 'transit_type': 'subway' }
-            >>> print s.q.update_minute(**d)
+            >>> print(s.q.update_minute(**d))
             True
             """
         #(id INTEGER PRIMARY KEY AUTOINCREMENT, datestamp DATESTAMP DEFAULT CURRENT_TIMESTAMP, date TEXT, minute INT, count INT, type TEXT)
@@ -198,10 +198,10 @@ class Query:
             >>> s.setup()
             True
             >>> d = { 'start': datetime(2017, 1, 1, 0, 0, 0), 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
-            >>> print s.q.update_archive(**d)
+            >>> print(s.q.update_archive(**d))
             True
             >>> d = { 'stop': datetime(2017, 1, 1, 3, 0, 0), 'length': 10800, 'line': 'A', 'transit_type': 'subway', 'cause': 'Test' }
-            >>> print s.q.update_archive(**d)
+            >>> print(s.q.update_archive(**d))
             True
             """
         if 'stop' in kwargs:
@@ -233,7 +233,7 @@ class Query:
             >>> d = s.q.make_dict(fields, rows[:1])
             >>> # d will look something like
             >>> # [{u'datestamp': u'2017-07-09 21:46:00', u'line': u'ALL', u'type': u'subway', u'id': 1, u'alert': '2017-07-09 20:04:00'}]
-            >>> print d[0]['type'], d[0]['id']
+            >>> print(d[0]['type'], d[0]['id'])
             subway 1
             """
         items = []
@@ -250,7 +250,7 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             True
-            >>> print s.q.get_table_records('archive')
+            >>> print(s.q.get_table_records('archive'))
             []
             """
         sql = 'SELECT * FROM %s' % table
@@ -263,7 +263,7 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             True
-            >>> print s.q.get_tables()
+            >>> print(s.q.get_tables())
             [u'sqlite_sequence', u'current', u'raw', u'archive', u'averages']
             """
         sql = 'SELECT name FROM sqlite_master WHERE type = "table"'
@@ -276,9 +276,9 @@ class Query:
             >>> s = Storage('test')
             >>> s.setup()
             True
-            >>> print s.q.get_table_fields('current')
+            >>> print(s.q.get_table_fields('current'))
             [u'id', u'datestamp', u'line', u'type', u'start', u'stop', u'cause']
-            >>> print s.q.get_table_fields('archive')
+            >>> print(s.q.get_table_fields('archive'))
             [u'id', u'datestamp', u'start', u'stop', u'line', u'type', u'is_rush', u'is_weekend', u'sincelast', u'length', u'active', u'cause']
             """
         sql = 'PRAGMA TABLE_INFO(%s)' % table
@@ -303,7 +303,7 @@ class Query:
             >>> s.setup()
             True
             >>> rows = s.q.select_current()
-            >>> print rows[0][2:]
+            >>> print(rows[0][2:])
             (u'ALL', u'subway', 0, 0, u'')
             """
         return self.query_all('current')
@@ -314,7 +314,7 @@ class Query:
             >>> s.setup()
             True
             >>> rows = s.q.select_active()
-            >>> print rows[0][2:]
+            >>> print(rows[0][2:])
             (u'ALL', u'subway', 0, 0, u'')
             """
         return self.query_all('active')
@@ -325,7 +325,7 @@ class Query:
             >>> s.setup()
             True
             >>> rows = s.q.select_archive()
-            >>> print rows[0][2:]
+            >>> print(rows[0][2:])
             """
         clause, values = '', ()
         if 'date' in params:
@@ -345,7 +345,7 @@ class Query:
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
-        >>> print args.verbose
+        >>> print(args.verbose)
         True
         """
     parser = argparse.ArgumentParser(usage='$ python sqliter.py',

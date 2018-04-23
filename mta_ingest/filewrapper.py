@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # All-purpose file wrapper
-#from __future__ import print_function
+from __future__ import print_function
 import urllib2
 import sys
 import os.path
@@ -24,7 +24,7 @@ class FileWrapper:
             action = None
         req = urllib2.urlopen(url, action)
         if req.getcode() > 299:
-            print 'ERROR: HTTP response %s' % req.getcode()
+            print('ERROR: HTTP response %s' % req.getcode())
             sys.exit(1)
         return req.read()
  
@@ -51,7 +51,7 @@ class FileWrapper:
             if len(r.groups()) > 0:
                 position = int(r.groups()[0])
                 str_range = [position - 10, position + 10]
-            print e, content[str_range[0]:str_range[1]]
+            print(e, content[str_range[0]:str_range[1]])
         fn.write(content.encode('utf-8', 'replace'))
         fn.close
  

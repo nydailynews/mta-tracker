@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Download and log the MTA's status updates. We only log changes.
-#from __future__ import print_function
+from __future__ import print_function
 import argparse
 import doctest
 import json
@@ -25,7 +25,7 @@ class Line(object):
     def __init__(self, line):
         """
             >>> l = Line('A')
-            >>> print l.line
+            >>> print(l.line)
             A
             """
         self.lines = {}
@@ -43,7 +43,7 @@ class Line(object):
             a datetime object.
             >>> l = Line('L')
             >>> dt = '06/01/2017 10:31PM'
-            >>> print l.parse_dt(dt)
+            >>> print(l.parse_dt(dt))
             2017-06-01 22:31:00
             """
         return datetime.strptime(dt, '%m/%d/%Y %I:%M%p')
@@ -178,7 +178,7 @@ class Logger:
                 items.append(item)
                 if hasattr(self.args, 'verbose') and self.args.verbose:
                     if item['status_detail'] and item['status_detail']['TitleDelay'] != {}:
-                        print 'NOTICE: %(status)s: %(lines)s (%(datetime)s)' % item
+                        print('NOTICE: %(status)s: %(lines)s (%(datetime)s)' % item)
 
             # Assemble this file's delays into its individual lines
             for item in items:
@@ -231,9 +231,9 @@ class Logger:
             if line not in dicts.lines['subway']:
                 continue
             if self.args.verbose:
-                print "NOTICE: Checking line", line
+                print("NOTICE: Checking line", line)
 
-            #print dir(item), item.last_alert, item.cause
+            #print(dir(item), item.last_alert, item.cause
             for cause in item.cause:
                 # Log the cause -- we use this list of causes when comparing the previous
                 # version of data json against this version to see if any lines have stopped alerts.
@@ -250,7 +250,7 @@ class Logger:
                 self.new[item.transit_type]['starts'][line].extend(cause)
                 
                 if self.args.verbose:
-                    print "NOTICE: THIS LINE HAS A NEW ALERT", line
+                    print("NOTICE: THIS LINE HAS A NEW ALERT", line)
 
                 # CURRENT TABLE and ACTIVE TABLE UPDATE
                 # ***HC
@@ -290,7 +290,7 @@ class Logger:
                 # ***HC
                 if prev['cause'] not in self.stop_check['subway']:
                     if self.args.verbose:
-                        print "NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line']
+                        print("NOTICE: THIS LINE'S ALERT HAS STOPPED", prev['line'])
 
                     # ARCHIVE TABLE UPDATE
                     prev['length'] = (datetime.now() - self.db.q.convert_to_datetime(prev['start'])).seconds
@@ -369,7 +369,7 @@ def main(args):
     if args.reset_table:
         tables = log.db.q.get_tables()
         if args.verbose:
-            print "NOTICE: We are resetting the %s table (amongst %s)" % (args.reset_table, tables.__str__())
+            print("NOTICE: We are resetting the %s table (amongst %s)" % (args.reset_table, tables.__str__()))
         #if args.reset_table in tables:
         log.db.setup(args.reset_table)
 
@@ -388,9 +388,9 @@ def main(args):
     log.write_json('archive', **params)
 
     if args.verbose:
-        print "NOTICE: ", log.double_check
-        print "NOTICE: ", log.new['subway']['starts'].values()
-        print "NOTICE: ", log.new['subway']['stops'].values()
+        print("NOTICE: ", log.double_check)
+        print("NOTICE: ", log.new['subway']['starts'].values())
+        print("NOTICE: ", log.new['subway']['stops'].values())
 
     #new_len = sum(len(v) for v in log.new['subway']['starts'].itervalues()) + sum(len(v) for v in log.new['subway']['stops'].itervalues())
 
@@ -403,7 +403,7 @@ def main(args):
 def build_parser(args):
     """ This method allows us to test the args.
         >>> args = build_parser(['--verbose'])
-        >>> print args.verbose
+        >>> print(args.verbose))
         True
         """
     parser = argparse.ArgumentParser(usage='$ python logger.py',
