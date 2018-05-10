@@ -76,7 +76,7 @@
 -->
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet'>
-    <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
+    <script data-main="//interactive.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//interactive.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
         var nydn = nydn || {
@@ -100,8 +100,8 @@
     <!-- ADS-END -->
 
     <script src="/js/jquery.min.js"></script>
-    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css">
-    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
+    <link rel="stylesheet" href="//interactive.nydailynews.com/nydn/c/rh.css">
+    <link rel="stylesheet" href="//interactive.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'projects', url: 'http://interactive.nydailynews.com/project/'};</script>

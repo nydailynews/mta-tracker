@@ -72,7 +72,7 @@
     <script src="//assets.adobedtm.com/4fc527d6fda921c80e462d11a29deae2e4cf7514/satelliteLib-c91fdc6ac624c6cbcd50250f79786de339793801.js"></script>
 
     <link href='//fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700|PT+Serif' rel='stylesheet'>
-    <script data-main="//www.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//www.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
+    <script data-main="//interactive.nydailynews.com/nydn/js/rh.js?r=20170405001" src="//interactive.nydailynews.com/nydn/js/require.js?r=2016LIST" defer></script>
       
     <script>
         var nydn = nydn || {
@@ -99,8 +99,8 @@
 <!--
     <script src="http://assets.nydailynews.com/nydn/js/jquery-2-1-4.js?r=201609014009"></script>
 -->
-    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/rh.css?2018">
-    <link rel="stylesheet" href="//www.nydailynews.com/nydn/c/ra.css">
+    <link rel="stylesheet" href="//interactive.nydailynews.com/nydn/c/rh.css?2018">
+    <link rel="stylesheet" href="//interactive.nydailynews.com/nydn/c/ra.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
     <script>var nav_params = {section: 'MTA Delay Tracker', url: 'http://interactive.nydailynews.com/project/'};</script>
