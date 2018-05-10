@@ -306,7 +306,7 @@ var tracker = {
         this.update_recent();
     },
     update_check: function() {
-        // See if there's anything new to get.
+        // See if there's any new data.
         this.new_updates = 0;
 		$.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
             console.info("ACTIVE-ALERTS DATA UPDATE CHECK:", tracker.d.active.length, data.length);
@@ -318,8 +318,9 @@ var tracker = {
                     tracker.d.current = data;
                     tracker.first_load();
                 });
-                //charter.update_data();
-                //charter.update();
+                charter.update_data();
+                charter.update();
+				charter.redraw_x();
             }
         });
         if ( this.new_updates > 0 ) {
@@ -775,6 +776,9 @@ var charter = {
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
+        this.x_axis = d3.axisBottom(this.x)
+            .ticks(this.hours_since_midnight + 1)
+            .tickFormat(d3.timeFormat("%-I %p"));
 
         this.y = d3.scaleLinear()
             .range([height, 0]);
@@ -790,14 +794,13 @@ var charter = {
           .attr("id", "x-hourly")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(this.x)
-                .ticks(this.hours_since_midnight + 1)
-                .tickFormat(d3.timeFormat("%-I %p"))
-            );
+          .call(this.x_axis);
     },
-    redraw_x: function() {
+    redraw_x: function(plusminus) {
         // The parts that go into updating the x axis as time passes
         // RE-DO ALL THE STUFF WE DID IN draw_chart() BUT NEED TO UPDATE
+        if ( plusminus == null ) plusminus = 1;
+
         this.minutes_since_midnight = this.get_minutes_since_midnight();
         this.hours_since_midnight = Math.floor(this.minutes_since_midnight/60);
         var max_count = this.bin_lens[this.log.max_count];
@@ -809,14 +812,20 @@ var charter = {
         var s = d3.select('#day-chart-svg')
             .attr("width", width)
             //.attr("height", height + margin.top + margin.bottom)
+        /*
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
             .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
-        var ax = d3.select('#x-hourly')
-          .call(d3.axisBottom(this.x)
-                .ticks(this.hours_since_midnight + 1)
-                .tickFormat(d3.timeFormat("%-I %p"))
-            );
+            */
+        this.x = d3.scaleTime()
+            .domain([this.midnight, new Date().setHours(this.hours_since_midnight + plusminus, 0, 0, 0)])
+            .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
+        this.x_axis = d3.axisBottom(this.x)
+            .ticks(this.hours_since_midnight + plusminus)
+            .tickFormat(d3.timeFormat("%-I %p"));
+        var ax = d3.selectAll('#x-hourly')
+            .call(this.x_axis);
+        console.info(this.hours_since_midnight);
     },
     first_load: function() {
         // The work we need to do to load the chart.
