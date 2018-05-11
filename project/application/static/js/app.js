@@ -281,7 +281,7 @@ var tracker = {
         var sentence = 'Current service alert' + s + ' now for the ' + this.lines.subway.worsts.join(' and ') + '&nbsp;line' + s;
         $('#lead h2 + p').html(sentence);
     },
-	first_load: function() {
+    first_load: function() {
         // Loop through the data.
         // Figure out the last alert, also, add some helper attributes to the data.
         var worsts = [];
@@ -308,7 +308,7 @@ var tracker = {
     update_check: function() {
         // See if there's any new data.
         this.new_updates = 0;
-		$.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
+        $.getJSON(tracker.pathing + 'data/active.json?' + utils.rando(), function(data) {
             console.info("ACTIVE-ALERTS DATA UPDATE CHECK:", tracker.d.active.length, data.length);
             if ( tracker.d.active.length !== data.length ) {
                 tracker.new_updates = Math.abs(tracker.d.active.length - data.length);
@@ -320,7 +320,7 @@ var tracker = {
                 });
                 charter.update_data();
                 charter.update();
-				charter.redraw_x();
+                charter.redraw_x();
             }
         });
         if ( this.new_updates > 0 ) {
@@ -328,19 +328,19 @@ var tracker = {
         }
     },
     init: function(pathing) {
-		if ( pathing == null ) pathing = '';
-		this.pathing = pathing;
-		$.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
-			tracker.d.active = data;
-			//tracker.first_load();
+        if ( pathing == null ) pathing = '';
+        this.pathing = pathing;
+        $.getJSON(pathing + 'data/active.json?' + utils.rando(), function(data) {
+            tracker.d.active = data;
+            //tracker.first_load();
             $.getJSON(pathing + 'data/current.json?' + utils.rando(), function(data) {
                 tracker.d.current = data;
                 tracker.first_load();
                 // Set the timer to check for updated data
                 tracker.interval = window.setInterval(tracker.update_check, tracker.config.seconds_between_checks * 1000);
             });
-		});
-	},
+        });
+    },
 
 };
 
@@ -354,20 +354,20 @@ var cuomo = {
         in_dev: 0,
         hours_per_cuomo: 15,
         seconds_between_checks: 20,
-		ceiling: 5,
-		days_to_show: 7,
-		dim: {  // short for "dimensions"
-			'10': {
-				image: 40,
-				width: 460,
-				height: 440
-			},
-			'7': {
-				image: 57.14,
-				width: 460,
-				height: 327
-			},
-		}
+        ceiling: 5,
+        days_to_show: 7,
+        dim: {  // short for "dimensions"
+            '10': {
+                image: 40,
+                width: 460,
+                height: 440
+            },
+            '7': {
+                image: 57.14,
+                width: 460,
+                height: 327
+            },
+        }
     },
     id: 'weeks-chart',
     first_load: function() {
@@ -394,32 +394,32 @@ var cuomo = {
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
 
-		var x = d3.scaleBand()
-			.range([0, width], .1);
-		var y = d3.scaleLinear()
-			.range([height, 0]);
+        var x = d3.scaleBand()
+            .range([0, width], .1);
+        var y = d3.scaleLinear()
+            .range([height, 0]);
 
-		var x_axis = d3.axisBottom(x);
-		var y_axis = d3.axisLeft(y)
-			.ticks(6);
+        var x_axis = d3.axisBottom(x);
+        var y_axis = d3.axisLeft(y)
+            .ticks(6);
 
-		var chart = d3.select('#weeks-chart-svg')
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var chart = d3.select('#weeks-chart-svg')
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		var data = [];
-		for ( var property in this.d.archives ) {
-			if ( this.d.archives.hasOwnProperty(property) ) {
-				var seconds = this.d.archives[property].seconds;
-				var minutes = Math.floor(seconds / 60);
-				var hours = minutes / 60;
-				var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
-				data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
-			}
-		}
-		data.sort(function(a, b) { 
+        var data = [];
+        for ( var property in this.d.archives ) {
+            if ( this.d.archives.hasOwnProperty(property) ) {
+                var seconds = this.d.archives[property].seconds;
+                var minutes = Math.floor(seconds / 60);
+                var hours = minutes / 60;
+                var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
+                data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
+            }
+        }
+        data.sort(function(a, b) { 
             var aa = +a['date'].replace(/-/g,'');
             var bb = +b['date'].replace(/-/g,'');
             var ab = ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0;
@@ -427,25 +427,25 @@ var cuomo = {
             //return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; 
             }
             );
-		data = data.slice(this.config.days_to_show * -1);
+        data = data.slice(this.config.days_to_show * -1);
 
-		var ceiling = this.config.ceiling;
-		x.domain(data.map(function(d) { return utils.ap_date(d['date']) }));
-		y.domain([0, d3.max(data, function(d) { return ceiling; })]);
+        var ceiling = this.config.ceiling;
+        x.domain(data.map(function(d) { return utils.ap_date(d['date']) }));
+        y.domain([0, d3.max(data, function(d) { return ceiling; })]);
 
-		chart.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(x_axis)
-			.append("text")
-			.attr("x", 10)
-			.attr("dy", "2.5em")
-			.style("text-anchor", "start")
-			.text('Day');
+        chart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(x_axis)
+            .append("text")
+            .attr("x", 10)
+            .attr("dy", "2.5em")
+            .style("text-anchor", "start")
+            .text('Day');
 
-		chart.selectAll("bar")
-			.data(data)
-			.enter().append("rect")
+        chart.selectAll("bar")
+            .data(data)
+            .enter().append("rect")
             .on("mouseover", function(d) {
                 console.info(d);
                 /*
@@ -460,23 +460,23 @@ var cuomo = {
                       */
             } )
             .on("mouseout", function(d) { } )
-			.attr("class", "bar cuomos")
-			.attr("fill", "url(#barbg)")
-			.attr("x", function(d) { return x(utils.ap_date(d['date'])); })
-			.attr("width", x.bandwidth())
-			.attr("y", function(d) { return y(d['cuomos']); })
-			.attr("height", function(d) { return height - y(d['cuomos']); })
+            .attr("class", "bar cuomos")
+            .attr("fill", "url(#barbg)")
+            .attr("x", function(d) { return x(utils.ap_date(d['date'])); })
+            .attr("width", x.bandwidth())
+            .attr("y", function(d) { return y(d['cuomos']); })
+            .attr("height", function(d) { return height - y(d['cuomos']); })
     },
     init: function(pathing) {
-		if ( pathing == null ) pathing = '';
-		this.pathing = pathing;
-		$('#barbg').attr('width', this.config.dim[this.config.days_to_show].image);
-		$('#barbg').attr('height', this.config.dim[this.config.days_to_show].image);
-		$('#barbg image').attr('width', this.config.dim[this.config.days_to_show].image);
-		$('#barbg image').attr('height', this.config.dim[this.config.days_to_show].image);
-		$.getJSON(pathing + 'data/archives-10.json?' + utils.rando(), function(data) {
-			cuomo.d.archives = data;
-			//cuomo.first_load();
+        if ( pathing == null ) pathing = '';
+        this.pathing = pathing;
+        $('#barbg').attr('width', this.config.dim[this.config.days_to_show].image);
+        $('#barbg').attr('height', this.config.dim[this.config.days_to_show].image);
+        $('#barbg image').attr('width', this.config.dim[this.config.days_to_show].image);
+        $('#barbg image').attr('height', this.config.dim[this.config.days_to_show].image);
+        $.getJSON(pathing + 'data/archives-10.json?' + utils.rando(), function(data) {
+            cuomo.d.archives = data;
+            //cuomo.first_load();
             // Set the timer to check for updated data
             cuomo.first_load();
             $.getJSON(pathing + 'data/archives-average-30.json?' + utils.rando(), function(data) {
@@ -489,8 +489,8 @@ var cuomo = {
                 for ( var i = 0; i < cuomos_whole; i ++ ) cuomos_img += '<img src="img/cuomo-circle-large.png" alt="one Cuomo" class="cuomo">';
                 document.getElementById('hours-cuomos').innerHTML = cuomos_img;
             });
-		});
-	}
+        });
+    }
 };
 cuomo.init();
 
@@ -521,7 +521,7 @@ var charter = {
         var r = this.rundown;
         graf = 'Today there have been ' + r.alerts + ' service alerts on ' + r.lines_len + ' different lines \n\
             totalling ' + r.hours + ' hours and ' + r.minutes + ' minutes of alert-time.';
-		if ( document.getElementById('rundown') !== null ) document.getElementById('rundown').innerHTML = graf;
+        if ( document.getElementById('rundown') !== null ) document.getElementById('rundown').innerHTML = graf;
     },
     midnight: new Date().setHours(0, 0, 0, 0),
     nyc_now: new Date(),
@@ -840,20 +840,20 @@ var charter = {
         var nodes = charter.svg.selectAll('g').selectAll('circle').nodes();
         var len = nodes.length;
         n = nodes[len - 1];
-		var waypoint = new Waypoint({
-		  element: document.getElementById('day-chart-svg'),
-		  handler: function(direction) {
+        var waypoint = new Waypoint({
+          element: document.getElementById('day-chart-svg'),
+          handler: function(direction) {
               // TURN OFF IN IE11 ***
-			$.fn.triggerSVGEvent = function(eventName) {
-				 var event = document.createEvent('SVGEvents');
-				 event.initEvent(eventName,true,true);
-				 this[0].dispatchEvent(event);
-				 return $(this);
-			};
-			$('#' + n.id).triggerSVGEvent('mouseover');
-		  },
-		  offset: window.innerHeight - 200
-		})
+            $.fn.triggerSVGEvent = function(eventName) {
+                 var event = document.createEvent('SVGEvents');
+                 event.initEvent(eventName,true,true);
+                 this[0].dispatchEvent(event);
+                 return $(this);
+            };
+            $('#' + n.id).triggerSVGEvent('mouseover');
+          },
+          offset: window.innerHeight - 200
+        })
 
         // Set the timer to check for updated data
         this.interval = window.setInterval(this.update_check, this.config.seconds_between_checks * 1000);
@@ -877,18 +877,19 @@ var charter = {
             $('#alerts-number').text(this.causes.length);
         }
     },
-	causes: [],
+    causes: [],
     init: function(pathing) {
-		if ( pathing == null ) pathing = '';
-		this.pathing = pathing;
-		$.getJSON(pathing + 'data/archive.json?' + utils.rando(), function(data) {
-			charter.d.archive_raw = data;
-			charter.d.archive = [];
-			charter.len = data.length;
-			if ( document.getElementById('tooltip') == null ) charter.load_text_list();
+        if ( pathing == null ) pathing = '';
+        this.pathing = pathing;
+        $.getJSON(pathing + 'data/archive.json?' + utils.rando(), function(data) {
+            charter.d.archive_raw = data;
+            charter.d.archive = [];
+            charter.len = data.length;
+            if ( document.getElementById('tooltip') == null ) charter.load_text_list();
             else charter.first_load();
-		});
-	},
+        });
+    },
 };
 
 var parpar = window.setInterval(function() { if ( typeof PARSELY !== 'undefined' ) PARSELY.beacon.trackPageView({ url: document.location.href, urlref: document.location.href, js: 1 }) }, 600000);
+console.info("USE console.info() TO LOG");
