@@ -1,6 +1,6 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
 console.info("USE console.info() TO LOG");
-console.log = function() {}; 
+console.log = function() { console.warn('YOU ARE NOT USING CONSOLE.INFO TO LOG'); }; 
 var utils = {
     rando: function()
     {
@@ -318,7 +318,7 @@ var tracker = {
                     tracker.d.current = data;
                     tracker.first_load();
                 });
-                charter.update_data();
+                //charter.update_data();
                 charter.update();
                 charter.redraw_x();
             }
@@ -376,11 +376,12 @@ var cuomo = {
         var cuomo_in_seconds = this.config.hours_per_cuomo * 60 * 60;
         var five_cuomos = cuomo_in_seconds * 5;
         var additional_cuomos = 0;
-        for ( var i = 0; i < 10; i ++ ) {
-            console.log(this.data.archives[i]['seconds']);
-            if ( five_cuomos < this.data.archives[i]['seconds'] ) {
-                var temporary_cuomos = Math.floor((this.data.archives[i]['seconds'] - five_cuomos) / cuomo_in_seconds);
-                if ( temporary_cuomos > additional_cuomos ) additional_cuomos = temporary_cuomos;
+        for ( var property in this.d.archives ) {
+            if ( this.d.archives.hasOwnProperty(property) ) {
+                if ( five_cuomos < this.d.archives[property].seconds ) {
+                    var temporary_cuomos = Math.floor((this.d.archives[i].seconds - five_cuomos) / cuomo_in_seconds);
+                    if ( temporary_cuomos > additional_cuomos ) additional_cuomos = temporary_cuomos;
+                }
             }
         }
 
@@ -656,6 +657,7 @@ var charter = {
         $('.cause' + utils.slugify(d.cause)).css({ 'fill': '', 'stroke-width': '1' });
     },
     update_check: function() {
+        // Charter's update check. Different from tracker's update check.
         // See if there's anything new to get.
         // ALSO, if it's a 30-minute point, we need to redraw to get the latest circles ***
         $.getJSON('data/archive.json?' + utils.rando(), function(data) {
@@ -667,6 +669,7 @@ var charter = {
                 charter.len = data.length;
                 charter.update_data();
                 charter.update();
+                //charter.redraw_x();
             }
         });
     },
@@ -766,7 +769,7 @@ var charter = {
         
         // BACK TO THE NON-MYSTIC STUFF
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = (this.msms.length*(this.config.circle_radius*2) + 2) - margin.left - margin.right,
+            width = ( ( this.msms.length + 1 ) * (this.config.circle_radius*2) + 2) - margin.left - margin.right,
             height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
         this.height = height;
         console.info("HEIGHT", height, "MAX COUNT", this.bin_lens[this.log.max_count], "BIN_LENS", this.bin_lens)
@@ -805,18 +808,13 @@ var charter = {
         this.hours_since_midnight = Math.floor(this.minutes_since_midnight/60);
         var max_count = this.bin_lens[this.log.max_count];
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
-            width = (this.msms.length*(this.config.circle_radius*2) + 2),
+            width = ((this.msms.length + plusminus) * (this.config.circle_radius*2) + 2),
             height = (max_count*this.config.height_factor) - 0 - margin.top - margin.bottom;
         this.height = height;
 
         var s = d3.select('#day-chart-svg')
             .attr("width", width)
             //.attr("height", height + margin.top + margin.bottom)
-        /*
-        this.x = d3.scaleTime()
-            .domain([this.midnight, new Date().setHours(this.hours_since_midnight + 1, 0, 0, 0)])
-            .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
-            */
         this.x = d3.scaleTime()
             .domain([this.midnight, new Date().setHours(this.hours_since_midnight + plusminus, 0, 0, 0)])
             .range([0, Math.floor(this.minutes_since_midnight/this.config.minutes_per_bin)*(this.config.circle_radius*2)])
@@ -825,7 +823,6 @@ var charter = {
             .tickFormat(d3.timeFormat("%-I %p"));
         var ax = d3.selectAll('#x-hourly')
             .call(this.x_axis);
-        console.info(this.hours_since_midnight);
     },
     first_load: function() {
         // The work we need to do to load the chart.
