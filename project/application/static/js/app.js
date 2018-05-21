@@ -352,7 +352,7 @@ var cuomo = {
     next_check: 0,
     config: {
         in_dev: 0,
-        hours_per_cuomo: 15,
+        hours_per_cuomo: 10,
         seconds_between_checks: 20,
         ceiling: 5,
         days_to_show: 7,
@@ -376,14 +376,21 @@ var cuomo = {
         var cuomo_in_seconds = this.config.hours_per_cuomo * 60 * 60;
         var five_cuomos = cuomo_in_seconds * 5;
         var additional_cuomos = 0;
+        
+        // Dynamic height adjustment
         for ( var property in this.d.archives ) {
             if ( this.d.archives.hasOwnProperty(property) ) {
                 if ( five_cuomos < this.d.archives[property].seconds ) {
-                    var temporary_cuomos = Math.floor((this.d.archives[i].seconds - five_cuomos) / cuomo_in_seconds);
+                    var temporary_cuomos = Math.floor((this.d.archives[property].seconds - five_cuomos) / cuomo_in_seconds);
                     if ( temporary_cuomos > additional_cuomos ) additional_cuomos = temporary_cuomos;
                 }
             }
         }
+        if ( additional_cuomos > 0 ) {
+            var extra = 57.14 * additional_cuomos;
+            this.config.dim[this.config.days_to_show].height += extra;
+        }
+
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = this.config.dim[this.config.days_to_show].width - margin.left - margin.right,
@@ -425,9 +432,8 @@ var cuomo = {
             var bb = +b['date'].replace(/-/g,'');
             var ab = ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0;
             return aa - bb;
-            //return ( aa > bb ) ? 1 : ( bb < aa ) ? -1 : 0; 
             }
-            );
+        );
         data = data.slice(this.config.days_to_show * -1);
 
         var ceiling = this.config.ceiling;
@@ -471,6 +477,7 @@ var cuomo = {
     init: function(pathing) {
         if ( pathing == null ) pathing = '';
         this.pathing = pathing;
+        document.getElementById('one_cuomo').textContent = this.config.hours_per_cuomo;
         $('#barbg').attr('width', this.config.dim[this.config.days_to_show].image);
         $('#barbg').attr('height', this.config.dim[this.config.days_to_show].image);
         $('#barbg image').attr('width', this.config.dim[this.config.days_to_show].image);

@@ -180,7 +180,8 @@
 -->
 			<p>
 				We measure in terms of Cuomos (<img src="img/cuomo-circle-large.png" alt="Photo of Andrew Cuomo" class="cuomo">),
-				<strong>one Cuomo equalling <span id="one_cuomo">15</span> hours of alerts on any one particular line.
+				<strong>
+					one Cuomo equalling <span id="one_cuomo">10</span> hours of alerts on any one particular line.
 				</strong>
 			</p>
 			<p>
@@ -197,6 +198,7 @@
 						This chart shows the total hours of MTA subway service alerts for the previous seven days.
 						Note that this does not include delays and stoppages due to scheduled maintenance.
 					</figcaption>
+					<ul></ul>
 				</figure>
 			</div>
 		</section>
