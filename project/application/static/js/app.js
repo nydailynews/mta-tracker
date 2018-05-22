@@ -356,7 +356,7 @@ var cuomo = {
         seconds_between_checks: 20,
         ceiling: 5,
         days_to_show: 7,
-        dim: {  // short for "dimensions"
+        dim: {  // short for "dimensions." The keys are the number of ticks on the y axis we're publishing for.
             '10': {
                 image: 40,
                 width: 460,
@@ -389,7 +389,9 @@ var cuomo = {
         if ( additional_cuomos > 0 ) {
             var extra = 57.14 * additional_cuomos;
             this.config.dim[this.config.days_to_show].height += extra;
+            this.config.ceiling += additional_cuomos;
         }
+        console.info(this.config.ceiling, additional_cuomos);
 
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
@@ -424,7 +426,9 @@ var cuomo = {
                 var minutes = Math.floor(seconds / 60);
                 var hours = minutes / 60;
                 var one_cuomo = Math.floor(hours / this.config.hours_per_cuomo);
-                data.push({ 'date': property, 'delays': this.d.archives[property].delays, 'hours': hours, 'cuomos': one_cuomo});
+                var delays = this.d.archives[property].delays;
+                var delays_rounded = Math.floor(delays/10) * 10;
+                data.push({ 'date': property, 'delays': delays, 'delays_rounded': delays_rounded, 'hours': hours, 'cuomos': one_cuomo});
             }
         }
         data.sort(function(a, b) { 
@@ -472,7 +476,10 @@ var cuomo = {
             .attr("x", function(d) { return x(utils.ap_date(d['date'])); })
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d['cuomos']); })
-            .attr("height", function(d) { return height - y(d['cuomos']); })
+            .attr("height", function(d) {
+                console.info(height, y(d['cuomos']));
+                return height - y(d['cuomos']);
+            });
     },
     init: function(pathing) {
         if ( pathing == null ) pathing = '';
@@ -484,7 +491,6 @@ var cuomo = {
         $('#barbg image').attr('height', this.config.dim[this.config.days_to_show].image);
         $.getJSON(pathing + 'data/archives-10.json?' + utils.rando(), function(data) {
             cuomo.d.archives = data;
-            //cuomo.first_load();
             // Set the timer to check for updated data
             cuomo.first_load();
             $.getJSON(pathing + 'data/archives-average-30.json?' + utils.rando(), function(data) {
