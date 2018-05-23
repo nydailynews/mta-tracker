@@ -337,7 +337,6 @@ class Query:
             params['select'] = '*'
 
         sql = 'SELECT %s FROM archive%s' % (params['select'], clause)
-        print(sql, values)
         self.c.execute(sql, values)
         rows = self.c.fetchall()
         return rows
