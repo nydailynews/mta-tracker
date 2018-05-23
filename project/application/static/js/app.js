@@ -391,8 +391,6 @@ var cuomo = {
             this.config.dim[this.config.days_to_show].height += extra;
             this.config.ceiling += additional_cuomos;
         }
-        console.info(this.config.ceiling, additional_cuomos);
-
 
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = this.config.dim[this.config.days_to_show].width - margin.left - margin.right,
@@ -477,7 +475,6 @@ var cuomo = {
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d['cuomos']); })
             .attr("height", function(d) {
-                console.info(height, y(d['cuomos']));
                 return height - y(d['cuomos']);
             });
     },

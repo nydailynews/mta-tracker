@@ -195,8 +195,8 @@
 						<title>Hours of MTA service alerts in the previous seven days</title>
 					</svg>
 					<figcaption>
-						This chart shows the total hours of MTA subway service alerts for the previous seven days.
-						Note that this does not include delays and stoppages due to scheduled maintenance.
+						This chart shows the total hours of MTA subway delay alerts for the previous seven days.
+						Note that this does not include delays due to service changes (which are sometimes announced with little warning) or for scheduled maintenance.
 					</figcaption>
 					<ul></ul>
 				</figure>
