@@ -19,7 +19,7 @@ if __name__ == '__main__':
     log = Logger(args)
     fields = ['start', 'stop', 'line', 'length', 'is_weekend']
     fields_str = ','.join(fields)
-    days = [10, 30, 60, 90]
+    days = [10, 30, 60, 90, 180]
     for limit in days:
         i = 0
         hours = {
@@ -41,6 +41,7 @@ if __name__ == '__main__':
             params = { 'date': d,
                     'select': fields_str
                     }
+            # Query, then turn the results into a dict for saving.
             rows = log.db.q.select_archive(**params)
             archives_full[d] = log.db.q.make_dict(fields, rows)
 
@@ -57,10 +58,19 @@ if __name__ == '__main__':
                 else:
                     hours['weekday'] += float(float(r['length'] / 60) / 60)
                     weekdays += 1
-            archives[d] = {'delays': delays, 'seconds': length}
+
+            # Get the number of distinct alerts in a day
+            params['select'] = 'count(DISTINCT(cause)) AS count'
+            rows = log.db.q.select_archive(**params)
+            results = rows[0][0]
+
+            archives[d] = {'delays': delays, 'seconds': length, 'cause_count': results}
+            print(archives[d]);
         average['all'] = hours['all'] / limit
-        average['weekend'] = hours['weekend'] / weekends
-        average['weekday'] = hours['weekday'] / weekdays
+        if weekends > 0:
+            average['weekend'] = hours['weekend'] / weekends
+        if weekdays > 0:
+            average['weekday'] = hours['weekday'] / weekdays
         fh = open('_output/archives-average-%d.json' % limit, 'wb')
         json.dump({'days': limit, 'hours': hours, 'average': average}, fh)
         fh.close()
