@@ -1,6 +1,14 @@
 //**TODO add a countdown that lets a reader know how long until the next check for updates
 console.info("USE console.info() TO LOG");
 console.log = function() { console.warn('YOU ARE NOT USING CONSOLE.INFO TO LOG'); }; 
+
+// UPDATER OBJECT
+// Used to manage the data updates that happen once the page loads.
+// To do this we need to lay out which json files are attached to which objects,
+// and what the update workflow is like for each of those objects.
+var upd = {
+};
+
 var utils = {
     rando: function()
     {
@@ -881,7 +889,7 @@ var charter = {
                     $('#alerts ol').append('<li class="cause' + utils.slugify(cause) + '">' + cause + '</li>');
                 }
             }
-            $('#alerts-number').text(this.causes.length);
+            document.getElementById('alerts-number').textContent = this.causes.length;
         }
     },
     causes: [],
