@@ -74,11 +74,11 @@ if __name__ == '__main__':
             results = rows[0][0]
 
             archives[d] = {'delays': delays, 'seconds': length, 'cause_count': results}
-            print(d, archives[d]);
+            #print(d, archives[d]);
         average['all'] = hours['all'] / limit
         if weekends > 0:
             average['weekend'] = hours['weekend'] / weekends
-            print(limit,hours['weekend'],weekends,average['weekend'])
+            #print(limit,hours['weekend'],weekends,average['weekend'])
         if weekdays > 0:
             average['weekday'] = hours['weekday'] / weekdays
         fh = open('_output/archives-average-%d.json' % limit, 'wb')
