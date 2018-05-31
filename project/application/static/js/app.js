@@ -400,12 +400,13 @@ var cuomo = {
             this.config.ceiling += additional_cuomos;
         }
 
+        // The variables we need to be able to check on later we assign to the parent object.
+        // The rest are local to this function.
         var margin = {top: 10, right: 30, bottom: 30, left: 30},
             width = this.config.dim[this.config.days_to_show].width - margin.left - margin.right,
             height = this.config.dim[this.config.days_to_show].height - margin.top - margin.bottom;
         this.height = height;
         
-        // Adds the svg canvas
         this.svg = d3.select("#" + this.id + ' svg')
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)

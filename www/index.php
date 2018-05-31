@@ -12,8 +12,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 
     <!-- Titles -->
-    <meta property="og:title" content='MTA Alert Tracker' />
-    <meta name="twitter:title" content='MTA Alert Tracker' />
+    <meta property="og:title" content='MTA Delay Tracker' />
+    <meta name="twitter:title" content='MTA Delay Tracker' />
 
     <!-- Description -->
     <meta name="description" content="See the day's MTA delays and MTA service alerts, updated every minute." />
