@@ -34,8 +34,12 @@ if __name__ == '__main__':
                 }
         archives, archives_full = {}, {}
         weekdays, weekends = 0, 0
+
+        # Query the alerts that happened on each particular day in our range.
         while i < limit:
             i += 1
+            is_weekend = False
+            is_weekday = False
             d_ = datetime.now() - timedelta(i)
             d = d_.date().__str__()
             params = { 'date': d,
@@ -44,8 +48,8 @@ if __name__ == '__main__':
             # Query, then turn the results into a dict for saving.
             rows = log.db.q.select_archive(**params)
             archives_full[d] = log.db.q.make_dict(fields, rows)
-
             results = archives_full[d]
+
             length = 0
             delays = 0
             for r in results:
@@ -54,10 +58,15 @@ if __name__ == '__main__':
                 hours['all'] += float(float(r['length'] / 60) / 60)
                 if r['is_weekend'] == 1:
                     hours['weekend'] += float(float(r['length'] / 60) / 60)
-                    weekends += 1
+                    is_weekend = True
                 else:
                     hours['weekday'] += float(float(r['length'] / 60) / 60)
-                    weekdays += 1
+                    is_weekday = True
+
+            if is_weekend:
+                weekends += 1
+            if is_weekday:
+                weekdays += 1
 
             # Get the number of distinct alerts in a day
             params['select'] = 'count(DISTINCT(cause)) AS count'
@@ -65,10 +74,11 @@ if __name__ == '__main__':
             results = rows[0][0]
 
             archives[d] = {'delays': delays, 'seconds': length, 'cause_count': results}
-            print(archives[d]);
+            print(d, archives[d]);
         average['all'] = hours['all'] / limit
         if weekends > 0:
             average['weekend'] = hours['weekend'] / weekends
+            print(limit,hours['weekend'],weekends,average['weekend'])
         if weekdays > 0:
             average['weekday'] = hours['weekday'] / weekdays
         fh = open('_output/archives-average-%d.json' % limit, 'wb')

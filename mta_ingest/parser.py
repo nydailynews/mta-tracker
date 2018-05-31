@@ -135,7 +135,7 @@ Here's the legend for those symbols:
         # WHAT WE'RE DOING:
         # Loop through every item, and each time there's more than one consecutive blank line, axe those.
         # Take the remaining pieces and put them in another list, then loop through that.
-        # That should give us whole-delay entries, alongside the titles
+        # That gives us whole-delay entries, alongside the titles
         cleaned = []
         blank_count = 0
         current_string = ''
@@ -177,7 +177,7 @@ Here's the legend for those symbols:
             # which is easier for us to parse than the list we had before.
             if text == '':
                 blank_count += 1
-            elif text not in ['Our crews are on the scene work to restore normal service and we\'ll follow up soon.', 'Allow additional travel time', 'We apologize for the inconvenience.', 'We Apologize for the inconvenience.', 'Know Before You Go!!', 'Sign up for MY MTA Alerts at www.mymtaalerts.com', 'Know Before You Go!Sign up at MY MTA Alerts www.mymtaalerts.com', 'Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience','Allow additional travel time.We apologize for any inconvenience.','Allow additional travel time.','Allow additional travel time. Know Before You Go!','Sign Up for My MTA Alerts at www.mymtaalerts.com', 'Allow additional travel time.We apologize for any inconvenience', 'Know Before You Go!Sign up for MY MTA Alerts at mymtaalerts.com', 'Allow additional travel time.Know Before You Go!', 'Sign up for My MTA Alerts at www.mymtaalerts.com', 'Know Before You Go!', 'Sign up for my MTA alerts at www.myMTAalerts.com', 'We apologize for any inconvenience. Know Before You Go!', 'Sign up for My MTA Alerts at http://www.mymtaalerts.com/', 'Know Before You Go!Sign up for My MTA Alerts at www.mymtaalerts.com',"Our crews are on the scene working to restore normal service and we'll follow up soon."]:
+            elif text not in ['Our crews remain on site to monitor the situation as we go into the rush hours.', 'Our crews are working to repair the signal.', 'Our crews are on the scene work to restore normal service and we\'ll follow up soon.', 'Allow additional travel time', 'We apologize for the inconvenience.', 'We Apologize for the inconvenience.', 'Know Before You Go!!', 'Sign up for MY MTA Alerts at www.mymtaalerts.com', 'Know Before You Go!Sign up at MY MTA Alerts www.mymtaalerts.com', 'Know Before You Go.Sign up for My MTA Alerts at http://www.mymtaalerts.com', 'Allow additional travel time.We apologize for the inconvenience','Allow additional travel time.We apologize for any inconvenience.','Allow additional travel time.','Allow additional travel time. Know Before You Go!','Sign Up for My MTA Alerts at www.mymtaalerts.com', 'Allow additional travel time.We apologize for any inconvenience', 'Know Before You Go!Sign up for MY MTA Alerts at mymtaalerts.com', 'Allow additional travel time.Know Before You Go!', 'Sign up for My MTA Alerts at www.mymtaalerts.com', 'Know Before You Go!', 'Sign up for my MTA alerts at www.myMTAalerts.com', 'We apologize for any inconvenience. Know Before You Go!', 'Sign up for My MTA Alerts at http://www.mymtaalerts.com/', 'Know Before You Go!Sign up for My MTA Alerts at www.mymtaalerts.com',"Our crews are on the scene working to restore normal service and we'll follow up soon."]:
                 blank_count = 0
                 if current_string != '':
                     current_string += ' '
