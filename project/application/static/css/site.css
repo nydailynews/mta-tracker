@@ -323,12 +323,14 @@ div#tooltip {
     max-width: 600px;
     min-height: 148px;
     height: 200px;
+    height: auto;
+    height: calc(100% - 200px);
     margin: auto;
     text-align: left;
     padding: 10px 10px 10px 80px;
     background-color: #DDD;
     border: 0px;
-    border-radius: 0 12px 12px 0;
+    border-radius: 12px;
     pointer-events: none;
     background-position-x: -40px;
 }
@@ -343,8 +345,8 @@ div#tooltip > h3, div#tooltip > p {
 #tooltip-bg {
     position: relative;
     left: -120px;
-    top: -10px;
-    min-height:140px;
+    top: -30px;
+    min-height: 140px;
     max-height: 200px;
     width: 200px;
 }
