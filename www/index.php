@@ -52,7 +52,6 @@
 
     <!-- NO NEED TO FILL -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:domain" content="http://interactive.nydailynews.com"/>
     <meta name="twitter:site" content="@nydailynews">
     <meta name="twitter:creator" content="@nydni">
     <meta name="decorator" content="responsive" />
@@ -187,7 +186,7 @@
 			<p>
 				On weekdays in the previous 30 days, there are an average of <span id="hours-average"></span> hours of alerts 
 				(<span id="hours-cuomos"></span> Cuomo<span id="hours-cuomos-plural">s</span>),
-				for subway delays and stoppages across the MTA's 22 main lines.
+				for subway delays and stoppages across the MTA's 22 non-shuttle lines.
 			</p>
             <div id="weeks-chart-wrapper" class="overflower">
 				<figure id="weeks-chart">
